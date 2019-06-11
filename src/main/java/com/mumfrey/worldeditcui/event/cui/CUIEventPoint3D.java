@@ -4,7 +4,7 @@ import com.mumfrey.worldeditcui.event.CUIEvent;
 import com.mumfrey.worldeditcui.event.CUIEventArgs;
 import com.mumfrey.worldeditcui.event.CUIEventType;
 import com.mumfrey.worldeditcui.render.region.Region;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 
 /**
@@ -41,9 +41,9 @@ public class CUIEventPoint3D extends CUIEvent
 		
 		if (this.multi && "~".equals(this.getString(1)) && "~".equals(this.getString(2)) && "~".equals(this.getString(3)))
 		{
-			Minecraft mc = Minecraft.getMinecraft();
-			Entity entity = mc.getRenderViewEntity();
-			double hitDistance = mc.playerController.getBlockReachDistance();
+			MinecraftClient mc = MinecraftClient.getInstance();
+			Entity entity = mc.getCameraEntity();
+			double hitDistance = mc.interactionManager.getReachDistance();
 			
 			selection.setCuboidVertexLatch(id, entity, Math.min(Math.max(this.getDouble(4), hitDistance), 256.0));
 			this.controller.getDebugger().debug("Setting vertex latch #" + id);

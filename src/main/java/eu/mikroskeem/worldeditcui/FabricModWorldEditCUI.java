@@ -5,18 +5,24 @@ import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.config.CUIConfiguration;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerChannel;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerWorldRender;
+import eu.mikroskeem.worldeditcui.interfaces.IMinecraftClient;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
-import net.minecraft.client.Keyboard;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.world.World;
+import org.lwjgl.glfw.GLFW;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * Fabric mod entrypoint
@@ -25,18 +31,19 @@ import net.minecraft.world.World;
  */
 public final class FabricModWorldEditCUI implements ModInitializer {
     private static final int DELAYED_HELO_TICKS = 10;
+    private static FabricModWorldEditCUI instance;
     public static final Identifier CHANNEL_WECUI = new Identifier("worldedit", "cui");
 
     private final Identifier keybindToggleUIId = new Identifier("wecui", "keys.toggle");
     private final Identifier keybindClearSelId = new Identifier("wecui", "keys.clear");
     private final Identifier keybindChunkBorderId = new Identifier("wecui", "keys.chunk");
-    private final FabricKeyBinding keyBindToggleUI = FabricKeyBinding.Builder.create(keybindToggleUIId, InputUtil.Type.SCANCODE, InputUtil.UNKNOWN_KEYCODE.getKeyCode(), "wecui.keys.category").build();
-    private final FabricKeyBinding keyBindClearSel = FabricKeyBinding.Builder.create(keybindClearSelId, InputUtil.Type.SCANCODE, InputUtil.UNKNOWN_KEYCODE.getKeyCode(), "wecui.keys.category").build();
-    private final FabricKeyBinding keyBindChunkBorder = FabricKeyBinding.Builder.create(keybindChunkBorderId, InputUtil.Type.SCANCODE, InputUtil.UNKNOWN_KEYCODE.getKeyCode(), "wecui.keys.category").build();
+    private final FabricKeyBinding keyBindToggleUI = FabricKeyBinding.Builder.create(keybindToggleUIId, InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "wecui.keys.category").build();
+    private final FabricKeyBinding keyBindClearSel = FabricKeyBinding.Builder.create(keybindClearSelId, InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "wecui.keys.category").build();
+    private final FabricKeyBinding keyBindChunkBorder = FabricKeyBinding.Builder.create(keybindChunkBorderId, InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "wecui.keys.category").build();
 
-    public static WorldEditCUI controller;
-    public static CUIListenerWorldRender worldRenderListener;
-    public static CUIListenerChannel channelListener;
+    private WorldEditCUI controller;
+    private CUIListenerWorldRender worldRenderListener;
+    private CUIListenerChannel channelListener;
 
     private World lastWorld;
     private ClientPlayerEntity lastPlayer;
@@ -47,75 +54,134 @@ public final class FabricModWorldEditCUI implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ClientTickCallback.EVENT.register(mc -> {
-            CUIConfiguration config = controller.getConfiguration();
-            boolean inGame = true; // TODO!
-            boolean clock = true; // TODO!
+        instance = this;
 
-            if (inGame && mc.currentScreen == null) {
-                if (this.keyBindToggleUI.isPressed()) {
-                    if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-                        config.setAlwaysOnTop(!config.isAlwaysOnTop());
-                    } else {
-                        this.visible = !this.visible;
-                    }
-                }
+        // Register keybindings
+        KeyBindingRegistry.INSTANCE.addCategory("wecui.keys.category");
+        KeyBindingRegistry.INSTANCE.register(keyBindToggleUI);
+        KeyBindingRegistry.INSTANCE.register(keyBindClearSel);
+        KeyBindingRegistry.INSTANCE.register(keyBindChunkBorder);
 
-                if (this.keyBindClearSel.isPressed()) {
-                    if (mc.player != null) {
-                        mc.player.sendChatMessage("//sel");
-                    }
+        // Hook into game
+        ClientTickCallback.EVENT.register(this::onTick);
+        ClientSidePacketRegistry.INSTANCE.register(CHANNEL_WECUI, this::onPluginMessage);
+    }
 
-                    if (config.isClearAllOnKey()) {
-                        controller.clearRegions();
-                    }
-                }
+    private void onTick(MinecraftClient mc) {
+        CUIConfiguration config = controller.getConfiguration();
+        boolean inGame = mc.player != null;
+        boolean clock = ((IMinecraftClient) mc).getRenderTickCounter().ticksThisFrame > 0;
 
-                if (this.keyBindChunkBorder.isPressed()) {
-                    controller.toggleChunkBorders();
+        if (inGame && mc.currentScreen == null) {
+            if (this.keyBindToggleUI.isPressed()) {
+                if (isPressed(mc, GLFW.GLFW_KEY_LEFT_SHIFT) || isPressed(mc, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
+                    config.setAlwaysOnTop(!config.isAlwaysOnTop());
+                } else {
+                    this.visible = !this.visible;
                 }
             }
 
-            if (inGame && clock && controller != null) {
-                this.alwaysOnTop = config.isAlwaysOnTop();
+            if (this.keyBindClearSel.isPressed()) {
+                if (mc.player != null) {
+                    mc.player.sendChatMessage("//sel");
+                }
 
-                if (mc.world != this.lastWorld || mc.player != this.lastPlayer) {
-                    this.lastWorld = mc.world;
-                    this.lastPlayer = mc.player;
+                if (config.isClearAllOnKey()) {
+                    controller.clearRegions();
+                }
+            }
 
-                    controller.getDebugger().debug("World change detected, sending new handshake");
-                    controller.clear();
+            if (this.keyBindChunkBorder.isPressed()) {
+                controller.toggleChunkBorders();
+            }
+        }
+
+        if (inGame && clock && controller != null) {
+            this.alwaysOnTop = config.isAlwaysOnTop();
+
+            if (mc.world != this.lastWorld || mc.player != this.lastPlayer) {
+                this.lastWorld = mc.world;
+                this.lastPlayer = mc.player;
+
+                controller.getDebugger().debug("World change detected, sending new handshake");
+                controller.clear();
+                this.helo();
+                this.delayedHelo = FabricModWorldEditCUI.DELAYED_HELO_TICKS;
+                if (mc.player != null && config.isPromiscuous()) {
+                    mc.player.sendChatMessage("/we cui"); //Tricks WE to send the current selection
+                }
+            }
+
+            if (this.delayedHelo > 0) {
+                this.delayedHelo--;
+                if (this.delayedHelo == 0) {
                     this.helo();
-                    this.delayedHelo = FabricModWorldEditCUI.DELAYED_HELO_TICKS;
-                    if (mc.player != null && config.isPromiscuous()) {
-                        mc.player.sendChatMessage("/we cui"); //Tricks WE to send the current selection
-                    }
-                }
-
-                if (this.delayedHelo > 0) {
-                    this.delayedHelo--;
-                    if (this.delayedHelo == 0) {
-                        this.helo();
-                        if (LiteLoader.getClientPluginChannels().isRemoteChannelRegistered(CHANNEL_WECUI) && mc.player != null) {
-                            mc.player.sendChatMessage("/we cui");
-                        }
+                    if (mc.player != null && ClientSidePacketRegistry.INSTANCE.canServerReceive(CHANNEL_WECUI)) {
+                        mc.player.sendChatMessage("/we cui");
                     }
                 }
             }
-        });
+        }
+    }
+
+    private void onPluginMessage(PacketContext ctx, PacketByteBuf data) {
+        try {
+            int readableBytes = data.readableBytes();
+            if (readableBytes > 0) {
+                byte[] payload = new byte[readableBytes];
+                data.readBytes(payload);
+                String stringPayload = new String(payload, StandardCharsets.UTF_8);
+                ctx.getTaskQueue().executeSync(() -> channelListener.onMessage(stringPayload));
+            } else {
+                getController().getDebugger().debug("Warning, invalid (zero length) payload received from server");
+            }
+        } catch (Exception ignored) {}
+    }
+
+    public void onGameInitDone(MinecraftClient client) {
+        this.controller = new WorldEditCUI();
+        this.controller.initialise(client);
+        this.worldRenderListener = new CUIListenerWorldRender(this.controller, client);
+        this.channelListener = new CUIListenerChannel(this.controller);
+    }
+
+    public void onJoinGame() {
+        this.visible = true;
+        controller.getDebugger().debug("Joined game, sending initial handshake");
+        this.helo();
+    }
+
+    public void onPostRenderEntities(float partialTicks) {
+        if (this.visible && !this.alwaysOnTop) {
+            GuiLighting.disable();
+            worldRenderListener.onRender(partialTicks);
+            GuiLighting.enable();
+        }
+    }
+
+    public void onPostRender(float partialTicks) {
+        if (this.visible && this.alwaysOnTop) {
+            worldRenderListener.onRender(partialTicks);
+        }
     }
 
     private void helo() {
         PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
         String message = "v|" + WorldEditCUI.PROTOCOL_VERSION;
         buffer.writeBytes(message.getBytes(Charsets.UTF_8));
+        ClientSidePacketRegistry.INSTANCE.sendToServer(CHANNEL_WECUI, buffer);
+    }
 
-        CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(CHANNEL_WECUI, buffer);
-        MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
+    private boolean isPressed(MinecraftClient client, int keycode) {
+        return InputUtil.isKeyPressed(client.window.getHandle(), keycode);
     }
 
     public WorldEditCUI getController()
     {
-        return FabricModWorldEditCUI.controller;
+        return this.controller;
+    }
+
+    public static FabricModWorldEditCUI getInstance() {
+        return instance;
     }
 }

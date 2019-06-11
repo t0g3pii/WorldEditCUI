@@ -21,7 +21,7 @@
       "eu.mikroskeem.worldeditcui.FabricModWorldEditCUI"
     ],
     "modmenu": [
-      "eu.mikroskeem.worldeditcui.gui.ConfigPanelFactoryFabricCUIConfigPanel"
+      "eu.mikroskeem.worldeditcui.gui.ConfigPanelFactory"
     ]
   },
   "mixins": [

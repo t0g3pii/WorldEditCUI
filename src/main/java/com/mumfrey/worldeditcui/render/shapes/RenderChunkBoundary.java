@@ -9,6 +9,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import org.lwjgl.opengl.GL11;
 
@@ -105,6 +106,7 @@ public class RenderChunkBoundary extends RenderRegion
 		BufferBuilder buf = tessellator.getBufferBuilder();
 
 		Chunk chunk = this.mc.world.getChunk(xChunk, zChunk);
+		Heightmap heightMap = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE);
 
 		for (LineStyle line : this.style.getLines())
 		{
@@ -120,7 +122,7 @@ public class RenderChunkBoundary extends RenderRegion
 					{
 						for (int axis = 0; axis < 2; axis++)
 						{
-							height = axis == 0 ? chunk.getHeightValue(j * 15, i) : chunk.getHeightValue(i, j * 15);
+							height = axis == 0 ? heightMap.get(j * 15, i) : heightMap.get(i, j * 15);
 							double xPos = axis == 0 ? xBase + (j * 16) : xBase + i;
 							double zPos = axis == 0 ? zBase - 16 + i : zBase - 16 + (j * 16);
 							if (lastHeight[axis][j] > -1 && height != lastHeight[axis][j])
