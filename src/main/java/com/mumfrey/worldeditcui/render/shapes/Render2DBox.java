@@ -7,11 +7,10 @@ import com.mumfrey.worldeditcui.util.Vector2;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
-
-import static com.mumfrey.liteloader.gl.GL.GL_LINES;
-import static com.mumfrey.liteloader.gl.GL.VF_POSITION;
 
 /**
  * Draws the top and bottom rings of a polygon region
@@ -46,7 +45,7 @@ public class Render2DBox extends RenderRegion
 				continue;
 			}
 			
-			buf.begin(GL_LINES, VF_POSITION);
+			buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
 			line.applyColour();
 			
 			for (PointRectangle point : this.points)
@@ -56,8 +55,8 @@ public class Render2DBox extends RenderRegion
 					Vector2 pos = point.getPoint();
 					double x = pos.getX() - cameraPos.getX();
 					double z = pos.getY() - cameraPos.getZ();
-					buf.pos(x + 0.5, this.min + off, z + 0.5).endVertex();
-					buf.pos(x + 0.5, this.max + 1 + off, z + 0.5).endVertex();
+					buf.vertex(x + 0.5, this.min + off, z + 0.5).next();
+					buf.vertex(x + 0.5, this.max + 1 + off, z + 0.5).next();
 				}
 			}
 			tessellator.draw();

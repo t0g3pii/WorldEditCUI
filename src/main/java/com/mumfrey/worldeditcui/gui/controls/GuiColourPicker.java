@@ -1,5 +1,6 @@
 package com.mumfrey.worldeditcui.gui.controls;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -9,8 +10,6 @@ import org.lwjgl.input.Keyboard;
 
 import java.awt.Color;
 import java.awt.Rectangle;
-
-import static com.mumfrey.liteloader.gl.GL.glColor4f;
 
 /**
  * Colour picker flyout control, for use with the designable GUI properties window
@@ -137,7 +136,7 @@ public class GuiColourPicker extends GuiControl
 		
 		// Draw colour picker
 		this.mc.getTextureManager().bindTexture(GuiColourPicker.COLOURPICKER_PICKER);
-		glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.drawTexturedModalRect(this.x + 10, this.y + 10, this.x + 138, this.y + 138, 0, 0, 256, 256);
 		this.drawCrossHair(hPos, sPos, 5, 1, 0xFF000000);
 		
@@ -153,7 +152,7 @@ public class GuiColourPicker extends GuiControl
 		
 		// Draw preview
 		this.mc.getTextureManager().bindTexture(GuiColourPicker.COLOURPICKER_CHECKER);
-		glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.drawTexturedModalRect(this.x + 188, this.y + 106, this.x + 220, this.y + 138, 0, 0, 1024, 1024);
 		drawRect(this.x + 188, this.y + 106, this.x + 220, this.y + 138, this.rgb);
 		

@@ -1,18 +1,15 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.BoundingBox;
 import com.mumfrey.worldeditcui.util.Observable;
 import com.mumfrey.worldeditcui.util.Vector3;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-
-import static com.mumfrey.liteloader.gl.GL.GL_LINES;
-import static com.mumfrey.liteloader.gl.GL.GL_QUADS;
-import static com.mumfrey.liteloader.gl.GL.VF_POSITION;
-import static com.mumfrey.liteloader.gl.GL.glDisableCulling;
-import static com.mumfrey.liteloader.gl.GL.glEnableCulling;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Draws the grid for a region between
@@ -72,7 +69,7 @@ public class Render3DGrid extends RenderRegion
 	public void render(Vector3 cameraPos)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
+		BufferBuilder buf = tessellator.getBufferBuilder();
 		double x1 = this.first.getX() - cameraPos.getX();
 		double y1 = this.first.getY() - cameraPos.getY();
 		double z1 = this.first.getZ() - cameraPos.getZ();
@@ -82,7 +79,7 @@ public class Render3DGrid extends RenderRegion
 		
 		if (this.spacing != 1.0)
 		{
-			glDisableCulling();
+			GlStateManager.enableCull();
 			
 			double[] vertices = {
 					x1, y1, z1, x2, y1, z1, x2, y1, z2, x1, y1, z2, // bottom
@@ -97,17 +94,17 @@ public class Render3DGrid extends RenderRegion
 			{
 				if (line.prepare(this.style.getRenderType()))
 				{
-					buf.begin(GL_QUADS, VF_POSITION);
+					buf.begin(GL11.GL_QUADS, VertexFormats.POSITION);
 					line.applyColour(0.25F);
 					for (int i = 0; i < vertices.length; i += 3)
 					{
-						buf.pos(vertices[i], vertices[i + 1], vertices[i + 2]).endVertex();
+						buf.vertex(vertices[i], vertices[i + 1], vertices[i + 2]).next();
 					}
 					tessellator.draw();
 				}
 			}
-			
-			glEnableCulling();
+
+			GlStateManager.enableCull();
 		}
 		
 		if (this.spacing < Render3DGrid.MIN_SPACING)
@@ -123,43 +120,43 @@ public class Render3DGrid extends RenderRegion
 				continue;
 			}
 			
-			buf.begin(GL_LINES, VF_POSITION);
+			buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
 			line.applyColour();
 			
 			for (double y = Math.max(y1, -cullAt); y <= y2 && y <= cullAt; y += this.spacing)
 			{
-				buf.pos(x1, y, z2).endVertex();
-				buf.pos(x2, y, z2).endVertex();
-				buf.pos(x1, y, z1).endVertex();
-				buf.pos(x2, y, z1).endVertex();
-				buf.pos(x1, y, z1).endVertex();
-				buf.pos(x1, y, z2).endVertex();
-				buf.pos(x2, y, z1).endVertex();
-				buf.pos(x2, y, z2).endVertex();
+				buf.vertex(x1, y, z2).next();
+				buf.vertex(x2, y, z2).next();
+				buf.vertex(x1, y, z1).next();
+				buf.vertex(x2, y, z1).next();
+				buf.vertex(x1, y, z1).next();
+				buf.vertex(x1, y, z2).next();
+				buf.vertex(x2, y, z1).next();
+				buf.vertex(x2, y, z2).next();
 			}
 			
 			for (double x = Math.max(x1, -cullAt); x <= x2 && x <= cullAt; x += this.spacing)
 			{
-				buf.pos(x, y1, z1).endVertex();
-				buf.pos(x, y2, z1).endVertex();
-				buf.pos(x, y1, z2).endVertex();
-				buf.pos(x, y2, z2).endVertex();
-				buf.pos(x, y2, z1).endVertex();
-				buf.pos(x, y2, z2).endVertex();
-				buf.pos(x, y1, z1).endVertex();
-				buf.pos(x, y1, z2).endVertex();
+				buf.vertex(x, y1, z1).next();
+				buf.vertex(x, y2, z1).next();
+				buf.vertex(x, y1, z2).next();
+				buf.vertex(x, y2, z2).next();
+				buf.vertex(x, y2, z1).next();
+				buf.vertex(x, y2, z2).next();
+				buf.vertex(x, y1, z1).next();
+				buf.vertex(x, y1, z2).next();
 			}
 			
 			for (double z = Math.max(z1, -cullAt); z <= z2 && z <= cullAt; z += this.spacing)
 			{
-				buf.pos(x1, y1, z).endVertex();
-				buf.pos(x2, y1, z).endVertex();
-				buf.pos(x1, y2, z).endVertex();
-				buf.pos(x2, y2, z).endVertex();
-				buf.pos(x2, y1, z).endVertex();
-				buf.pos(x2, y2, z).endVertex();
-				buf.pos(x1, y1, z).endVertex();
-				buf.pos(x1, y2, z).endVertex();
+				buf.vertex(x1, y1, z).next();
+				buf.vertex(x2, y1, z).next();
+				buf.vertex(x1, y2, z).next();
+				buf.vertex(x2, y2, z).next();
+				buf.vertex(x2, y1, z).next();
+				buf.vertex(x2, y2, z).next();
+				buf.vertex(x1, y1, z).next();
+				buf.vertex(x1, y2, z).next();
 			}
 			
 			tessellator.draw();

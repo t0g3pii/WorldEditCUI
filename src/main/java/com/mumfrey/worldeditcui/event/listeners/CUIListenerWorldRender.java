@@ -1,12 +1,10 @@
 package com.mumfrey.worldeditcui.event.listeners;
 
-import static com.mumfrey.liteloader.gl.GL.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GlMatrixFrustum;
-
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
-import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.MinecraftClient;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Listener for WorldRenderEvent
@@ -32,34 +30,34 @@ public class CUIListenerWorldRender
 		try
 		{
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
-			
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glEnableBlend();
-			glEnableAlphaTest();
-			glAlphaFunc(GL_GREATER, 0.0F);
-			glDisableTexture2D();
-			glEnableDepthTest();
-			glDepthMask(false);
-			glPushMatrix();
-			glDisableFog();
+
+			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GlStateManager.enableBlend();
+			GlStateManager.enableAlphaTest();
+			GlStateManager.alphaFunc(GL11.GL_GREATER, 0.0F);
+			GlStateManager.disableTexture();
+			GlStateManager.enableDepthTest();
+			GlStateManager.depthMask(false);
+			GlStateManager.pushMatrix();
+			GlStateManager.disableFog();
 			
 			try
 			{
 				Vector3 cameraPos = new Vector3(this.minecraft.getCameraEntity(), partialTicks);
-				glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
+				GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.5F);
 				this.controller.renderSelections(cameraPos, partialTicks);
 			}
 			catch (Exception e)
 			{
 			}
-			
-			glDepthFunc(GL_LEQUAL);
-			glPopMatrix();
-			
-			glDepthMask(true);
-			glEnableTexture2D();
-			glDisableBlend();
-			glAlphaFunc(GL_GREATER, 0.1F);
+
+			GlStateManager.depthFunc(GL11.GL_LEQUAL);
+			GlStateManager.popMatrix();
+
+			GlStateManager.depthMask(true);
+			GlStateManager.enableTexture();
+			GlStateManager.disableBlend();
+			GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
 		}
 		catch (Exception ex) {}
 	}

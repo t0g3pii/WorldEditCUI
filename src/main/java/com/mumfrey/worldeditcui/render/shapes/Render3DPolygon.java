@@ -3,11 +3,10 @@ package com.mumfrey.worldeditcui.render.shapes;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.Vector3;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-
-import static com.mumfrey.liteloader.gl.GL.GL_LINE_LOOP;
-import static com.mumfrey.liteloader.gl.GL.VF_POSITION;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Draws a polygon
@@ -30,7 +29,7 @@ public class Render3DPolygon extends RenderRegion
 	public void render(Vector3 cameraPos)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
+		BufferBuilder buf = tessellator.getBufferBuilder();
 		
 		for (LineStyle line : this.style.getLines())
 		{
@@ -39,11 +38,11 @@ public class Render3DPolygon extends RenderRegion
 				continue;
 			}
 			
-			buf.begin(GL_LINE_LOOP, VF_POSITION);
+			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
 			line.applyColour();
 			for (Vector3 vertex : this.vertices)
 			{
-				buf.pos(vertex.getX() - cameraPos.getX(), vertex.getY() - cameraPos.getY(), vertex.getZ() - cameraPos.getZ()).endVertex();
+				buf.vertex(vertex.getX() - cameraPos.getX(), vertex.getY() - cameraPos.getY(), vertex.getZ() - cameraPos.getZ()).next();
 			}
 			tessellator.draw();
 		}

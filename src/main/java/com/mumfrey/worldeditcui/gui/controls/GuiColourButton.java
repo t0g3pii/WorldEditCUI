@@ -1,10 +1,9 @@
 package com.mumfrey.worldeditcui.gui.controls;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MinecraftClient;
-
-import static com.mumfrey.liteloader.gl.GL.glColor4f;
 
 /**
  * Colour picker button control, spawns a style picker when clicked
@@ -65,7 +64,7 @@ public class GuiColourButton extends GuiControl
 			int v = Math.min(Math.max((int)(((float)this.height / (float)this.width) * 1024F), 256), 1024);
 			
 			minecraft.getTextureManager().bindTexture(GuiColourPicker.COLOURPICKER_CHECKER);
-			glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			this.drawTexturedModalRect(this.x + 1, this.y + 1, this.x + this.width - 1, this.y + this.height - 1, 0, 0, 1024, v);
 			
 			drawRect(this.x + 1, this.y + 1, this.x + this.width - 1, this.y + this.height - 1, this.colour);

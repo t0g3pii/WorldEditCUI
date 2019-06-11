@@ -1,26 +1,23 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.Vector3;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.Chunk;
-
-import static com.mumfrey.liteloader.gl.GL.GL_LINES;
-import static com.mumfrey.liteloader.gl.GL.VF_POSITION;
-import static com.mumfrey.liteloader.gl.GL.glPopMatrix;
-import static com.mumfrey.liteloader.gl.GL.glPushMatrix;
-import static com.mumfrey.liteloader.gl.GL.glTranslated;
+import org.lwjgl.opengl.GL11;
 
 public class RenderChunkBoundary extends RenderRegion
 {
-	private final Minecraft mc;
+	private final MinecraftClient mc;
 	private Render3DGrid grid;
 	
-	public RenderChunkBoundary(RenderStyle boundaryStyle, RenderStyle gridStyle, Minecraft minecraft)
+	public RenderChunkBoundary(RenderStyle boundaryStyle, RenderStyle gridStyle, MinecraftClient minecraft)
 	{
 		super(boundaryStyle);
 
@@ -46,9 +43,9 @@ public class RenderChunkBoundary extends RenderRegion
 		double zBase = (0 - (zBlock - (zChunk * 16)) - (cameraPos.getZ() - zBlock)) + 16;
 		
 		this.grid.setPosition(new Vector3(xBase, yMin, zBase - 16), new Vector3(xBase + 16, yMax, zBase));
-		
-		glPushMatrix();
-		glTranslated(0.0, -cameraPos.getY(), 0.0);
+
+		GlStateManager.pushMatrix();
+		GlStateManager.translated(0.0, -cameraPos.getY(), 0.0);
 
 		this.grid.render(Vector3.ZERO);
 
@@ -59,13 +56,13 @@ public class RenderChunkBoundary extends RenderRegion
 			this.renderChunkBoundary(xChunk, zChunk, xBase, zBase);
 		}
 
-		glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void renderChunkBorder(double yMin, double yMax, double xBase, double zBase)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
+		BufferBuilder buf = tessellator.getBufferBuilder();
 
 		int spacing = 16;
 		
@@ -73,28 +70,28 @@ public class RenderChunkBoundary extends RenderRegion
 		{
 			if (line.prepare(this.style.getRenderType()))
 			{
-				buf.begin(GL_LINES, VF_POSITION);
+				buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
 				line.applyColour();
 				
 				for (int x = -16; x <= 32; x += spacing)
 				{
 					for (int z = -16; z <= 32; z += spacing)
 					{
-						buf.pos(xBase + x, yMin, zBase - z).endVertex();
-						buf.pos(xBase + x, yMax, zBase - z).endVertex();
+						buf.vertex(xBase + x, yMin, zBase - z).next();
+						buf.vertex(xBase + x, yMax, zBase - z).next();
 					}
 				}
 				
 				for (double y = yMin; y <= yMax; y += yMax)
 				{
-					buf.pos(xBase, y, zBase).endVertex();
-					buf.pos(xBase, y, zBase - 16).endVertex();
-					buf.pos(xBase, y, zBase - 16).endVertex();
-					buf.pos(xBase + 16, y, zBase - 16).endVertex();
-					buf.pos(xBase + 16, y, zBase - 16).endVertex();
-					buf.pos(xBase + 16, y, zBase).endVertex();
-					buf.pos(xBase + 16, y, zBase).endVertex();
-					buf.pos(xBase, y, zBase).endVertex();
+					buf.vertex(xBase, y, zBase).next();
+					buf.vertex(xBase, y, zBase - 16).next();
+					buf.vertex(xBase, y, zBase - 16).next();
+					buf.vertex(xBase + 16, y, zBase - 16).next();
+					buf.vertex(xBase + 16, y, zBase - 16).next();
+					buf.vertex(xBase + 16, y, zBase).next();
+					buf.vertex(xBase + 16, y, zBase).next();
+					buf.vertex(xBase, y, zBase).next();
 				}
 
 				tessellator.draw();
@@ -105,15 +102,15 @@ public class RenderChunkBoundary extends RenderRegion
 	private void renderChunkBoundary(int xChunk, int zChunk, double xBase, double zBase)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
+		BufferBuilder buf = tessellator.getBufferBuilder();
 
-		Chunk chunk = this.mc.world.getChunkFromChunkCoords(xChunk, zChunk);
+		Chunk chunk = this.mc.world.getChunk(xChunk, zChunk);
 
 		for (LineStyle line : this.style.getLines())
 		{
 			if (line.prepare(this.style.getRenderType()))
 			{
-				buf.begin(GL_LINES, VF_POSITION);
+				buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
 				line.applyColour();
 
 				int[][] lastHeight = { { -1, -1 }, { -1, -1 } };
@@ -128,11 +125,11 @@ public class RenderChunkBoundary extends RenderRegion
 							double zPos = axis == 0 ? zBase - 16 + i : zBase - 16 + (j * 16);
 							if (lastHeight[axis][j] > -1 && height != lastHeight[axis][j])
 							{
-								buf.pos(xPos, lastHeight[axis][j], zPos).endVertex();
-								buf.pos(xPos, height, zPos).endVertex();
+								buf.vertex(xPos, lastHeight[axis][j], zPos).next();
+								buf.vertex(xPos, height, zPos).next();
 							}
-							buf.pos(xPos, height, zPos).endVertex();
-							buf.pos(xPos + axis, height, zPos + (1 - axis)).endVertex();
+							buf.vertex(xPos, height, zPos).next();
+							buf.vertex(xPos + axis, height, zPos + (1 - axis)).next();
 							lastHeight[axis][j] = height;
 						}
 					}

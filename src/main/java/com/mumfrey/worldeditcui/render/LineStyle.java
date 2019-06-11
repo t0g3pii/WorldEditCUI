@@ -1,10 +1,7 @@
 package com.mumfrey.worldeditcui.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mumfrey.worldeditcui.render.RenderStyle.RenderType;
-
-import static com.mumfrey.liteloader.gl.GL.glColor4f;
-import static com.mumfrey.liteloader.gl.GL.glDepthFunc;
-import static com.mumfrey.liteloader.gl.GL.glLineWidth;
 
 /**
  * Stores data about a line that can be rendered
@@ -40,8 +37,8 @@ public class LineStyle
 	{
 		if (this.renderType.matches(renderType))
 		{
-			glLineWidth(this.lineWidth);
-			glDepthFunc(this.renderType.depthFunc);
+			GlStateManager.lineWidth(this.lineWidth);
+			GlStateManager.depthFunc(this.renderType.depthFunc);
 			return true;
 		}
 		
@@ -50,11 +47,11 @@ public class LineStyle
 	
 	public void applyColour()
 	{
-		glColor4f(this.red, this.green, this.blue, this.alpha);
+		GlStateManager.color4f(this.red, this.green, this.blue, this.alpha);
 	}
 	
 	public void applyColour(float tint)
 	{
-		glColor4f(this.red, this.green, this.blue, this.alpha * tint);
+		GlStateManager.color4f(this.red, this.green, this.blue, this.alpha * tint);
 	}
 }

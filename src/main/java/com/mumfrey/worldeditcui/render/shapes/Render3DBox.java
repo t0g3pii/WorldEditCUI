@@ -5,12 +5,10 @@ import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.BoundingBox;
 import com.mumfrey.worldeditcui.util.Observable;
 import com.mumfrey.worldeditcui.util.Vector3;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-
-import static com.mumfrey.liteloader.gl.GL.GL_LINES;
-import static com.mumfrey.liteloader.gl.GL.GL_LINE_LOOP;
-import static com.mumfrey.liteloader.gl.GL.VF_POSITION;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Draws a rectangular prism around 2 corners
@@ -60,7 +58,7 @@ public class Render3DBox extends RenderRegion
 	public void render(Vector3 cameraPos)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
+		BufferBuilder buf = tessellator.getBufferBuilder();
 		double x1 = this.first.getX() - cameraPos.getX(); 
 		double y1 = this.first.getY() - cameraPos.getY(); 
 		double z1 = this.first.getZ() - cameraPos.getZ(); 
@@ -76,38 +74,38 @@ public class Render3DBox extends RenderRegion
 			}
 			
 			// Draw bottom face
-			buf.begin(GL_LINE_LOOP, VF_POSITION);
+			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
 			line.applyColour();
-			buf.pos(x1, y1, z1).endVertex();
-			buf.pos(x2, y1, z1).endVertex();
-			buf.pos(x2, y1, z2).endVertex();
-			buf.pos(x1, y1, z2).endVertex();
+			buf.vertex(x1, y1, z1).next();
+			buf.vertex(x2, y1, z1).next();
+			buf.vertex(x2, y1, z2).next();
+			buf.vertex(x1, y1, z2).next();
 			tessellator.draw();
 			
 			// Draw top face
-			buf.begin(GL_LINE_LOOP, VF_POSITION);
+			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
 			line.applyColour();
-			buf.pos(x1, y2, z1).endVertex();
-			buf.pos(x2, y2, z1).endVertex();
-			buf.pos(x2, y2, z2).endVertex();
-			buf.pos(x1, y2, z2).endVertex();
+			buf.vertex(x1, y2, z1).next();
+			buf.vertex(x2, y2, z1).next();
+			buf.vertex(x2, y2, z2).next();
+			buf.vertex(x1, y2, z2).next();
 			tessellator.draw();
 			
 			// Draw join top and bottom faces
-			buf.begin(GL_LINES, VF_POSITION);
+			buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
 			line.applyColour();
 			
-			buf.pos(x1, y1, z1).endVertex();
-			buf.pos(x1, y2, z1).endVertex();
+			buf.vertex(x1, y1, z1).next();
+			buf.vertex(x1, y2, z1).next();
 			
-			buf.pos(x2, y1, z1).endVertex();
-			buf.pos(x2, y2, z1).endVertex();
+			buf.vertex(x2, y1, z1).next();
+			buf.vertex(x2, y2, z1).next();
 			
-			buf.pos(x2, y1, z2).endVertex();
-			buf.pos(x2, y2, z2).endVertex();
+			buf.vertex(x2, y1, z2).next();
+			buf.vertex(x2, y2, z2).next();
 			
-			buf.pos(x1, y1, z2).endVertex();
-			buf.pos(x1, y2, z2).endVertex();
+			buf.vertex(x1, y1, z2).next();
+			buf.vertex(x1, y2, z2).next();
 			
 			tessellator.draw();
 		}

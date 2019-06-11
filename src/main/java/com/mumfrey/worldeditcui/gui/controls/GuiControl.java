@@ -1,34 +1,13 @@
 package com.mumfrey.worldeditcui.gui.controls;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
-
-import static com.mumfrey.liteloader.gl.GL.GL_LINES;
-import static com.mumfrey.liteloader.gl.GL.GL_ONE_MINUS_SRC_ALPHA;
-import static com.mumfrey.liteloader.gl.GL.GL_OR_REVERSE;
-import static com.mumfrey.liteloader.gl.GL.GL_QUADS;
-import static com.mumfrey.liteloader.gl.GL.GL_SRC_ALPHA;
-import static com.mumfrey.liteloader.gl.GL.GL_TRIANGLES;
-import static com.mumfrey.liteloader.gl.GL.VF_POSITION;
-import static com.mumfrey.liteloader.gl.GL.VF_POSITION_TEX;
-import static com.mumfrey.liteloader.gl.GL.glBlendFunc;
-import static com.mumfrey.liteloader.gl.GL.glColor4f;
-import static com.mumfrey.liteloader.gl.GL.glDisableBlend;
-import static com.mumfrey.liteloader.gl.GL.glDisableColorLogic;
-import static com.mumfrey.liteloader.gl.GL.glDisableLighting;
-import static com.mumfrey.liteloader.gl.GL.glDisableTexture2D;
-import static com.mumfrey.liteloader.gl.GL.glEnableBlend;
-import static com.mumfrey.liteloader.gl.GL.glEnableColorLogic;
-import static com.mumfrey.liteloader.gl.GL.glEnableTexture2D;
-import static com.mumfrey.liteloader.gl.GL.glLineWidth;
-import static com.mumfrey.liteloader.gl.GL.glLogicOp;
-import static com.mumfrey.liteloader.gl.GL.glPopMatrix;
-import static com.mumfrey.liteloader.gl.GL.glPushMatrix;
-import static com.mumfrey.liteloader.gl.GL.glRotatef;
-import static com.mumfrey.liteloader.gl.GL.glTranslatef;
+import net.minecraft.client.render.VertexFormats;
+import org.lwjgl.opengl.GL11;
 
 /**
  * GuiControlEx is the base class for additional controls. It includes some advanced drawing methods
@@ -215,22 +194,22 @@ public class GuiControl extends ButtonWidget
 		float f1 = (float)(colour >> 16 & 0xff) / 255F;
 		float f2 = (float)(colour >> 8 & 0xff) / 255F;
 		float f3 = (float)(colour & 0xff) / 255F;
-		
-		glEnableBlend();
-		glDisableTexture2D();
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glColor4f(f1, f2, f3, f);
-		glLineWidth(width);
+
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture();
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.color4f(f1, f2, f3, f);
+		GlStateManager.lineWidth(width);
 		
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
-		buf.begin(GL_LINES, VF_POSITION);
+		BufferBuilder buf = tessellator.getBufferBuilder();
+		buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
 		buf.pos(x1, y1, 0).endVertex();
 		buf.pos(x2, y2, 0).endVertex();
 		tessellator.draw();
-		
-		glEnableTexture2D();
-		glDisableBlend();
+
+		GlStateManager.enableTexture();
+		GlStateManager.disableBlend();
 	}
 	
 	/**
@@ -269,9 +248,9 @@ public class GuiControl extends ButtonWidget
 		float angle = (float)Math.toDegrees(Math.atan2(y2 - y1, x2 - x1));
 		
 		// Local rotation
-		glPushMatrix();
-		glTranslatef(x1, y1, 0.0f);
-		glRotatef(angle, 0.0f, 0.0f, 1.0f);
+		GlStateManager.pushMatrix();
+		GlStateManager.translatef(x1, y1, 0.0f);
+		GlStateManager.rotatef(angle, 0.0f, 0.0f, 1.0f);
 		
 		// Calc coordinates for the line and arrow points
 		x1 = 0;
@@ -284,16 +263,16 @@ public class GuiControl extends ButtonWidget
 		float f1 = (float)(colour >> 16 & 0xff) / 255F;
 		float f2 = (float)(colour >> 8 & 0xff) / 255F;
 		float f3 = (float)(colour & 0xff) / 255F;
-		
-		glEnableBlend();
-		glDisableTexture2D();
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glColor4f(f1, f2, f3, f);
+
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture();
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.color4f(f1, f2, f3, f);
 		
 		// Draw the line
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
-		buf.begin(GL_QUADS, VF_POSITION);
+		BufferBuilder buf = tessellator.getBufferBuilder();
+		buf.begin(GL11.GL_QUADS, VertexFormats.POSITION);
 		buf.pos(x1, y2, z).endVertex();
 		buf.pos(x2, y2, z).endVertex();
 		buf.pos(x2, y1, z).endVertex();
@@ -303,17 +282,17 @@ public class GuiControl extends ButtonWidget
 		// If an arrow then draw the arrow head
 		if (arrowHead && arrowHeadSize > 0)
 		{
-			buf.begin(GL_TRIANGLES, VF_POSITION);
+			buf.begin(GL11.GL_TRIANGLES, VertexFormats.POSITION);
 			buf.pos(x2, 0 - arrowHeadSize / 2, z).endVertex();
 			buf.pos(x2, arrowHeadSize / 2, z).endVertex();
 			buf.pos(length, 0, z).endVertex();
 			tessellator.draw();
 		}
-		
-		glEnableTexture2D();
-		glDisableBlend();
-		
-		glPopMatrix();
+
+		GlStateManager.enableTexture();
+		GlStateManager.disableBlend();
+
+		GlStateManager.popMatrix();
 	}
 	
 	/**
@@ -343,8 +322,8 @@ public class GuiControl extends ButtonWidget
 	public void drawTexturedModalRectRot(int x, int y, int x2, int y2, int u, int v, int u2, int v2)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
-		buf.begin(GL_QUADS, VF_POSITION_TEX);
+		BufferBuilder buf = tessellator.getBufferBuilder();
+		buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
 		buf.pos(x2, y2, this.zLevel).tex((float)(u) * texMapScale, (float)(v2) * texMapScale).endVertex();
 		buf.pos(x2, y, this.zLevel).tex((float)(u2) * texMapScale, (float)(v2) * texMapScale).endVertex();
 		buf.pos(x, y, this.zLevel).tex((float)(u2) * texMapScale, (float)(v) * texMapScale).endVertex();
@@ -366,8 +345,8 @@ public class GuiControl extends ButtonWidget
 	public void drawTexturedModalRectRot(int x, int y, int u, int v, int width, int height)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
-		buf.begin(GL_QUADS, VF_POSITION_TEX);
+		BufferBuilder buf = tessellator.getBufferBuilder();
+		buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
 		buf.pos(x + height, y + width, this.zLevel).tex((float)(u) * texMapScale, (float)(v + height) * texMapScale).endVertex();
 		buf.pos(x + height, y, this.zLevel).tex((float)(u + width) * texMapScale, (float)(v + height) * texMapScale).endVertex();
 		buf.pos(x, y, this.zLevel).tex((float)(u + width) * texMapScale, (float)(v) * texMapScale).endVertex();
@@ -515,57 +494,57 @@ public class GuiControl extends ButtonWidget
 		float red = (float)(colour >> 16 & 0xff) / 255F;
 		float green = (float)(colour >> 8 & 0xff) / 255F;
 		float blue = (float)(colour & 0xff) / 255F;
-		
-		glLineWidth(GuiControl.guiScaleFactor * width);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnableBlend();
-		glDisableTexture2D();
-		glDisableLighting();
-		glColor4f(red, green, blue, alpha);
-		glEnableColorLogic();
-		glLogicOp(GL_OR_REVERSE);
+
+		GlStateManager.lineWidth(GuiControl.guiScaleFactor * width);
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture();
+		GlStateManager.disableLighting();
+		GlStateManager.color4f(red, green, blue, alpha);
+		GlStateManager.enableColorLogicOp();
+		GlStateManager.logicOp(GL11.GL_OR_REVERSE);
 		
 		// Draw the frame
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
+		BufferBuilder buf = tessellator.getBufferBuilder();
 		
-		buf.begin(GL_LINES, VF_POSITION);
+		buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
 		buf.pos(x - size, y, 0).endVertex();
 		buf.pos(x + size, y, 0).endVertex();
 		tessellator.draw();
 		
-		buf.begin(GL_LINES, VF_POSITION);
+		buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
 		buf.pos(x, y - size, 0).endVertex();
 		buf.pos(x, y + size, 0).endVertex();
 		tessellator.draw();
-		
-		glDisableColorLogic();
-		glEnableTexture2D();
+
+		GlStateManager.disableColorLogicOp();
+		GlStateManager.enableTexture();
 	}
 	
 	protected void drawRotText(TextRenderer fontRenderer, String text, int xPosition, int yPosition, int colour, boolean colourOrOp)
 	{
 		if (colourOrOp)
 		{
-			glEnableColorLogic();
-			glLogicOp(GL_OR_REVERSE);
+			GlStateManager.enableColorLogicOp();
+			GlStateManager.logicOp(GL11.GL_OR_REVERSE);
 		}
 		
 		int textWidth = fontRenderer.getStringWidth(text) / 2;
+
+		GlStateManager.pushMatrix();
+		GlStateManager.translatef(xPosition, yPosition, 0);
+		GlStateManager.rotatef(-90, 0, 0, 1);
+		GlStateManager.translatef(-textWidth, -4, 0);
 		
-		glPushMatrix();
-		glTranslatef(xPosition, yPosition, 0);
-		glRotatef(-90, 0, 0, 1);
-		glTranslatef(-textWidth, -4, 0);
-		
-		fontRenderer.drawString(text, 0, 0, colour);
-		
-		glPopMatrix();
+		fontRenderer.draw(text, 0, 0, colour);
+
+		GlStateManager.popMatrix();
 		
 		if (colourOrOp)
 		{
-			glDisableColorLogic();
-			glEnableTexture2D();
+			GlStateManager.disableColorLogicOp();
+			GlStateManager.enableTexture();
 		}
 	}
 	
@@ -608,7 +587,7 @@ public class GuiControl extends ButtonWidget
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buf = tessellator.getBufferBuilder();
-		buf.begin(GL_QUADS, VF_POSITION_TEX);
+		buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
 		buf.pos(x, y2, this.zLevel).tex((float)(u) * texMapScale, (float)(v2) * texMapScale).endVertex();
 		buf.pos(x2, y2, this.zLevel).tex((float)(u2) * texMapScale, (float)(v2) * texMapScale).endVertex();
 		buf.pos(x2, y, this.zLevel).tex((float)(u2) * texMapScale, (float)(v) * texMapScale).endVertex();
@@ -632,7 +611,7 @@ public class GuiControl extends ButtonWidget
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buf = tessellator.getBufferBuilder();
-		buf.begin(GL_QUADS, VF_POSITION_TEX);
+		buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
 		buf.pos(x, y2, this.zLevel).tex(u, v2).endVertex();
 		buf.pos(x2, y2, this.zLevel).tex(u2, v2).endVertex();
 		buf.pos(x2, y, this.zLevel).tex(u2, v).endVertex();
@@ -656,7 +635,7 @@ public class GuiControl extends ButtonWidget
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buf = tessellator.getBufferBuilder();
-		buf.begin(GL_QUADS, VF_POSITION_TEX);
+		buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
 		buf.pos(x + 0, y + height, this.zLevel).tex((float)(u + 0) * texMapScale, (float)(v + height) * texMapScale).endVertex();
 		buf.pos(x + width, y + height, this.zLevel).tex((float)(u + width) * texMapScale, (float)(v + height) * texMapScale).endVertex();
 		buf.pos(x + width, y + 0, this.zLevel).tex((float)(u + width) * texMapScale, (float)(v + 0) * texMapScale).endVertex();
