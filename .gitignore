@@ -1,78 +1,23 @@
-# Build #
-#########
-MANIFEST.MF
-dependency-reduced-pom.xml
+# JVM crash related
+core.*
+hs_err_pid*
 
-# Compiled #
-############
-bin
-build
-dist
-lib
-out
-run
-target
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.so
+# IntelliJ IDEA
+*.iml
+.idea/
+out/
 
-# Databases #
-#############
-*.db
-*.sql
-*.sqlite
-
-# Packages #
-############
-*.7z
-*.dmg
-*.gz
-*.iso
-*.rar
-*.tar
-*.zip
-
-# Repository #
-##############
-.git
-
-# Logging #
-###########
-/logs
-*.log
-
-# Misc #
-########
-*.bak
-
-# System #
-##########
-.DS_Store
-ehthumbs.db
-Thumbs.db
-*.bat
-*.sh
-
-# Project #
-###########
-.checkstyle
+# Eclipse
 .classpath
-.externalToolBuilders
-.gradle
-.nb-gradle
-.idea
 .project
 .settings
-eclipse
-nbproject
-atlassian-ide-plugin.xml
-build.xml
-nb-configuration.xml
-*.iml
-*.ipr
-*.iws
-*.launch
-*.number
+
+# Maven
+target/
+dependency-reduced-pom.xml
+
+# Gradle
+!gradle-wrapper.jar
+.gradle/
+build/
+*/build/
