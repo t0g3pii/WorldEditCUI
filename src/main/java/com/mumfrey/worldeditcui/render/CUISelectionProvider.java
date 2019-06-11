@@ -1,14 +1,14 @@
 package com.mumfrey.worldeditcui.render;
 
-import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.mumfrey.worldeditcui.InitialisationFactory;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.exceptions.InitialisationException;
 import com.mumfrey.worldeditcui.render.region.Region;
 import com.mumfrey.worldeditcui.render.region.RegionType;
+
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Adam Mummery-Smith

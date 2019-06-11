@@ -1,16 +1,17 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
-import java.util.List;
-
-import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.LineStyle;
+import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.points.PointRectangle;
 import com.mumfrey.worldeditcui.util.Vector2;
 import com.mumfrey.worldeditcui.util.Vector3;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
 
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
-import static com.mumfrey.liteloader.gl.GL.*;
+import java.util.List;
+
+import static com.mumfrey.liteloader.gl.GL.GL_LINES;
+import static com.mumfrey.liteloader.gl.GL.VF_POSITION;
 
 /**
  * Draws the top and bottom rings of a polygon region
@@ -36,7 +37,7 @@ public class Render2DBox extends RenderRegion
 	public void render(Vector3 cameraPos)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
+		BufferBuilder buf = tessellator.getBufferBuilder();
 		double off = 0.03 - cameraPos.getY();
 		for (LineStyle line : this.style.getLines())
 		{

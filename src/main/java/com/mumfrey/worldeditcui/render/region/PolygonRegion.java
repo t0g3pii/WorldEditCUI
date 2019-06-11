@@ -1,14 +1,14 @@
 package com.mumfrey.worldeditcui.render.region;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import com.mumfrey.worldeditcui.render.points.PointRectangle;
 import com.mumfrey.worldeditcui.render.shapes.Render2DBox;
 import com.mumfrey.worldeditcui.render.shapes.Render2DGrid;
 import com.mumfrey.worldeditcui.util.Vector3;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main controller for a polygon-type region

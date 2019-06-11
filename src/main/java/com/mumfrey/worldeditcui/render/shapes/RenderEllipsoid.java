@@ -1,14 +1,17 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
-import static com.mumfrey.liteloader.gl.GL.*;
-
+import com.mumfrey.worldeditcui.render.LineStyle;
+import com.mumfrey.worldeditcui.render.RenderStyle;
+import com.mumfrey.worldeditcui.render.points.PointCube;
+import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 
-import com.mumfrey.worldeditcui.render.RenderStyle;
-import com.mumfrey.worldeditcui.render.LineStyle;
-import com.mumfrey.worldeditcui.render.points.PointCube;
-import com.mumfrey.worldeditcui.util.Vector3;
+import static com.mumfrey.liteloader.gl.GL.GL_LINE_LOOP;
+import static com.mumfrey.liteloader.gl.GL.VF_POSITION;
+import static com.mumfrey.liteloader.gl.GL.glPopMatrix;
+import static com.mumfrey.liteloader.gl.GL.glPushMatrix;
+import static com.mumfrey.liteloader.gl.GL.glTranslated;
 
 /**
  * Draws an ellipsoid shape around a centre point.

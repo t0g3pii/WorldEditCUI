@@ -1,11 +1,12 @@
 package com.mumfrey.worldeditcui.event.listeners;
 
 import static com.mumfrey.liteloader.gl.GL.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.GlMatrixFrustum;
 
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
+import net.minecraft.client.render.LightmapTextureManager;
 
 /**
  * Listener for WorldRenderEvent
@@ -18,9 +19,9 @@ public class CUIListenerWorldRender
 {
 	private WorldEditCUI controller;
 	
-	private Minecraft minecraft;
+	private MinecraftClient minecraft;
 	
-	public CUIListenerWorldRender(WorldEditCUI controller, Minecraft minecraft)
+	public CUIListenerWorldRender(WorldEditCUI controller, MinecraftClient minecraft)
 	{
 		this.controller = controller;
 		this.minecraft = minecraft;
@@ -44,7 +45,7 @@ public class CUIListenerWorldRender
 			
 			try
 			{
-				Vector3 cameraPos = new Vector3(this.minecraft.getRenderViewEntity(), partialTicks); 
+				Vector3 cameraPos = new Vector3(this.minecraft.getCameraEntity(), partialTicks);
 				glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
 				this.controller.renderSelections(cameraPos, partialTicks);
 			}

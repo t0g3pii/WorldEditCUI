@@ -1,11 +1,34 @@
 package com.mumfrey.worldeditcui.gui.controls;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
-import static com.mumfrey.liteloader.gl.GL.*;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+
+import static com.mumfrey.liteloader.gl.GL.GL_LINES;
+import static com.mumfrey.liteloader.gl.GL.GL_ONE_MINUS_SRC_ALPHA;
+import static com.mumfrey.liteloader.gl.GL.GL_OR_REVERSE;
+import static com.mumfrey.liteloader.gl.GL.GL_QUADS;
+import static com.mumfrey.liteloader.gl.GL.GL_SRC_ALPHA;
+import static com.mumfrey.liteloader.gl.GL.GL_TRIANGLES;
+import static com.mumfrey.liteloader.gl.GL.VF_POSITION;
+import static com.mumfrey.liteloader.gl.GL.VF_POSITION_TEX;
+import static com.mumfrey.liteloader.gl.GL.glBlendFunc;
+import static com.mumfrey.liteloader.gl.GL.glColor4f;
+import static com.mumfrey.liteloader.gl.GL.glDisableBlend;
+import static com.mumfrey.liteloader.gl.GL.glDisableColorLogic;
+import static com.mumfrey.liteloader.gl.GL.glDisableLighting;
+import static com.mumfrey.liteloader.gl.GL.glDisableTexture2D;
+import static com.mumfrey.liteloader.gl.GL.glEnableBlend;
+import static com.mumfrey.liteloader.gl.GL.glEnableColorLogic;
+import static com.mumfrey.liteloader.gl.GL.glEnableTexture2D;
+import static com.mumfrey.liteloader.gl.GL.glLineWidth;
+import static com.mumfrey.liteloader.gl.GL.glLogicOp;
+import static com.mumfrey.liteloader.gl.GL.glPopMatrix;
+import static com.mumfrey.liteloader.gl.GL.glPushMatrix;
+import static com.mumfrey.liteloader.gl.GL.glRotatef;
+import static com.mumfrey.liteloader.gl.GL.glTranslatef;
 
 /**
  * GuiControlEx is the base class for additional controls. It includes some advanced drawing methods
@@ -13,7 +36,7 @@ import static com.mumfrey.liteloader.gl.GL.*;
  * 
  * @author Adam Mummery-Smith
  */
-public class GuiControl extends GuiButton
+public class GuiControl extends ButtonWidget
 {
 	/**
 	 * Used by some controls to indicate the manner in which they have handled a keypress
@@ -66,7 +89,7 @@ public class GuiControl extends GuiButton
 	/**
 	 * Reference to the minecraft game instance
 	 */
-	protected Minecraft mc;
+	protected MinecraftClient mc;
 	
 	/**
 	 * Flag indicating whether an action was performed, to support GuiScreenEx's callback mechanism
@@ -96,7 +119,7 @@ public class GuiControl extends GuiButton
 	 * @param mouseY Mouse Y coordinate
 	 */
 	@Override
-	public final void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks)
+	public final void drawButton(MinecraftClient minecraft, int mouseX, int mouseY, float partialTicks)
 	{
 		this.drawControl(minecraft, mouseX, mouseY, partialTicks);
 	}
@@ -108,7 +131,7 @@ public class GuiControl extends GuiButton
 	 * @param mouseX Mouse X coordinate
 	 * @param mouseY Mouse Y coordinate
 	 */
-	protected void drawControl(Minecraft minecraft, int mouseX, int mouseY, float partialTicks)
+	protected void drawControl(MinecraftClient minecraft, int mouseX, int mouseY, float partialTicks)
 	{
 		super.drawButton(minecraft, mouseX, mouseY, partialTicks);
 	}
@@ -124,13 +147,13 @@ public class GuiControl extends GuiButton
 	 * @param controlHeight Control height
 	 * @param displayText Control display text
 	 */
-	public GuiControl(Minecraft minecraft, int controlId, int xPos, int yPos, int controlWidth, int controlHeight, String displayText)
+	public GuiControl(MinecraftClient minecraft, int controlId, int xPos, int yPos, int controlWidth, int controlHeight, String displayText)
 	{
 		super(controlId, xPos, yPos, controlWidth, controlHeight, displayText);
 		this.mc = minecraft;
 	}
 	
-	public GuiControl(Minecraft minecraft, int controlId, int xPos, int yPos, String displayText)
+	public GuiControl(MinecraftClient minecraft, int controlId, int xPos, int yPos, String displayText)
 	{
 		super(controlId, xPos, yPos, displayText);
 		this.mc = minecraft;
@@ -461,7 +484,7 @@ public class GuiControl extends GuiButton
 	 * @param width
 	 * @param colour
 	 */
-	public static void drawStringWithEllipsis(FontRenderer fontrenderer, String s, int x, int y, int width, int colour)
+	public static void drawStringWithEllipsis(TextRenderer fontrenderer, String s, int x, int y, int width, int colour)
 	{
 		if (fontrenderer.getStringWidth(s) <= width)
 		{
@@ -520,7 +543,7 @@ public class GuiControl extends GuiButton
 		glEnableTexture2D();
 	}
 	
-	protected void drawRotText(FontRenderer fontRenderer, String text, int xPosition, int yPosition, int colour, boolean colourOrOp)
+	protected void drawRotText(TextRenderer fontRenderer, String text, int xPosition, int yPosition, int colour, boolean colourOrOp)
 	{
 		if (colourOrOp)
 		{
@@ -558,7 +581,7 @@ public class GuiControl extends GuiButton
 	 * @param colour
 	 * @param backgroundColour
 	 */
-	protected void drawTooltip(FontRenderer fontRenderer, String tooltipText, int mouseX, int mouseY, int screenWidth, int screenHeight, int colour, int backgroundColour)
+	protected void drawTooltip(TextRenderer fontRenderer, String tooltipText, int mouseX, int mouseY, int screenWidth, int screenHeight, int colour, int backgroundColour)
 	{
 		int textSize = fontRenderer.getStringWidth(tooltipText);
 		mouseX = Math.max(0, Math.min(screenWidth - textSize - 6, mouseX - 6));
@@ -584,7 +607,7 @@ public class GuiControl extends GuiButton
 	public void drawTexturedModalRect(int x, int y, int x2, int y2, int u, int v, int u2, int v2)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
+		BufferBuilder buf = tessellator.getBufferBuilder();
 		buf.begin(GL_QUADS, VF_POSITION_TEX);
 		buf.pos(x, y2, this.zLevel).tex((float)(u) * texMapScale, (float)(v2) * texMapScale).endVertex();
 		buf.pos(x2, y2, this.zLevel).tex((float)(u2) * texMapScale, (float)(v2) * texMapScale).endVertex();
@@ -608,7 +631,7 @@ public class GuiControl extends GuiButton
 	public void drawTexturedModalRectF(int x, int y, int x2, int y2, float u, float v, float u2, float v2)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
+		BufferBuilder buf = tessellator.getBufferBuilder();
 		buf.begin(GL_QUADS, VF_POSITION_TEX);
 		buf.pos(x, y2, this.zLevel).tex(u, v2).endVertex();
 		buf.pos(x2, y2, this.zLevel).tex(u2, v2).endVertex();
@@ -632,7 +655,7 @@ public class GuiControl extends GuiButton
 	public void drawTexturedModalRect(int x, int y, int u, int v, int width, int height, float texMapScale)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
+		BufferBuilder buf = tessellator.getBufferBuilder();
 		buf.begin(GL_QUADS, VF_POSITION_TEX);
 		buf.pos(x + 0, y + height, this.zLevel).tex((float)(u + 0) * texMapScale, (float)(v + height) * texMapScale).endVertex();
 		buf.pos(x + width, y + height, this.zLevel).tex((float)(u + width) * texMapScale, (float)(v + height) * texMapScale).endVertex();

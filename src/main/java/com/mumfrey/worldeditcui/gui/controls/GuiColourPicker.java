@@ -1,17 +1,16 @@
 package com.mumfrey.worldeditcui.gui.controls;
 
-import static com.mumfrey.liteloader.gl.GL.*;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.util.Identifier;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.Color;
 import java.awt.Rectangle;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.input.Keyboard;
+import static com.mumfrey.liteloader.gl.GL.glColor4f;
 
 /**
  * Colour picker flyout control, for use with the designable GUI properties window
@@ -20,8 +19,8 @@ import org.lwjgl.input.Keyboard;
  */
 public class GuiColourPicker extends GuiControl
 {
-	public static final ResourceLocation COLOURPICKER_CHECKER = new ResourceLocation("wecui", "textures/gui/checker.png");
-	public static final ResourceLocation COLOURPICKER_PICKER = new ResourceLocation("wecui", "textures/gui/picker.png");
+	public static final Identifier COLOURPICKER_CHECKER = new Identifier("wecui", "textures/gui/checker.png");
+	public static final Identifier COLOURPICKER_PICKER = new Identifier("wecui", "textures/gui/picker.png");
 	
 	/**
 	 * Indices into the hsb array 
@@ -48,7 +47,7 @@ public class GuiColourPicker extends GuiControl
 	/**
 	 * Text boxes for manual entry 
 	 */
-	private GuiTextField txtRed, txtGreen, txtBlue, txtAlpha;
+	private TextFieldWidget txtRed, txtGreen, txtBlue, txtAlpha;
 	
 	/**
 	 * OK and cancel buttons
@@ -70,9 +69,9 @@ public class GuiColourPicker extends GuiControl
 	 */
 	private DialogResult result = DialogResult.None;
 	
-	private FontRenderer fontRenderer;
+	private TextRenderer fontRenderer;
 	
-	public GuiColourPicker(Minecraft minecraft, int controlId, int xPos, int yPos, int initialColour, String displayText)
+	public GuiColourPicker(MinecraftClient minecraft, int controlId, int xPos, int yPos, int initialColour, String displayText)
 	{
 		super(minecraft, controlId, xPos, yPos, 231, 173, displayText);
 		
@@ -82,23 +81,23 @@ public class GuiColourPicker extends GuiControl
 		if (this.opacity == 0x01000000)
 			this.opacity = 0;
 		
-		this.fontRenderer = minecraft.fontRenderer;
-		this.txtRed = new GuiTextField(0, this.fontRenderer, this.x + 188, this.y + 10, 32, 16);
-		this.txtGreen = new GuiTextField(1, this.fontRenderer, this.x + 188, this.y + 30, 32, 16);
-		this.txtBlue = new GuiTextField(2, this.fontRenderer, this.x + 188, this.y + 50, 32, 16);
-		this.txtAlpha = new GuiTextField(3, this.fontRenderer, this.x + 188, this.y + 70, 32, 16);
+		this.fontRenderer = minecraft.textRenderer;
+		this.txtRed = new TextFieldWidget(0, this.fontRenderer, this.x + 188, this.y + 10, 32, 16);
+		this.txtGreen = new TextFieldWidget(1, this.fontRenderer, this.x + 188, this.y + 30, 32, 16);
+		this.txtBlue = new TextFieldWidget(2, this.fontRenderer, this.x + 188, this.y + 50, 32, 16);
+		this.txtAlpha = new TextFieldWidget(3, this.fontRenderer, this.x + 188, this.y + 70, 32, 16);
 		
-		this.txtRed.setMaxStringLength(3);
-		this.txtGreen.setMaxStringLength(3);
-		this.txtBlue.setMaxStringLength(3);
-		this.txtAlpha.setMaxStringLength(3);
+		this.txtRed.setMaxLength(3);
+		this.txtGreen.setMaxLength(3);
+		this.txtBlue.setMaxLength(3);
+		this.txtAlpha.setMaxLength(3);
 		
 		this.rectHSArea = new Rectangle(this.x + 10, this.y + 10, 128, 128);
 		this.rectBArea = new Rectangle(this.x + 143, this.y + 10, 15, 128);
 		this.rectAArea = new Rectangle(this.x + 163, this.y + 10, 15, 128);
 		
-		this.btnOk = new GuiControl(minecraft, 0, this.x + 9, this.y + 145, 55, 20, I18n.format("gui.ok"));
-		this.btnCancel = new GuiControl(minecraft, 1, this.x + 70, this.y + 145, 65, 20, I18n.format("gui.cancel"));
+		this.btnOk = new GuiControl(minecraft, 0, this.x + 9, this.y + 145, 55, 20, I18n.translate("gui.ok"));
+		this.btnCancel = new GuiControl(minecraft, 1, this.x + 70, this.y + 145, 65, 20, I18n.translate("gui.cancel"));
 		
 		this.updateColour();
 	}
@@ -116,7 +115,7 @@ public class GuiColourPicker extends GuiControl
 	}
 	
 	@Override
-	protected void drawControl(Minecraft minecraft, int mouseX, int mouseY, float partialTicks)
+	protected void drawControl(MinecraftClient minecraft, int mouseX, int mouseY, float partialTicks)
 	{
 		this.mouseDragged(minecraft, mouseX, mouseY);
 		
@@ -218,7 +217,7 @@ public class GuiColourPicker extends GuiControl
 	 * @see net.minecraft.src.GuiButton#mouseDragged(net.minecraft.src.Minecraft, int, int)
 	 */
 	@Override
-	protected void mouseDragged(Minecraft minecraft, int mouseX, int mouseY)
+	protected void mouseDragged(MinecraftClient minecraft, int mouseX, int mouseY)
 	{
 		super.mouseDragged(minecraft, mouseX, mouseY);
 		
@@ -246,7 +245,7 @@ public class GuiColourPicker extends GuiControl
 	 * @see net.minecraft.src.GuiButton#mousePressed(net.minecraft.src.Minecraft, int, int)
 	 */
 	@Override
-	public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY)
+	public boolean mousePressed(MinecraftClient minecraft, int mouseX, int mouseY)
 	{
 		if (super.mousePressed(minecraft, mouseX, mouseY))
 		{

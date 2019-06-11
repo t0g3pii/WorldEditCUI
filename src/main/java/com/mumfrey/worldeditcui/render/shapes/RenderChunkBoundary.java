@@ -1,16 +1,19 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
-import static com.mumfrey.liteloader.gl.GL.*;
-
+import com.mumfrey.worldeditcui.render.LineStyle;
+import com.mumfrey.worldeditcui.render.RenderStyle;
+import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.Chunk;
 
-import com.mumfrey.worldeditcui.render.LineStyle;
-import com.mumfrey.worldeditcui.render.RenderStyle;
-import com.mumfrey.worldeditcui.util.Vector3;
+import static com.mumfrey.liteloader.gl.GL.GL_LINES;
+import static com.mumfrey.liteloader.gl.GL.VF_POSITION;
+import static com.mumfrey.liteloader.gl.GL.glPopMatrix;
+import static com.mumfrey.liteloader.gl.GL.glPushMatrix;
+import static com.mumfrey.liteloader.gl.GL.glTranslated;
 
 public class RenderChunkBoundary extends RenderRegion
 {

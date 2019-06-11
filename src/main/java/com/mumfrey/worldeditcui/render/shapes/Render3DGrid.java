@@ -1,15 +1,18 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
-import static com.mumfrey.liteloader.gl.GL.*;
-
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.BoundingBox;
 import com.mumfrey.worldeditcui.util.Observable;
 import com.mumfrey.worldeditcui.util.Vector3;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+
+import static com.mumfrey.liteloader.gl.GL.GL_LINES;
+import static com.mumfrey.liteloader.gl.GL.GL_QUADS;
+import static com.mumfrey.liteloader.gl.GL.VF_POSITION;
+import static com.mumfrey.liteloader.gl.GL.glDisableCulling;
+import static com.mumfrey.liteloader.gl.GL.glEnableCulling;
 
 /**
  * Draws the grid for a region between

@@ -1,8 +1,10 @@
 package com.mumfrey.worldeditcui.render;
 
-import static com.mumfrey.liteloader.gl.GL.*;
-
 import com.mumfrey.worldeditcui.render.RenderStyle.RenderType;
+
+import static com.mumfrey.liteloader.gl.GL.glColor4f;
+import static com.mumfrey.liteloader.gl.GL.glDepthFunc;
+import static com.mumfrey.liteloader.gl.GL.glLineWidth;
 
 /**
  * Stores data about a line that can be rendered

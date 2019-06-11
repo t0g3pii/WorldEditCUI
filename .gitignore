@@ -4,6 +4,8 @@ hs_err_pid*
 
 # IntelliJ IDEA
 *.iml
+*.ipr
+*.iws
 .idea/
 out/
 
