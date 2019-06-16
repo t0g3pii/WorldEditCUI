@@ -6,18 +6,27 @@ to assist in using WorldEdit, as well as preventing accidental errors.
 
 Please note that this is not WorldEdit, which allows you to make changes
 to your world, but WorldEditCUI, a frontend for WorldEdit. You must have
-WorldEdit installed on your server or in SinglePlayerCommands to use this mod.
+WorldEdit installed on your server.
  
+Installation
+------------
+
+1. Install [Fabric](https://fabricmc.net/use)
+2. Install [Fabric API mod](https://minecraft.curseforge.com/projects/fabric) into Minecraft mods folder
+3. Install this mod into Minecraft mods folder
+
 
 Compiling
 ---------
 
-You will need a [LiteLoader MCP workspace](https://www.youtube.com/watch?v=RMpvo-F4AFc), once you have that set up simply import the project and run the ant build script.
+Run `_JAVA_OPTS="-Xmx1G" ./gradlew build`
 
+To import the project into your IDE, see [FabricMC Wiki article](http://fabricmc.net/wiki/tutorial:setup) and stsrt from **Step 3**
 
 Credits
 -------
 
+ * [Mumfrey](https://github.com/Mumfrey) for maintaining WorldEditCUI previously
  * [lahwran](https://github.com/lahwran) - Creator of the original WorldEdit CUI!
  * [sk89q](http://sk89q.com) for writing the WorldEdit plugin!
  * TomyLobo and zml2008 for maintaining WorldEdit!
