@@ -1,6 +1,8 @@
 WorldEditCUI
 ------------
 
+[![Build Status](https://travis-ci.org/mikroskeem/WorldEditCUI.svg?branch=master)](https://travis-ci.org/mikroskeem/WorldEditCUI)
+
 A graphical user interface for WorldEdit. WorldEditCUI is designed 
 to assist in using WorldEdit, as well as preventing accidental errors.
 
