@@ -23,3 +23,6 @@ dependency-reduced-pom.xml
 .gradle/
 build/
 */build/
+
+# Fabric stuff
+run/
