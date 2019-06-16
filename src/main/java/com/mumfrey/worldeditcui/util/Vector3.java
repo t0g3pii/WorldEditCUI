@@ -1,6 +1,7 @@
 package com.mumfrey.worldeditcui.util;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Represents a 3d vector.
@@ -50,11 +51,7 @@ public class Vector3 implements Comparable<Vector3>
 	 */
 	public Vector3(Entity entity, double partialTicks)
 	{
-		this(
-			entity.prevX + ((entity.x - entity.prevX) * partialTicks),
-			entity.prevY + ((entity.y - entity.prevY) * partialTicks),
-			entity.prevZ + ((entity.z - entity.prevZ) * partialTicks)
-		);
+		this(entity.getCameraPosVec((float) partialTicks));
 	}
 	
 	/**
@@ -120,6 +117,15 @@ public class Vector3 implements Comparable<Vector3>
 	public Vector3(Vector2 vector)
 	{
 		this(vector, 0);
+	}
+
+	/**
+	 * Constructs a new Vector3 from Minecraft's 3D Vector class instance
+	 *
+	 * @param nativeVector Native Vector
+	 */
+	public Vector3(Vec3d nativeVector) {
+		this(nativeVector.getX(), nativeVector.getY(), nativeVector.getZ());
 	}
 	
 	public double getX()

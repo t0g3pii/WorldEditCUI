@@ -6,6 +6,7 @@ import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -44,12 +45,7 @@ public class CUIListenerWorldRender
 			
 			try
 			{
-				Entity player = this.minecraft.player;
-				Vector3 cameraPos = new Vector3(
-						player.prevX + ((player.x - player.prevX) * partialTicks),
-						player.prevY + ((player.y - player.prevY) * partialTicks) + player.getEyeHeight(player.getPose()),
-						player.prevZ + ((player.z - player.prevZ) * partialTicks)
-				);
+				Vector3 cameraPos = new Vector3(this.minecraft.gameRenderer.getCamera().getPos());
 				GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.5F);
 				this.controller.renderSelections(cameraPos, partialTicks);
 			}
