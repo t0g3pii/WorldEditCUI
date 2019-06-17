@@ -15,7 +15,7 @@ Installation
 
 1. Install [Fabric](https://fabricmc.net/use)
 2. Install [Fabric API mod](https://minecraft.curseforge.com/projects/fabric) into Minecraft mods folder
-3. Install this mod into Minecraft mods folder
+3. Install [this mod](https://github.com/mikroskeem/WorldEditCUI/releases) into Minecraft mods folder
 
 
 Compiling
