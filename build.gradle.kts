@@ -4,12 +4,12 @@ plugins {
 }
 
 group = "com.mumfrey.worldeditcui"
-version = "1.14.2_02"
+version = "1.14.3_01"
 
-val minecraftVersion = "1.14.2"
-val yarnVersion = "1.14.2+build.7"
+val minecraftVersion = "1.14.3"
+val yarnVersion = "1.14.3+build.1"
 val fabricLoaderVersion = "0.4.8+build.155"
-val fabricApiVersion = "0.3.0+build.183"
+val fabricApiVersion = "0.3.0+build.186"
 val modmenuVersion = "1.6.2-92"
 
 dependencies {
