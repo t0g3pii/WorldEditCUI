@@ -25,6 +25,11 @@ Run `_JAVA_OPTS="-Xmx1G" ./gradlew build`
 
 To import the project into your IDE, see [FabricMC Wiki article](http://fabricmc.net/wiki/tutorial:setup) and stsrt from **Step 3**
 
+Misc
+----
+
+You can either subscribe to updates by watching this repository, or [joining this Discord guild](https://discord.gg/KqqdgE7)
+
 Credits
 -------
 
