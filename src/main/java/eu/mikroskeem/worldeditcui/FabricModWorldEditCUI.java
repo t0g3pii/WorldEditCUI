@@ -116,9 +116,6 @@ public final class FabricModWorldEditCUI implements ModInitializer {
                 this.delayedHelo--;
                 if (this.delayedHelo == 0) {
                     this.helo();
-                    if (mc.player != null && ClientSidePacketRegistry.INSTANCE.canServerReceive(CHANNEL_WECUI)) {
-                        mc.player.sendChatMessage("/we cui");
-                    }
                 }
             }
         }
