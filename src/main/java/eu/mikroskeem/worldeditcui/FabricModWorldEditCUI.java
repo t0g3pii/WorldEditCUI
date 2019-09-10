@@ -73,7 +73,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         boolean clock = ((IMinecraftClient) mc).getRenderTickCounter().ticksThisFrame > 0;
 
         if (inGame && mc.currentScreen == null) {
-            if (this.keyBindToggleUI.isPressed()) {
+            while (this.keyBindToggleUI.wasPressed()) {
                 if (isPressed(mc, GLFW.GLFW_KEY_LEFT_SHIFT) || isPressed(mc, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
                     config.setAlwaysOnTop(!config.isAlwaysOnTop());
                 } else {
@@ -81,7 +81,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
                 }
             }
 
-            if (this.keyBindClearSel.isPressed()) {
+            while (this.keyBindClearSel.wasPressed()) {
                 if (mc.player != null) {
                     mc.player.sendChatMessage("//sel");
                 }
@@ -91,7 +91,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
                 }
             }
 
-            if (this.keyBindChunkBorder.isPressed()) {
+            while (this.keyBindChunkBorder.wasPressed()) {
                 controller.toggleChunkBorders();
             }
         }
