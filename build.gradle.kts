@@ -7,10 +7,10 @@ group = "com.mumfrey.worldeditcui"
 version = "1.14.4_03"
 
 val minecraftVersion = "1.14.4"
-val yarnVersion = "1.14.4+build.2"
-val fabricLoaderVersion = "0.4.8+build.158"
-val fabricApiVersion = "0.3.0+build.200"
-val modmenuVersion = "1.6.2-92"
+val yarnVersion = "1.14.4+build.12"
+val fabricLoaderVersion = "0.6.2+build.166"
+val fabricApiVersion = "0.3.3+build.234-1.14"
+val modmenuVersion = "1.7.9+build.118"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -22,7 +22,7 @@ dependencies {
     add("mappings", "net.fabricmc:yarn:$yarnVersion")
     add("modCompile", "net.fabricmc:fabric-loader:$fabricLoaderVersion")
     add("modCompile", "net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
-    add("modCompile", "io.github.prospector.modmenu:ModMenu:$modmenuVersion")
+    add("modCompile", "io.github.prospector:modmenu:$modmenuVersion")
 }
 
 val processResources by tasks.getting(ProcessResources::class) {
