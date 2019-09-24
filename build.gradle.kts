@@ -12,6 +12,11 @@ val fabricLoaderVersion = "0.4.8+build.158"
 val fabricApiVersion = "0.3.0+build.200"
 val modmenuVersion = "1.6.2-92"
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 dependencies {
     add("minecraft", "com.mojang:minecraft:$minecraftVersion")
     add("mappings", "net.fabricmc:yarn:$yarnVersion")
