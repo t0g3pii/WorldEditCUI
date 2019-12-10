@@ -1,15 +1,15 @@
 plugins {
     java
-    id("fabric-loom") version "0.2.4-SNAPSHOT"
+    id("fabric-loom") version "0.2.6-SNAPSHOT"
 }
 
 group = "com.mumfrey.worldeditcui"
-version = "1.14.4_03"
+version = "1.15_01"
 
-val minecraftVersion = "1.14.4"
-val yarnVersion = "1.14.4+build.12"
-val fabricLoaderVersion = "0.6.2+build.166"
-val fabricApiVersion = "0.3.3+build.234-1.14"
+val minecraftVersion = "1.15"
+val yarnVersion = "1.15+build.1:v2"
+val fabricLoaderVersion = "0.7.2+build.174"
+val fabricApiVersion = "0.4.23+build.276-1.15"
 val modmenuVersion = "1.7.9+build.118"
 
 java {

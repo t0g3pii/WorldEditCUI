@@ -128,7 +128,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
                 byte[] payload = new byte[readableBytes];
                 data.readBytes(payload);
                 String stringPayload = new String(payload, StandardCharsets.UTF_8);
-                ctx.getTaskQueue().executeSync(() -> channelListener.onMessage(stringPayload));
+                ctx.getTaskQueue().execute(() -> channelListener.onMessage(stringPayload));
             } else {
                 getController().getDebugger().debug("Warning, invalid (zero length) payload received from server");
             }
