@@ -15,7 +15,6 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
@@ -150,9 +149,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
 
     public void onPostRenderEntities(float partialTicks) {
         if (this.visible && !this.alwaysOnTop) {
-            GuiLighting.disable();
             worldRenderListener.onRender(partialTicks);
-            GuiLighting.enable();
         }
     }
 
@@ -170,7 +167,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     }
 
     private boolean isPressed(MinecraftClient client, int keycode) {
-        return InputUtil.isKeyPressed(client.window.getHandle(), keycode);
+        return InputUtil.isKeyPressed(client.getWindow().getHandle(), keycode);
     }
 
     public WorldEditCUI getController()

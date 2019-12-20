@@ -39,7 +39,7 @@ public class RenderCylinderCircles extends RenderRegion
 	public void render(Vector3 cameraPos)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBufferBuilder();
+		BufferBuilder buf = tessellator.getBuffer();
 
 		double xPos = this.centreX - cameraPos.getX();
 		double zPos = this.centreZ - cameraPos.getZ();

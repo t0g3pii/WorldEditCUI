@@ -1,13 +1,10 @@
 package com.mumfrey.worldeditcui.event.listeners;
 
-import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Listener for WorldRenderEvent
@@ -32,6 +29,15 @@ public class CUIListenerWorldRender
 	{
 		try
 		{
+			// Thanks to @enveeed
+			RenderSystem.enableDepthTest();
+			RenderSystem.shadeModel(7425);
+			RenderSystem.enableAlphaTest();
+			RenderSystem.defaultAlphaFunc();
+			RenderSystem.disableTexture();
+			RenderSystem.disableBlend();
+			RenderSystem.lineWidth(1.0F);
+			/*
 			GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240F, 240F);
 			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			GlStateManager.enableBlend();
@@ -42,6 +48,7 @@ public class CUIListenerWorldRender
 			GlStateManager.depthMask(false);
 			GlStateManager.pushMatrix();
 			GlStateManager.disableFog();
+			 */
 			
 			try
 			{
@@ -53,6 +60,12 @@ public class CUIListenerWorldRender
 			{
 			}
 
+			// Thanks to @enveeed
+			RenderSystem.lineWidth(1.0F);
+			RenderSystem.enableBlend();
+			RenderSystem.enableTexture();
+			RenderSystem.shadeModel(7424);
+			/*
 			GlStateManager.depthFunc(GL11.GL_LEQUAL);
 			GlStateManager.popMatrix();
 
@@ -60,6 +73,7 @@ public class CUIListenerWorldRender
 			GlStateManager.enableTexture();
 			GlStateManager.disableBlend();
 			GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+			*/
 		}
 		catch (Exception ex) {}
 	}

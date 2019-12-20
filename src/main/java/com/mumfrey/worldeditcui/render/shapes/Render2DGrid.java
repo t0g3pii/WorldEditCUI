@@ -45,7 +45,7 @@ public class Render2DGrid extends RenderRegion
 	protected void drawPoly(Vector3 cameraPos, double height)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBufferBuilder();
+		BufferBuilder buf = tessellator.getBuffer();
 		for (LineStyle line : this.style.getLines())
 		{
 			if (!line.prepare(this.style.getRenderType()))

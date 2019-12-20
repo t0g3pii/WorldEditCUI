@@ -63,7 +63,7 @@ public class RenderChunkBoundary extends RenderRegion
 	private void renderChunkBorder(double yMin, double yMax, double xBase, double zBase)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBufferBuilder();
+		BufferBuilder buf = tessellator.getBuffer();
 
 		int spacing = 16;
 		
@@ -103,7 +103,7 @@ public class RenderChunkBoundary extends RenderRegion
 	private void renderChunkBoundary(int xChunk, int zChunk, double xBase, double zBase)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBufferBuilder();
+		BufferBuilder buf = tessellator.getBuffer();
 
 		Chunk chunk = this.mc.world.getChunk(xChunk, zChunk);
 		Heightmap heightMap = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE);

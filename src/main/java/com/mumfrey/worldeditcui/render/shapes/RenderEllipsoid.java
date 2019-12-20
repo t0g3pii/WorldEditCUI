@@ -57,7 +57,7 @@ public class RenderEllipsoid extends RenderRegion
 	protected void drawXZPlane(LineStyle line)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBufferBuilder();
+		BufferBuilder buf = tessellator.getBuffer();
 
 		int yRad = (int)Math.floor(this.radii.getY());
 		for (int yBlock = -yRad; yBlock < yRad; yBlock++)
@@ -93,7 +93,7 @@ public class RenderEllipsoid extends RenderRegion
 	protected void drawYZPlane(LineStyle line)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBufferBuilder();
+		BufferBuilder buf = tessellator.getBuffer();
 
 		int xRad = (int)Math.floor(this.radii.getX());
 		for (int xBlock = -xRad; xBlock < xRad; xBlock++)
@@ -129,7 +129,7 @@ public class RenderEllipsoid extends RenderRegion
 	protected void drawXYPlane(LineStyle line)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBufferBuilder();
+		BufferBuilder buf = tessellator.getBuffer();
 
 		int zRad = (int)Math.floor(this.radii.getZ());
 		for (int zBlock = -zRad; zBlock < zRad; zBlock++)

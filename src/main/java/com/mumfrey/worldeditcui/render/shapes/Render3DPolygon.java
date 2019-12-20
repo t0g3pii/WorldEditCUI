@@ -29,7 +29,7 @@ public class Render3DPolygon extends RenderRegion
 	public void render(Vector3 cameraPos)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBufferBuilder();
+		BufferBuilder buf = tessellator.getBuffer();
 		
 		for (LineStyle line : this.style.getLines())
 		{

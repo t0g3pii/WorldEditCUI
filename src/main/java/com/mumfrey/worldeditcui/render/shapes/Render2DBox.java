@@ -36,7 +36,7 @@ public class Render2DBox extends RenderRegion
 	public void render(Vector3 cameraPos)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBufferBuilder();
+		BufferBuilder buf = tessellator.getBuffer();
 		double off = 0.03 - cameraPos.getY();
 		for (LineStyle line : this.style.getLines())
 		{

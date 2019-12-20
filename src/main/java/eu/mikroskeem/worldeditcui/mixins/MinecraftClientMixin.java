@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MinecraftClientMixin implements IMinecraftClient {
     @Shadow @Final private RenderTickCounter renderTickCounter;
 
-    @Inject(method = "init", at = @At(value = "TAIL"))
+    @Inject(method = "<init>", at = @At(value = "TAIL"))
     private void onInitDone(CallbackInfo ci) {
         FabricModWorldEditCUI.getInstance().onGameInitDone((MinecraftClient) (Object) this);
     }
