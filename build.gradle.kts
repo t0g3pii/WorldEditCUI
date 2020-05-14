@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.mumfrey.worldeditcui"
-version = "1.15.2_02"
+version = "1.15.2_03"
 
 val minecraftVersion = "1.15.2"
 val yarnVersion = "1.15.2+build.15:v2"
