@@ -3,6 +3,7 @@ package eu.mikroskeem.worldeditcui.gui;
 import com.mumfrey.worldeditcui.config.CUIConfiguration;
 import com.mumfrey.worldeditcui.config.Colour;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
+import eu.mikroskeem.worldeditcui.gui.FabricCUIConfigPanel.TextFieldWidgetTemp;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;

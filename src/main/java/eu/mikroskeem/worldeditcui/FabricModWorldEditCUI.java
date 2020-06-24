@@ -16,8 +16,8 @@ import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 import net.minecraft.world.World;
 import org.lwjgl.glfw.GLFW;
 

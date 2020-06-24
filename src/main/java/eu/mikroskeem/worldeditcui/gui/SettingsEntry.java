@@ -37,12 +37,12 @@ public class SettingsEntry extends AlwaysSelectedEntryListWidget.Entry<SettingsE
         while(tok.hasMoreElements()) {
             String word = tok.nextToken();
 
-            if(lineLength + this.client.textRenderer.getStringWidth(word) + this.client.textRenderer.getStringWidth(" ") > maxNameWidth) {
+            if(lineLength + this.client.textRenderer.getWidth(word) + this.client.textRenderer.getWidth(" ") > maxNameWidth) {
                 outputName.append("\n");
                 lineLength = 0;
             }
             outputName.append(word).append(" ");
-            lineLength += this.client.textRenderer.getStringWidth(word);
+            lineLength += this.client.textRenderer.getWidth(word);
         }
         tok = new StringTokenizer(outputName.toString(), "\n");
         int quarterEntries = tok.countTokens() >= 2 ? tok.countTokens() / 2 : 0;
