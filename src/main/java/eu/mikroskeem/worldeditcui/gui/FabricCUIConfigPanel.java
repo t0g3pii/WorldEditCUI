@@ -2,14 +2,15 @@ package eu.mikroskeem.worldeditcui.gui;
 
 import com.mumfrey.worldeditcui.config.CUIConfiguration;
 import com.mumfrey.worldeditcui.config.Colour;
-import com.mumfrey.worldeditcui.render.ConfiguredColour;
-import eu.mikroskeem.worldeditcui.gui.FabricCUIConfigPanel.TextFieldWidgetTemp;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.Set;
@@ -21,6 +22,9 @@ import java.util.function.Supplier;
  */
 public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
 
+    private static final Text TRUE = new LiteralText("true").styled(s -> s.withFormatting(Formatting.DARK_GREEN));
+    private static final Text FALSE = new LiteralText("false").styled(s -> s.withFormatting(Formatting.DARK_RED));
+
     private final Screen parent;
     private final Set<String> options;
     private final CUIConfiguration configuration;
@@ -28,7 +32,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
     private SettingsWidget configList;
     private AbstractButtonWidget done;
 
-    private final String screenTitle;
+    private final Text screenTitle;
 
     private static final int BUTTONHEIGHT = 20;
 
@@ -37,7 +41,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
         this.parent = parent;
         this.configuration = configuration;
         this.options = this.configuration.getConfigArray().keySet();
-        this.screenTitle = I18n.translate("worldeditcui.options.title");
+        this.screenTitle = new TranslatableText("worldeditcui.options.title");
     }
 
     @Override
@@ -49,9 +53,9 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
 
     @Override
     protected void init() {
-        configList = new SettingsWidget(this.minecraft, this.width - 8, this.height, 48 + 19, this.height - 36, 25, this.configuration, this);
+        configList = new SettingsWidget(this.client, this.width - 8, this.height, 48 + 19, this.height - 36, 25, this.configuration, this);
         configList.setLeftPos(0);
-        done = this.addButton(new AbstractButtonWidget(this.width / 2 - 205, this.height - 27, 70, 20, I18n.translate("worldeditcui.options.done")) {
+        done = this.addButton(new AbstractButtonWidget(this.width / 2 - 205, this.height - 27, 70, 20, new TranslatableText("worldeditcui.options.done")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
                 for (AbstractButtonWidget button : buttons) {
@@ -62,8 +66,8 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
                     }
                 }
                 configuration.configChanged();
-                assert minecraft != null;
-                minecraft.openScreen(parent);
+                assert client != null;
+                client.openScreen(parent);
             }
         });
 
@@ -77,7 +81,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
                 LogManager.getLogger().warn("value null, adding nothing");
                 continue;
             } else if(value instanceof Boolean) {
-                element = this.addButton(new AbstractButtonWidget(buttonX, y, 70, BUTTONHEIGHT, ((Boolean) value ? "§2true" : "§4false")) {
+                element = this.addButton(new AbstractButtonWidget(buttonX, y, 70, BUTTONHEIGHT, ((Boolean) value ? TRUE: FALSE)) {
                     @Override
                     public void onClick(double mouseX, double mouseY) {
                         if ((Boolean) (configuration.getConfigArray().get(text))) {
@@ -90,12 +94,12 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
 
                     @Override
                     protected void onFocusedChanged(boolean bl) {
-                        this.setMessage((Boolean) configuration.getConfigArray().get(text) ? "§2true" : "§4false");
+                        this.setMessage((Boolean) configuration.getConfigArray().get(text) ? TRUE : FALSE);
                         super.onFocusedChanged(bl);
                     }
                 });
             } else if(value instanceof Colour) {
-                element = this.addButton(new TextFieldWidgetTemp(font, buttonX, y, 70, BUTTONHEIGHT, ((Colour)value).getHex(), ((Colour)value).getHex()) {
+                element = this.addButton(new TextFieldWidgetTemp(this.textRenderer, buttonX, y, 70, BUTTONHEIGHT, new LiteralText(((Colour)value).getHex()), ((Colour)value).getHex()) {
                     @Override
                     protected void onFocusedChanged(boolean bl) {
                         if (bl) {
@@ -124,7 +128,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
                 LogManager.getLogger().warn("WorldEditCUI has option "+text+" with data type "+value.getClass().getName());
                 continue;
             }
-            this.configList.addEntry(new SettingsEntry(this.configList, (textTemp != null) ? textTemp : text, element, this.addButton(new AbstractButtonWidget(buttonX + 75, y, BUTTONHEIGHT, BUTTONHEIGHT, "") {
+            this.configList.addEntry(new SettingsEntry(this.configList, (textTemp != null) ? textTemp : text, element, this.addButton(new AbstractButtonWidget(buttonX + 75, y, BUTTONHEIGHT, BUTTONHEIGHT, LiteralText.EMPTY) {
                 @Override
                 public void onClick(double mouseX, double mouseY) {
                     configuration.changeValue(text, configuration.getDefaultValue(text));
@@ -132,8 +136,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
                 }
             })));
         }
-
-        this.setInitialFocus(null);
+        this.setFocused(null);
         this.children.add(this.configList);
     }
 
@@ -143,12 +146,12 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float delta) {
-        renderBackground();
-        super.render(mouseX, mouseY, delta);
-        this.configList.render(mouseX, mouseY, delta);
-        drawCenteredString(font, screenTitle, this.configList.getWidth() / 2, BUTTONHEIGHT, 0xFFFFFF);
-        this.done.render(mouseX, mouseY, delta);
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        renderBackground(matrices);
+        super.render(matrices, mouseX, mouseY, delta);
+        this.configList.render(matrices, mouseX, mouseY, delta);
+        drawCenteredText(matrices, this.textRenderer, screenTitle, this.configList.getWidth() / 2, BUTTONHEIGHT, 0xFFFFFF);
+        this.done.render(matrices, mouseX, mouseY, delta);
     }
 
     double getScrollPercent() {
@@ -159,9 +162,9 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
         this.scrollPercent = scrollPercent;
     }
 
-    class TextFieldWidgetTemp extends TextFieldWidget {
+    static class TextFieldWidgetTemp extends TextFieldWidget {
 
-        public TextFieldWidgetTemp(TextRenderer textRenderer, int x, int y, int width, int height, String message, String text) {
+        public TextFieldWidgetTemp(TextRenderer textRenderer, int x, int y, int width, int height, Text message, String text) {
             super(textRenderer, x, y, width, height, message);
             this.setText(text);
         }
