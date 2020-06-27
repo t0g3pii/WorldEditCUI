@@ -17,9 +17,9 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderCylinderBox extends RenderRegion
 {
-	private double radX, radZ;
-	private int minY, maxY;
-	private double centreX, centreZ;
+	private final double radX, radZ;
+	private final int minY, maxY;
+	private final double centreX, centreZ;
 	
 	public RenderCylinderBox(RenderStyle style, PointCube centre, double radX, double radZ, int minY, int maxY)
 	{

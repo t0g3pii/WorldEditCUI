@@ -21,9 +21,9 @@ public class RenderEllipsoid extends RenderRegion
 	protected final static double TAU = Math.PI * 2.0;
 	
 	protected PointCube centre;
-	protected Vector3 radii;
+	private final Vector3 radii;
 	
-	protected double centreX, centreY, centreZ;
+	protected final double centreX, centreY, centreZ;
 	
 	public RenderEllipsoid(RenderStyle style, PointCube centre, Vector3 radii)
 	{
