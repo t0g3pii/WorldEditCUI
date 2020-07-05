@@ -8,8 +8,8 @@ import eu.mikroskeem.worldeditcui.interfaces.IMinecraftClient;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.client.MinecraftClient;
@@ -67,7 +67,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         instance = this;
 
         // Hook into game
-        ClientTickCallback.EVENT.register(this::onTick);
+        ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
         ClientSidePacketRegistry.INSTANCE.register(CHANNEL_WECUI, this::onPluginMessage);
     }
 
