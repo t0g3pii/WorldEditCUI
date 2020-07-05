@@ -21,7 +21,7 @@ Installation
 Compiling
 ---------
 
-Run `_JAVA_OPTS="-Xmx1G" ./gradlew build`
+Run `_JAVA_OPTIONS="-Xmx2G" ./gradlew build`
 
 To import the project into your IDE, see [FabricMC Wiki article](http://fabricmc.net/wiki/tutorial:setup) and start from **Step 3**
 
