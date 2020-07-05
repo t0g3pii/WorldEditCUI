@@ -4,10 +4,11 @@ import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.config.CUIConfiguration;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerChannel;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerWorldRender;
-import eu.mikroskeem.worldeditcui.interfaces.IMinecraftClient;
+import eu.mikroskeem.worldeditcui.mixins.MinecraftClientAccess;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -68,13 +69,14 @@ public final class FabricModWorldEditCUI implements ModInitializer {
 
         // Hook into game
         ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
+        ClientLifecycleEvents.CLIENT_STARTED.register(this::onGameInitDone);
         ClientSidePacketRegistry.INSTANCE.register(CHANNEL_WECUI, this::onPluginMessage);
     }
 
     private void onTick(MinecraftClient mc) {
         CUIConfiguration config = controller.getConfiguration();
         boolean inGame = mc.player != null;
-        boolean clock = ((IMinecraftClient) mc).getRenderTickCounter().tickDelta > 0;
+        boolean clock = ((MinecraftClientAccess) mc).getRenderTickCounter().tickDelta > 0;
 
         if (inGame && mc.currentScreen == null) {
             while (this.keyBindToggleUI.wasPressed()) {
