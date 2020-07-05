@@ -3,20 +3,20 @@ plugins {
     id("fabric-loom") version "0.4-SNAPSHOT"
 }
 
+val minecraftVersion = "1.16.1"
+val yarnVersion = "$minecraftVersion+build.20:v2"
+val fabricLoaderVersion = "0.8.9+build.203"
+val fabricApiVersion = "0.14.1+build.372-1.16"
+val modmenuVersion = "1.12.2+build.17"
+
 group = "com.mumfrey.worldeditcui"
-version = "1.16.1_01"
+version = "$minecraftVersion+01"
 
 repositories {
     maven(url = "https://maven.sk89q.com/repo") {
         name = "sk89q"
     }
 }
-
-val minecraftVersion = "1.16.1"
-val yarnVersion = "$minecraftVersion+build.20:v2"
-val fabricLoaderVersion = "0.8.9+build.203"
-val fabricApiVersion = "0.14.1+build.372-1.16"
-val modmenuVersion = "1.12.2+build.17"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
