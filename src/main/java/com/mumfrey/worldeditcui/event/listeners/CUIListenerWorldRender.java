@@ -1,16 +1,16 @@
 package com.mumfrey.worldeditcui.event.listeners;
 
-import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
 import org.lwjgl.opengl.GL11;
 
 /**
  * Listener for WorldRenderEvent
- * 
+ *
  * @author lahwran
  * @author yetanotherx
  * @author Adam Mummery-Smith
@@ -18,17 +18,24 @@ import org.lwjgl.opengl.GL11;
 public class CUIListenerWorldRender
 {
 	private WorldEditCUI controller;
-	
+
 	private MinecraftClient minecraft;
-	
+
 	public CUIListenerWorldRender(WorldEditCUI controller, MinecraftClient minecraft)
 	{
 		this.controller = controller;
 		this.minecraft = minecraft;
 	}
-	
+
 	public void onRender(float partialTicks)
 	{
+		Framebuffer buffer = null;
+		if(MinecraftClient.isFabulousGraphicsOrBetter()) {
+			buffer = MinecraftClient.getInstance().worldRenderer.getTranslucentFramebuffer();
+		}
+		if(buffer != null) {
+			buffer.beginWrite(false);
+		}
 		try
 		{
 			RenderSystem.glMultiTexCoord2f(33985, 240.0F, 240.0F);
@@ -41,7 +48,7 @@ public class CUIListenerWorldRender
 			RenderSystem.depthMask(false);
 			RenderSystem.pushMatrix();
 			RenderSystem.disableFog();
-			
+
 			try
 			{
 				Vector3 cameraPos = new Vector3(this.minecraft.gameRenderer.getCamera().getPos());
@@ -59,7 +66,11 @@ public class CUIListenerWorldRender
 			RenderSystem.enableTexture();
 			RenderSystem.disableBlend();
 			RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+		} catch (Exception ex) {
+		} finally {
+			if (buffer != null) {
+				buffer.endWrite();
+			}
 		}
-		catch (Exception ex) {}
 	}
 }

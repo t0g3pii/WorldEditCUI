@@ -21,8 +21,8 @@ import java.util.List;
  */
 public class Render2DBox extends RenderRegion
 {
-	private List<PointRectangle> points;
-	private int min, max;
+	private final List<PointRectangle> points;
+	private final int min, max;
 	
 	public Render2DBox(RenderStyle style, List<PointRectangle> points, int min, int max)
 	{

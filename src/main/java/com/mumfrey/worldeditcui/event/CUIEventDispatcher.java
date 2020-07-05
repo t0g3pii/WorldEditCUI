@@ -15,7 +15,6 @@ public class CUIEventDispatcher implements InitialisationFactory
 {
 	private WorldEditCUI controller;
 	
-	private Map<String, Constructor<? extends CUIEvent>> eventConstructors = new HashMap<String, Constructor<? extends CUIEvent>>();
 
 	public CUIEventDispatcher(WorldEditCUI controller)
 	{
@@ -25,35 +24,20 @@ public class CUIEventDispatcher implements InitialisationFactory
 	@Override
 	public void initialise() throws InitialisationException
 	{
-		for (CUIEventType eventType : CUIEventType.values())
-		{
-			try
-			{
-				Class<? extends CUIEvent> eventClass = eventType.getEventClass();
-				Constructor<? extends CUIEvent> ctor = eventClass.getDeclaredConstructor(CUIEventArgs.class);
-
-				this.eventConstructors.put(eventType.getKey(), ctor);
-			}
-			catch (NoSuchMethodException ex)
-			{
-				ex.printStackTrace();
-				this.controller.getDebugger().debug("Error getting constructor for event " + eventType.getKey());
-			}
-		}
 	}
 
 	public void raiseEvent(CUIEventArgs eventArgs)
 	{
 		try
 		{
-			Constructor<? extends CUIEvent> eventCtor = this.eventConstructors.get(eventArgs.getType());
-			if (eventCtor == null)
+			final CUIEventType type = CUIEventType.named(eventArgs.getType());
+			if (type == null)
 			{
 				this.controller.getDebugger().debug("No such event " + eventArgs.getType());
 				return;
 			}
 			
-			CUIEvent event = eventCtor.newInstance(eventArgs);
+			CUIEvent event = type.make(eventArgs);
 			event.prepare();
 			
 			String response = event.raise();

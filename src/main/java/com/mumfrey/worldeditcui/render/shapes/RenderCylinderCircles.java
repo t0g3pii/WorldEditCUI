@@ -17,12 +17,12 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderCylinderCircles extends RenderRegion
 {
-	protected double radX = 0;
-	protected double radZ = 0;
-	protected int minY;
-	protected int maxY;
-	protected double centreX;
-	protected double centreZ;
+	private final double radX;
+	private final double radZ;
+	private final int minY;
+	private final int maxY;
+	private final double centreX;
+	private final double centreZ;
 	
 	public RenderCylinderCircles(RenderStyle style, PointCube centre, double radX, double radZ, int minY, int maxY)
 	{

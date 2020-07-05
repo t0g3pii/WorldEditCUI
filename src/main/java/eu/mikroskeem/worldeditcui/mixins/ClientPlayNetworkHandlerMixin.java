@@ -13,11 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(value = ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
-    @Inject(method = "onGameJoin", at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
-            shift = At.Shift.AFTER
-    ))
+    @Inject(method = "onGameJoin", at = @At(value = "TAIL"))
     private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
         FabricModWorldEditCUI.getInstance().onJoinGame();
     }

@@ -480,8 +480,7 @@ public class Vector2 implements Comparable<Vector2>
 	/**
 	 * Returns a Vector2 with random X and Y values (between 0 and 1)
 	 * 
-	 * @param o
-	 * @return 
+	 * @return new vector
 	 */
 	public static Vector2 rand()
 	{

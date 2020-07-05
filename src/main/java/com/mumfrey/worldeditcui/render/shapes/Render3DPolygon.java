@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL11;
  */
 public class Render3DPolygon extends RenderRegion
 {
-	private Vector3[] vertices;
+	private final Vector3[] vertices;
 	
 	public Render3DPolygon(RenderStyle style, Vector3... vertices)
 	{

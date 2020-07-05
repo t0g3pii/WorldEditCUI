@@ -1,20 +1,21 @@
 package eu.mikroskeem.worldeditcui;
 
-import com.google.common.base.Charsets;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.config.CUIConfiguration;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerChannel;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerWorldRender;
-import eu.mikroskeem.worldeditcui.interfaces.IMinecraftClient;
+import eu.mikroskeem.worldeditcui.mixins.MinecraftClientAccess;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
-import net.fabricmc.fabric.api.event.client.ClientTickCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
@@ -30,15 +31,15 @@ import java.nio.charset.StandardCharsets;
  */
 public final class FabricModWorldEditCUI implements ModInitializer {
     private static final int DELAYED_HELO_TICKS = 10;
+
+    public static final String MOD_ID = "worldeditcui";
     private static FabricModWorldEditCUI instance;
     public static final Identifier CHANNEL_WECUI = new Identifier("worldedit", "cui");
 
-    private final Identifier keybindToggleUIId = new Identifier("worldeditcui", "toggle");
-    private final Identifier keybindClearSelId = new Identifier("worldeditcui", "clear");
-    private final Identifier keybindChunkBorderId = new Identifier("worldeditcui", "chunk");
-    private final FabricKeyBinding keyBindToggleUI = FabricKeyBinding.Builder.create(keybindToggleUIId, InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "key.categories.worldeditcui").build();
-    private final FabricKeyBinding keyBindClearSel = FabricKeyBinding.Builder.create(keybindClearSelId, InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "key.categories.worldeditcui").build();
-    private final FabricKeyBinding keyBindChunkBorder = FabricKeyBinding.Builder.create(keybindChunkBorderId, InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "key.categories.worldeditcui").build();
+    private static final String KEYBIND_CATEGORY_WECUI = "key.categories.worldeditcui";
+    private final KeyBinding keyBindToggleUI = key("toggle", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN);
+    private final KeyBinding keyBindClearSel = key("clear", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN);
+    private final KeyBinding keyBindChunkBorder = key("chunk", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN);
 
     private WorldEditCUI controller;
     private CUIListenerWorldRender worldRenderListener;
@@ -51,25 +52,31 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     private boolean alwaysOnTop = false;
     private int delayedHelo = 0;
 
+    /**
+     * Register a key binding
+     * @param name id, will be used as a localization key under {@code key.worldeditcui.<name>}
+     * @param type type
+     * @param code default value
+     * @return new, registered keybinding in the mod category
+     */
+    private static KeyBinding key(final String name, final InputUtil.Type type, final int code) {
+        return KeyBindingHelper.registerKeyBinding(new KeyBinding("key." + MOD_ID + '.' + name, type, code, KEYBIND_CATEGORY_WECUI));
+    }
+
     @Override
     public void onInitialize() {
         instance = this;
 
-        // Register keybindings
-        KeyBindingRegistry.INSTANCE.addCategory("key.categories.worldeditcui");
-        KeyBindingRegistry.INSTANCE.register(keyBindToggleUI);
-        KeyBindingRegistry.INSTANCE.register(keyBindClearSel);
-        KeyBindingRegistry.INSTANCE.register(keyBindChunkBorder);
-
         // Hook into game
-        ClientTickCallback.EVENT.register(this::onTick);
+        ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
+        ClientLifecycleEvents.CLIENT_STARTED.register(this::onGameInitDone);
         ClientSidePacketRegistry.INSTANCE.register(CHANNEL_WECUI, this::onPluginMessage);
     }
 
     private void onTick(MinecraftClient mc) {
         CUIConfiguration config = controller.getConfiguration();
         boolean inGame = mc.player != null;
-        boolean clock = ((IMinecraftClient) mc).getRenderTickCounter().ticksThisFrame > 0;
+        boolean clock = ((MinecraftClientAccess) mc).getRenderTickCounter().tickDelta > 0;
 
         if (inGame && mc.currentScreen == null) {
             while (this.keyBindToggleUI.wasPressed()) {
@@ -124,14 +131,14 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         try {
             int readableBytes = data.readableBytes();
             if (readableBytes > 0) {
-                byte[] payload = new byte[readableBytes];
-                data.readBytes(payload);
-                String stringPayload = new String(payload, StandardCharsets.UTF_8);
+                String stringPayload = data.toString(0, data.readableBytes(), StandardCharsets.UTF_8);
                 ctx.getTaskQueue().execute(() -> channelListener.onMessage(stringPayload));
             } else {
                 getController().getDebugger().debug("Warning, invalid (zero length) payload received from server");
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ex) {
+            getController().getDebugger().info("Error decoding payload from server", ex);
+        }
     }
 
     public void onGameInitDone(MinecraftClient client) {
@@ -160,10 +167,9 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     }
 
     private void helo() {
-        PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
         String message = "v|" + WorldEditCUI.PROTOCOL_VERSION;
-        buffer.writeBytes(message.getBytes(Charsets.UTF_8));
-        ClientSidePacketRegistry.INSTANCE.sendToServer(CHANNEL_WECUI, buffer);
+        ByteBuf buffer = Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8));
+        ClientSidePacketRegistry.INSTANCE.sendToServer(CHANNEL_WECUI, new PacketByteBuf(buffer));
     }
 
     private boolean isPressed(MinecraftClient client, int keycode) {

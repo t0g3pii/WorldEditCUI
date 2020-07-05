@@ -52,7 +52,7 @@ public class CUIEventSelection extends CUIEvent
 		}
 		
 		this.controller.setSelection(id, selection);
-		this.controller.getDebugger().debug("Received selection event, initalizing new region instance.");
+		this.controller.getDebugger().debug("Received selection event, initializing new region instance.");
 		
 		return null;
 	}
