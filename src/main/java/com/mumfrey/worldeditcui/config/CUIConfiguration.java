@@ -16,7 +16,6 @@ import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -39,20 +38,20 @@ public final class CUIConfiguration implements InitialisationFactory
 	private boolean alwaysOnTop = false;
 	private boolean clearAllOnKey = false;
 
-	private Colour cuboidGridColor		= ConfiguredColour.CUBOIDBOX.getDefault();
-	private Colour cuboidEdgeColor		= ConfiguredColour.CUBOIDGRID.getDefault();
-	private Colour cuboidFirstPointColor  = ConfiguredColour.CUBOIDPOINT1.getDefault();
-	private Colour cuboidSecondPointColor = ConfiguredColour.CUBOIDPOINT2.getDefault();
-	private Colour polyGridColor		  = ConfiguredColour.POLYGRID.getDefault();
-	private Colour polyEdgeColor		  = ConfiguredColour.POLYBOX.getDefault();
-	private Colour polyPointColor		 = ConfiguredColour.POLYPOINT.getDefault();
-	private Colour ellipsoidGridColor	 = ConfiguredColour.ELLIPSOIDGRID.getDefault();
-	private Colour ellipsoidPointColor	= ConfiguredColour.ELLIPSOIDCENTRE.getDefault();
-	private Colour cylinderGridColor	  = ConfiguredColour.CYLINDERGRID.getDefault();
-	private Colour cylinderEdgeColor	  = ConfiguredColour.CYLINDERBOX.getDefault();
-	private Colour cylinderPointColor	 = ConfiguredColour.CYLINDERCENTRE.getDefault();
-	private Colour chunkBoundaryColour	= ConfiguredColour.CHUNKBOUNDARY.getDefault();
-	private Colour chunkGridColour		= ConfiguredColour.CHUNKGRID.getDefault();
+    private Colour cuboidGridColor = ConfiguredColour.CUBOIDBOX.getDefault();
+    private Colour cuboidEdgeColor = ConfiguredColour.CUBOIDGRID.getDefault();
+    private Colour cuboidFirstPointColor = ConfiguredColour.CUBOIDPOINT1.getDefault();
+    private Colour cuboidSecondPointColor = ConfiguredColour.CUBOIDPOINT2.getDefault();
+    private Colour polyGridColor = ConfiguredColour.POLYGRID.getDefault();
+    private Colour polyEdgeColor = ConfiguredColour.POLYBOX.getDefault();
+    private Colour polyPointColor = ConfiguredColour.POLYPOINT.getDefault();
+    private Colour ellipsoidGridColor = ConfiguredColour.ELLIPSOIDGRID.getDefault();
+    private Colour ellipsoidPointColor = ConfiguredColour.ELLIPSOIDCENTRE.getDefault();
+    private Colour cylinderGridColor = ConfiguredColour.CYLINDERGRID.getDefault();
+    private Colour cylinderEdgeColor = ConfiguredColour.CYLINDERBOX.getDefault();
+    private Colour cylinderPointColor = ConfiguredColour.CYLINDERCENTRE.getDefault();
+    private Colour chunkBoundaryColour = ConfiguredColour.CHUNKBOUNDARY.getDefault();
+    private Colour chunkGridColour = ConfiguredColour.CHUNKGRID.getDefault();
 
 	private static transient Map<String, Object> configArray = new LinkedHashMap<>();
 

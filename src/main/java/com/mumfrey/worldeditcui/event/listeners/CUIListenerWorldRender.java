@@ -34,8 +34,8 @@ public class CUIListenerWorldRender
 			buffer = MinecraftClient.getInstance().worldRenderer.getTranslucentFramebuffer();
 		}
 		if(buffer != null) {
-		    buffer.beginWrite(false);
-        }
+			buffer.beginWrite(false);
+		}
 		try
 		{
 			RenderSystem.glMultiTexCoord2f(33985, 240.0F, 240.0F);

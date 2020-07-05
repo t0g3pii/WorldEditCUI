@@ -7,7 +7,7 @@ group = "com.mumfrey.worldeditcui"
 version = "1.16.1_01"
 
 repositories {
-    maven(url="https://maven.sk89q.com/repo") {
+    maven(url = "https://maven.sk89q.com/repo") {
         name = "sk89q"
     }
 }
