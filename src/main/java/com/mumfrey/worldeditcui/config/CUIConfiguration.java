@@ -2,23 +2,27 @@ package com.mumfrey.worldeditcui.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
 import com.mumfrey.worldeditcui.InitialisationFactory;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.resource.language.I18n;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * Stores and reads WorldEditCUI settings
- * 
+ *
  * @author yetanotherx
  * @author Adam Mummery-Smith
  * @author Jesús Sanz - Modified to work with the config GUI implementation
@@ -29,29 +33,29 @@ public final class CUIConfiguration implements InitialisationFactory
 
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-	@Expose private boolean debugMode = false;
-	@Expose private boolean ignoreUpdates = false;
-	@Expose private boolean promiscuous = false;
-	@Expose private boolean alwaysOnTop = false;
-	@Expose private boolean clearAllOnKey = false;
-	
-	@Expose private Colour cuboidGridColor        = ConfiguredColour.CUBOIDBOX.getDefault();
-	@Expose private Colour cuboidEdgeColor        = ConfiguredColour.CUBOIDGRID.getDefault();
-	@Expose private Colour cuboidFirstPointColor  = ConfiguredColour.CUBOIDPOINT1.getDefault();
-	@Expose private Colour cuboidSecondPointColor = ConfiguredColour.CUBOIDPOINT2.getDefault();
-	@Expose private Colour polyGridColor          = ConfiguredColour.POLYGRID.getDefault();
-	@Expose private Colour polyEdgeColor          = ConfiguredColour.POLYBOX.getDefault();
-	@Expose private Colour polyPointColor         = ConfiguredColour.POLYPOINT.getDefault();
-	@Expose private Colour ellipsoidGridColor     = ConfiguredColour.ELLIPSOIDGRID.getDefault();
-	@Expose private Colour ellipsoidPointColor    = ConfiguredColour.ELLIPSOIDCENTRE.getDefault();
-	@Expose private Colour cylinderGridColor      = ConfiguredColour.CYLINDERGRID.getDefault();
-	@Expose private Colour cylinderEdgeColor      = ConfiguredColour.CYLINDERBOX.getDefault();
-	@Expose private Colour cylinderPointColor     = ConfiguredColour.CYLINDERCENTRE.getDefault();
-	@Expose private Colour chunkBoundaryColour    = ConfiguredColour.CHUNKBOUNDARY.getDefault();
-	@Expose private Colour chunkGridColour        = ConfiguredColour.CHUNKGRID.getDefault();
+	private boolean debugMode = false;
+	private boolean ignoreUpdates = false;
+	private boolean promiscuous = false;
+	private boolean alwaysOnTop = false;
+	private boolean clearAllOnKey = false;
 
-	private static Map<String, Object> configArray = new HashMap<String, Object>();
-	
+	private Colour cuboidGridColor		= ConfiguredColour.CUBOIDBOX.getDefault();
+	private Colour cuboidEdgeColor		= ConfiguredColour.CUBOIDGRID.getDefault();
+	private Colour cuboidFirstPointColor  = ConfiguredColour.CUBOIDPOINT1.getDefault();
+	private Colour cuboidSecondPointColor = ConfiguredColour.CUBOIDPOINT2.getDefault();
+	private Colour polyGridColor		  = ConfiguredColour.POLYGRID.getDefault();
+	private Colour polyEdgeColor		  = ConfiguredColour.POLYBOX.getDefault();
+	private Colour polyPointColor		 = ConfiguredColour.POLYPOINT.getDefault();
+	private Colour ellipsoidGridColor	 = ConfiguredColour.ELLIPSOIDGRID.getDefault();
+	private Colour ellipsoidPointColor	= ConfiguredColour.ELLIPSOIDCENTRE.getDefault();
+	private Colour cylinderGridColor	  = ConfiguredColour.CYLINDERGRID.getDefault();
+	private Colour cylinderEdgeColor	  = ConfiguredColour.CYLINDERBOX.getDefault();
+	private Colour cylinderPointColor	 = ConfiguredColour.CYLINDERCENTRE.getDefault();
+	private Colour chunkBoundaryColour	= ConfiguredColour.CHUNKBOUNDARY.getDefault();
+	private Colour chunkGridColour		= ConfiguredColour.CHUNKGRID.getDefault();
+
+	private static transient Map<String, Object> configArray = new LinkedHashMap<>();
+
 	/**
 	 * Copies the default config file to the proper directory if it does not
 	 * exist. It then reads the file and sets each variable to the proper value.
@@ -77,100 +81,100 @@ public final class CUIConfiguration implements InitialisationFactory
 		{
 			ex.printStackTrace();
 		}
-		
+
 		this.save();
 	}
-	
+
 	public boolean isDebugMode()
 	{
 		return this.debugMode;
 	}
-	
+
 	public boolean ignoreUpdates()
 	{
 		return this.ignoreUpdates;
 	}
-	
+
 	public boolean isPromiscuous()
 	{
 		return this.promiscuous;
 	}
-	
+
 	public void setPromiscuous(boolean promiscuous)
 	{
 		this.promiscuous = promiscuous;
 	}
-	
+
 	public boolean isAlwaysOnTop()
 	{
 		return this.alwaysOnTop;
 	}
-	
+
 	public void setAlwaysOnTop(boolean alwaysOnTop)
 	{
 		this.alwaysOnTop = alwaysOnTop;
 	}
-	
+
 	public boolean isClearAllOnKey()
 	{
 		return this.clearAllOnKey;
 	}
-	
+
 	public void setClearAllOnKey(boolean clearAllOnKey)
 	{
 		this.clearAllOnKey = clearAllOnKey;
 	}
 
+	private static File getConfigFile()
+	{
+		return new File(FabricLoader.getInstance().getConfigDirectory(), CUIConfiguration.CONFIG_FILE_NAME);
+	}
+
 	public static CUIConfiguration create()
 	{
-		File jsonFile = new File(FabricLoader.getInstance().getConfigDirectory(), CUIConfiguration.CONFIG_FILE_NAME);
+		File jsonFile = getConfigFile();
 
+		CUIConfiguration config = null;
 		if (jsonFile.exists())
 		{
-			FileReader fileReader = null;
-
-			try
+			try (Reader fileReader = new InputStreamReader(new FileInputStream(jsonFile), StandardCharsets.UTF_8))
 			{
-				fileReader = new FileReader(jsonFile);
-				CUIConfiguration config = CUIConfiguration.GSON.fromJson(fileReader, CUIConfiguration.class);
-				configArray.put("debugMode", config.debugMode);
-				configArray.put("ignoreUpdates", config.ignoreUpdates);
-				configArray.put("promiscuous", config.promiscuous);
-				configArray.put("alwaysOnTop", config.alwaysOnTop);
-				configArray.put("clearAllOnKey", config.clearAllOnKey);
-
-				configArray.put("cuboidGridColor", config.cuboidGridColor);
-				configArray.put("cuboidEdgeColor", config.cuboidEdgeColor);
-				configArray.put("cuboidFirstPointColor", config.cuboidFirstPointColor);
-				configArray.put("cuboidSecondPointColor", config.cuboidSecondPointColor);
-				configArray.put("polyGridColor", config.polyGridColor);
-				configArray.put("polyEdgeColor", config.polyEdgeColor);
-				configArray.put("polyPointColor", config.polyPointColor);
-				configArray.put("ellipsoidGridColor", config.ellipsoidGridColor);
-				configArray.put("ellipsoidPointColor", config.ellipsoidPointColor);
-				configArray.put("cylinderGridColor", config.cylinderGridColor);
-				configArray.put("cylinderEdgeColor", config.cylinderEdgeColor);
-				configArray.put("cylinderPointColor", config.cylinderPointColor);
-				configArray.put("chunkBoundaryColour", config.chunkBoundaryColour);
-				configArray.put("chunkGridColour", config.chunkGridColour);
-
-				return config;
+				config = CUIConfiguration.GSON.fromJson(fileReader, CUIConfiguration.class);
 			}
 			catch (Exception ex)
 			{
 				ex.printStackTrace();
 			}
-			finally
-			{
-				try
-				{
-					if (fileReader != null) fileReader.close();
-				}
-				catch (IOException ex) {}
-			}
 		}
 
-		return new CUIConfiguration();
+		if (config == null) // load failed or file didn't exist
+		{
+			config = new CUIConfiguration();
+		}
+
+
+		configArray.put("debugMode", config.debugMode);
+		configArray.put("ignoreUpdates", config.ignoreUpdates);
+		configArray.put("promiscuous", config.promiscuous);
+		configArray.put("alwaysOnTop", config.alwaysOnTop);
+		configArray.put("clearAllOnKey", config.clearAllOnKey);
+
+		configArray.put("cuboidGridColor", config.cuboidGridColor);
+		configArray.put("cuboidEdgeColor", config.cuboidEdgeColor);
+		configArray.put("cuboidFirstPointColor", config.cuboidFirstPointColor);
+		configArray.put("cuboidSecondPointColor", config.cuboidSecondPointColor);
+		configArray.put("polyGridColor", config.polyGridColor);
+		configArray.put("polyEdgeColor", config.polyEdgeColor);
+		configArray.put("polyPointColor", config.polyPointColor);
+		configArray.put("ellipsoidGridColor", config.ellipsoidGridColor);
+		configArray.put("ellipsoidPointColor", config.ellipsoidPointColor);
+		configArray.put("cylinderGridColor", config.cylinderGridColor);
+		configArray.put("cylinderEdgeColor", config.cylinderEdgeColor);
+		configArray.put("cylinderPointColor", config.cylinderPointColor);
+		configArray.put("chunkBoundaryColour", config.chunkBoundaryColour);
+		configArray.put("chunkGridColour", config.chunkGridColour);
+
+		return config;
 	}
 
 	public void changeValue(String text, Object value) {
@@ -261,29 +265,13 @@ public final class CUIConfiguration implements InitialisationFactory
 
 	public void save()
 	{
-		File jsonFile = new File(FabricLoader.getInstance().getConfigDirectory(), CUIConfiguration.CONFIG_FILE_NAME);
-		
-		FileWriter fileWriter = null;
-		
-		try
+		try(Writer fileWriter = new OutputStreamWriter(new FileOutputStream(getConfigFile()), StandardCharsets.UTF_8))
 		{
-			fileWriter = new FileWriter(jsonFile);
 			CUIConfiguration.GSON.toJson(this, fileWriter);
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				if (fileWriter != null) fileWriter.close();
-			}
-			catch (IOException ex)
-			{
-				ex.printStackTrace();
-			}
 		}
 	}
 }
