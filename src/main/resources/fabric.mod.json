@@ -33,6 +33,9 @@
     "fabric-networking-v0": "^0.1.0",
     "fabric-lifecycle-events-v1": "^1.0.0"
   },
+  "suggests": {
+    "worldedit": ">=7.2.0"
+  },
   "custom": {
     "modmenu:clientsideOnly": true
   }
