@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderChunkBoundary extends RenderRegion
 {
 	private final MinecraftClient mc;
-	private Render3DGrid grid;
+	private final Render3DGrid grid;
 	
 	public RenderChunkBoundary(RenderStyle boundaryStyle, RenderStyle gridStyle, MinecraftClient minecraft)
 	{

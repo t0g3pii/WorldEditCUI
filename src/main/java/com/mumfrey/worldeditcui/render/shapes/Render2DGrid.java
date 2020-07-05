@@ -21,8 +21,8 @@ import java.util.List;
  */
 public class Render2DGrid extends RenderRegion
 {
-	private List<PointRectangle> points;
-	private int min, max;
+	private final List<PointRectangle> points;
+	private final int min, max;
 	
 	public Render2DGrid(RenderStyle style, List<PointRectangle> points, int min, int max)
 	{

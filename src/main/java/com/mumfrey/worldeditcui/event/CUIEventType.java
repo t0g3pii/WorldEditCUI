@@ -11,6 +11,10 @@ import com.mumfrey.worldeditcui.event.cui.CUIEventPolygon;
 import com.mumfrey.worldeditcui.event.cui.CUIEventSelection;
 import com.mumfrey.worldeditcui.event.cui.CUIEventUpdate;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
 /**
  * Event type enum for CUI events. Also stores class, arguments, and key for each value.
  * 
@@ -19,46 +23,42 @@ import com.mumfrey.worldeditcui.event.cui.CUIEventUpdate;
  */
 public enum CUIEventType
 {
-	SELECTION(CUIEventSelection.class, "s",    1, 2 ),
-	POINT    (CUIEventPoint3D.class,   "p",    5, 6 ),
-	POINT2D  (CUIEventPoint2D.class,   "p2",   4, 5 ),
-	ELLIPSOID(CUIEventEllipsoid.class, "e",    4    ),
-	CYLINDER (CUIEventCylinder.class,  "cyl",  5    ),
-	MINMAX   (CUIEventBounds.class,    "mm",   2    ),
-	UPDATE   (CUIEventUpdate.class,    "u",    1    ),
-	POLYGON  (CUIEventPolygon.class,   "poly", 3, 99),
-	COLOUR   (CUIEventColour.class,    "col",  4    ),
-	GRID     (CUIEventGrid.class,      "grid", 1, 2 );
-	
-	private final Class<? extends CUIEvent> eventClass;
+	SELECTION(CUIEventSelection::new, "Selection", "s", 1, 2),
+	POINT(CUIEventPoint3D::new, "Point3D", "p", 5, 6),
+	POINT2D(CUIEventPoint2D::new, "Point2D", "p2", 4, 5),
+	ELLIPSOID(CUIEventEllipsoid::new, "Ellipsoid", "e", 4),
+	CYLINDER(CUIEventCylinder::new, "Cylinder", "cyl", 5),
+	MINMAX(CUIEventBounds::new, "Bounds", "mm", 2),
+	UPDATE(CUIEventUpdate::new, "Update", "u", 1),
+	POLYGON(CUIEventPolygon::new, "Polygon", "poly", 3, 99),
+	COLOUR(CUIEventColour::new, "Colour", "col", 4),
+	GRID(CUIEventGrid::new, "Grid", "grid", 1, 2);
+
+
+	private final Function<CUIEventArgs, CUIEvent> maker;
 	private final String key;
 	private final String name;
 	private final int minParams;
 	private final int maxParams;
 	
-	private CUIEventType(Class<? extends CUIEvent> eventClass, String key, int minParams, int maxParams)
+	private CUIEventType(Function<CUIEventArgs, CUIEvent> maker, String name, String key, int minParams, int maxParams)
 	{
-		this.eventClass = eventClass;
+		this.maker = maker;
+		this.name = name;
 		this.key = key;
-		this.name = eventClass.getSimpleName().substring(8);
 		this.minParams = minParams;
 		this.maxParams = maxParams;
 	}
 	
-	private CUIEventType(Class<? extends CUIEvent> eventClass, String key, int paramCount)
+	private CUIEventType(Function<CUIEventArgs, CUIEvent> maker, String name, String key, int paramCount)
 	{
-		this.eventClass = eventClass;
-		this.key = key;
-		this.name = eventClass.getSimpleName().substring(8);
-		this.minParams = paramCount;
-		this.maxParams = paramCount;
+		this(maker, name, key, paramCount, paramCount);
 	}
-	
-	public Class<? extends CUIEvent> getEventClass()
-	{
-		return this.eventClass;
+
+	public CUIEvent make(final CUIEventArgs args) {
+		return this.maker.apply(args);
 	}
-	
+
 	public String getKey()
 	{
 		return this.key;
@@ -77,5 +77,24 @@ public enum CUIEventType
 	public int getMinParameters()
 	{
 		return this.minParams;
+	}
+
+	private static final Map<String, CUIEventType> BY_NAME = new HashMap<>();
+
+	static {
+		for(CUIEventType type : values())
+		{
+			BY_NAME.put(type.getKey(), type);
+		}
+	}
+
+	/**
+	 * Get a CUI event type by key.
+	 *
+	 * @param key protocol key
+	 * @return the appropriate event type, or null if none found
+	 */
+	public static CUIEventType named(final String key) {
+		return BY_NAME.get(key);
 	}
 }

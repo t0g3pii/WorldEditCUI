@@ -3,6 +3,7 @@ package eu.mikroskeem.worldeditcui.gui;
 import com.mumfrey.worldeditcui.config.CUIConfiguration;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Objects;
@@ -45,7 +46,7 @@ public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry>
     }
 
     @Override
-    protected void renderList(int x, int y, int mouseX, int mouseY, float delta) {
+    protected void renderList(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float delta) {
         int itemCount = this.getItemCount();
 
         for (int index = 0; index < itemCount; ++index) {
@@ -56,7 +57,7 @@ public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry>
                 SettingsEntry entry = this.getEntry(index);
                 int rowWidth = this.getRowWidth();
                 int entryLeft = this.getRowLeft();
-                entry.render(index, entryTop, entryLeft, rowWidth, entryHeight, mouseX, mouseY, this.isMouseOver(mouseX, mouseY) && Objects.equals(this.getEntryAtPos(mouseX, mouseY), entry), delta);
+                entry.render(matrices,index, entryTop, entryLeft, rowWidth, entryHeight, mouseX, mouseY, this.isMouseOver(mouseX, mouseY) && Objects.equals(this.getEntryAtPos(mouseX, mouseY), entry), delta);
             }
         }
     }
@@ -64,11 +65,11 @@ public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry>
     public final SettingsEntry getEntryAtPos(double x, double y) {
         int int_5 = MathHelper.floor(y - (double) this.top) - this.headerHeight + (int) this.getScrollAmount() - 4;
         int index = int_5 / this.itemHeight;
-        return x < (double) this.getScrollbarPosition() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && int_5 >= 0 && index < this.getItemCount() ? this.children().get(index) : null;
+        return x < (double) this.getScrollbarPositionX() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && int_5 >= 0 && index < this.getItemCount() ? this.children().get(index) : null;
     }
 
     @Override
-    protected int getScrollbarPosition() {
+    protected int getScrollbarPositionX() {
         return this.width - 6;
     }
 
@@ -94,7 +95,7 @@ public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry>
     @Override
     protected void updateScrollingState(double double_1, double double_2, int int_1) {
         super.updateScrollingState(double_1, double_2, int_1);
-        this.scrolling = int_1 == 0 && double_1 >= (double) this.getScrollbarPosition() && double_1 < (double) (this.getScrollbarPosition() + 6);
+        this.scrolling = int_1 == 0 && double_1 >= (double) this.getScrollbarPositionX() && double_1 < (double) (this.getScrollbarPositionX() + 6);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import net.minecraft.client.util.math.MatrixStack;
 
 import java.util.StringTokenizer;
 
@@ -27,7 +28,7 @@ public class SettingsEntry extends AlwaysSelectedEntryListWidget.Entry<SettingsE
     }
 
     @Override
-    public void render(int index, int y, int x, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovering, float delta) {
+    public void render(MatrixStack matrices, int index, int y, int x, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovering, float delta) {
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         String name = keyword;
         int maxNameWidth = rowWidth / 2 - 40;
@@ -37,23 +38,23 @@ public class SettingsEntry extends AlwaysSelectedEntryListWidget.Entry<SettingsE
         while(tok.hasMoreElements()) {
             String word = tok.nextToken();
 
-            if(lineLength + this.client.textRenderer.getStringWidth(word) + this.client.textRenderer.getStringWidth(" ") > maxNameWidth) {
+            if(lineLength + this.client.textRenderer.getWidth(word) + this.client.textRenderer.getWidth(" ") > maxNameWidth) {
                 outputName.append("\n");
                 lineLength = 0;
             }
             outputName.append(word).append(" ");
-            lineLength += this.client.textRenderer.getStringWidth(word);
+            lineLength += this.client.textRenderer.getWidth(word);
         }
         tok = new StringTokenizer(outputName.toString(), "\n");
         int quarterEntries = tok.countTokens() >= 2 ? tok.countTokens() / 2 : 0;
         lineLength = (rowHeight / 2) - quarterEntries * (this.client.textRenderer.fontHeight + 2) - this.client.textRenderer.fontHeight / 2;
         while(tok.hasMoreElements()) {
-            this.client.textRenderer.draw(tok.nextToken(), x + 50, y + lineLength, 0xFFFFFF);
+            this.client.textRenderer.draw(matrices, tok.nextToken(), x + 50, y + lineLength, 0xFFFFFF);
             lineLength += 10;
         }
         this.widgetButton.y = this.resetButton.y = y + 1;
-        this.widgetButton.render(mouseX, mouseY, delta);
-        this.resetButton.render(mouseX, mouseY, delta);
+        this.widgetButton.render(matrices, mouseX, mouseY, delta);
+        this.resetButton.render(matrices,mouseX, mouseY, delta);
     }
 
 }

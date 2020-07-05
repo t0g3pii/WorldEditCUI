@@ -6,7 +6,7 @@
   "mixins": [],
   "client": [
     "ClientPlayNetworkHandlerMixin",
-    "MinecraftClientMixin",
+    "MinecraftClientAccess",
     "WorldRendererMixin"
   ],
   "injectors": {
