@@ -16,6 +16,13 @@ repositories {
     maven(url = "https://maven.sk89q.com/repo") {
         name = "sk89q"
     }
+    maven(url = "https://grondag-repo.appspot.com") {
+        name = "grondag"
+        credentials {
+            username = "guest"
+            password = ""
+        }
+    }
 }
 
 java {
@@ -30,6 +37,8 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     modImplementation("io.github.prospector:modmenu:$modmenuVersion")
     compileOnly("com.google.code.findbugs:jsr305:3.0.2") // compiler will crash without?
+
+    modImplementation("grondag:frex-mc116:3.1+") // for render event
 
     // for development environment
     modRuntime("com.sk89q.worldedit:worldedit-fabric-mc$minecraftVersion:7.2.0-SNAPSHOT") {

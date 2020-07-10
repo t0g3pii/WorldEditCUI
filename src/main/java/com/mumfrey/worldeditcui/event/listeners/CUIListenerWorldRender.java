@@ -5,8 +5,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.Framebuffer;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 /**
  * Listener for WorldRenderEvent
@@ -17,9 +17,9 @@ import org.lwjgl.opengl.GL11;
  */
 public class CUIListenerWorldRender
 {
-	private WorldEditCUI controller;
+	private final WorldEditCUI controller;
 
-	private MinecraftClient minecraft;
+	private final MinecraftClient minecraft;
 
 	public CUIListenerWorldRender(WorldEditCUI controller, MinecraftClient minecraft)
 	{
@@ -29,16 +29,9 @@ public class CUIListenerWorldRender
 
 	public void onRender(float partialTicks)
 	{
-		Framebuffer buffer = null;
-		if(MinecraftClient.isFabulousGraphicsOrBetter()) {
-			buffer = MinecraftClient.getInstance().worldRenderer.getTranslucentFramebuffer();
-		}
-		if(buffer != null) {
-			buffer.beginWrite(false);
-		}
 		try
 		{
-			RenderSystem.glMultiTexCoord2f(33985, 240.0F, 240.0F);
+			RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE1, 240.0F, 240.0F);
 			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			RenderSystem.enableBlend();
 			RenderSystem.enableAlphaTest();
@@ -66,11 +59,8 @@ public class CUIListenerWorldRender
 			RenderSystem.enableTexture();
 			RenderSystem.disableBlend();
 			RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
-		} catch (Exception ex) {
-		} finally {
-			if (buffer != null) {
-				buffer.endWrite();
-			}
+		} catch (Exception ex)
+		{
 		}
 	}
 }
