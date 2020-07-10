@@ -23,6 +23,9 @@
     ],
     "modmenu": [
       "eu.mikroskeem.worldeditcui.gui.ConfigPanelFactory"
+    ],
+    "frex": [
+      "eu.mikroskeem.worldeditcui.FrexRenderHook"
     ]
   },
   "mixins": [

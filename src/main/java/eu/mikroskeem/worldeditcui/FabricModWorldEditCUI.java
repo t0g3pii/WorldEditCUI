@@ -49,11 +49,12 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     private ClientPlayerEntity lastPlayer;
 
     private boolean visible = true;
-    private boolean alwaysOnTop = false;
     private int delayedHelo = 0;
+    private static RenderMode activeRenderMode;
 
     /**
      * Register a key binding
+     *
      * @param name id, will be used as a localization key under {@code key.worldeditcui.<name>}
      * @param type type
      * @param code default value
@@ -61,6 +62,14 @@ public final class FabricModWorldEditCUI implements ModInitializer {
      */
     private static KeyBinding key(final String name, final InputUtil.Type type, final int code) {
         return KeyBindingHelper.registerKeyBinding(new KeyBinding("key." + MOD_ID + '.' + name, type, code, KEYBIND_CATEGORY_WECUI));
+    }
+
+    public static RenderMode getRenderMode() {
+        return activeRenderMode;
+    }
+
+    /* package */ static void setRenderMode(final RenderMode mode) {
+        activeRenderMode = mode;
     }
 
     @Override
@@ -103,7 +112,9 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         }
 
         if (inGame && clock && controller != null) {
-            this.alwaysOnTop = config.isAlwaysOnTop();
+            if (activeRenderMode != RenderMode.FREX_POST_RENDER) {
+                activeRenderMode = config.isAlwaysOnTop() ? RenderMode.ALWAYS_ON_TOP : RenderMode.STANDARD;
+            }
 
             if (mc.world != this.lastWorld || mc.player != this.lastPlayer) {
                 this.lastWorld = mc.world;
@@ -155,13 +166,14 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     }
 
     public void onPostRenderEntities(float partialTicks) {
-        if (this.visible && !this.alwaysOnTop) {
+        if (this.visible && activeRenderMode != RenderMode.ALWAYS_ON_TOP) {
             worldRenderListener.onRender(partialTicks);
         }
     }
 
     public void onPostRender(float partialTicks) {
-        if (this.visible && this.alwaysOnTop) {
+        // TODO: implement this?
+        if (this.visible && activeRenderMode == RenderMode.ALWAYS_ON_TOP) {
             worldRenderListener.onRender(partialTicks);
         }
     }
