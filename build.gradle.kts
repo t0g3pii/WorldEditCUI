@@ -10,7 +10,7 @@ val fabricApiVersion = "0.14.1+build.372-1.16"
 val modmenuVersion = "1.12.2+build.17"
 
 group = "com.mumfrey.worldeditcui"
-version = "$minecraftVersion+01"
+version = "$minecraftVersion+02"
 
 repositories {
     maven(url = "https://maven.sk89q.com/repo") {
