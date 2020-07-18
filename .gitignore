@@ -26,3 +26,6 @@ build/
 
 # Fabric stuff
 run/
+
+# OS X quirks
+.DS_Store
