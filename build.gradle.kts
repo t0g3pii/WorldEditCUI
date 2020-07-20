@@ -13,8 +13,8 @@ group = "com.mumfrey.worldeditcui"
 version = "$minecraftVersion+02"
 
 repositories {
-    maven(url = "https://maven.sk89q.com/repo") {
-        name = "sk89q"
+    maven(url = "https://maven.enginehub.org/repo") {
+        name = "enginehub"
     }
     maven(url = "https://grondag-repo.appspot.com") {
         name = "grondag"
@@ -40,13 +40,7 @@ dependencies {
 
     modImplementation("grondag:frex-mc116:3.1+") // for render event
 
-    // for development environment
-    modRuntime("com.sk89q.worldedit:worldedit-fabric-mc$minecraftVersion:7.2.0-SNAPSHOT") {
-        exclude("com.google.guava")
-        exclude("com.google.code.gson")
-        exclude("it.unimi.dsi")
-        exclude("org.apache.logging.log4j")
-    }
+    modRuntime("com.sk89q.worldedit:worldedit-fabric-mc$minecraftVersion:7.2.0-SNAPSHOT") // for development environment
 }
 
 val processResources by tasks.getting(ProcessResources::class) {
