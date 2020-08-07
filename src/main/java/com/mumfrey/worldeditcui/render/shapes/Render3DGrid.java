@@ -123,7 +123,7 @@ public class Render3DGrid extends RenderRegion
 			buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
 			line.applyColour();
 			
-			for (double y = Math.max(y1, -cullAt); y <= y2 && y <= cullAt; y += this.spacing)
+			for (double y = Math.max(y1, -cullAt) + OFFSET; y <= y2 && y <= cullAt + OFFSET; y += this.spacing)
 			{
 				buf.vertex(x1, y, z2).next();
 				buf.vertex(x2, y, z2).next();

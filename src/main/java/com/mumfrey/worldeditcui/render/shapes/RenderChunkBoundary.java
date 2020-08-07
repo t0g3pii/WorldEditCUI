@@ -127,11 +127,11 @@ public class RenderChunkBoundary extends RenderRegion
 							double zPos = axis == 0 ? zBase - 16 + i : zBase - 16 + (j * 16);
 							if (lastHeight[axis][j] > -1 && height != lastHeight[axis][j])
 							{
-								buf.vertex(xPos, lastHeight[axis][j], zPos).next();
-								buf.vertex(xPos, height, zPos).next();
+								buf.vertex(xPos, lastHeight[axis][j] + OFFSET, zPos).next();
+								buf.vertex(xPos, height + OFFSET, zPos).next();
 							}
-							buf.vertex(xPos, height, zPos).next();
-							buf.vertex(xPos + axis, height, zPos + (1 - axis)).next();
+							buf.vertex(xPos, height + OFFSET, zPos).next();
+							buf.vertex(xPos + axis, height + OFFSET, zPos + (1 - axis)).next();
 							lastHeight[axis][j] = height;
 						}
 					}
