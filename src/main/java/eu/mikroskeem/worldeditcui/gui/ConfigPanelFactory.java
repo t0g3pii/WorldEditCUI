@@ -9,11 +9,6 @@ import io.github.prospector.modmenu.api.ModMenuApi;
  */
 public final class ConfigPanelFactory implements ModMenuApi {
     @Override
-    public String getModId() {
-        return FabricModWorldEditCUI.MOD_ID;
-    }
-
-    @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parent -> new FabricCUIConfigPanel(parent, FabricModWorldEditCUI.getInstance().getController().getConfiguration());
     }
