@@ -3,10 +3,10 @@ plugins {
     id("fabric-loom") version "0.4-SNAPSHOT"
 }
 
-val minecraftVersion = "1.16.2-rc1"
+val minecraftVersion = "1.16.2"
 val yarnVersion = "$minecraftVersion+build.1:v2"
-val fabricLoaderVersion = "0.9.0+build.204"
-val fabricApiVersion = "0.16.4+build.392-1.16"
+val fabricLoaderVersion = "0.9.1+build.205"
+val fabricApiVersion = "0.17.2+build.396-1.16"
 val modmenuVersion = "1.14.6+build.31"
 
 group = "com.mumfrey.worldeditcui"
@@ -37,12 +37,12 @@ dependencies {
     modImplementation("grondag:frex-mc116:3.1+") // for render event
 
     // for development
-    /*modRuntime("com.sk89q.worldedit:worldedit-fabric-mc$minecraftVersion:7.2.0-SNAPSHOT") {
+    modRuntime("com.sk89q.worldedit:worldedit-fabric-mc$minecraftVersion:7.2.0-SNAPSHOT") {
         exclude(group = "com.google.guava")
         exclude(group = "com.google.code.gson")
         exclude(group = "it.unimi.dsi")
         exclude(group = "org.apache.logging.log4j")
-    }*/
+    }
 }
 
 tasks.processResources.configure {
