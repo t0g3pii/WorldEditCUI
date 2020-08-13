@@ -9,6 +9,7 @@ import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -79,15 +80,15 @@ public class Render3DGrid extends RenderRegion
 		
 		if (this.spacing != 1.0)
 		{
-			GlStateManager.enableCull();
+			GlStateManager.disableCull();
 			
 			double[] vertices = {
-					x1, y1, z1, x2, y1, z1, x2, y1, z2, x1, y1, z2, // bottom
-					x1, y2, z1, x2, y2, z1, x2, y2, z2, x1, y2, z2, // top
-					x1, y1, z1, x1, y1, z2, x1, y2, z2, x1, y2, z1, // west
-					x2, y1, z1, x2, y2, z1, x2, y2, z2, x2, y1, z2, // east
-					x1, y1, z1, x1, y2, z1, x2, y2, z1, x2, y1, z1, // north
-					x1, y1, z2, x2, y1, z2, x2, y2, z2, x1, y2, z2  // south
+					x1, y1, z1,  x2, y1, z1,  x2, y1, z2,  x1, y1, z2, // bottom
+					x1, y2, z1,  x2, y2, z1,  x2, y2, z2,  x1, y2, z2, // top
+					x1, y1, z1,  x1, y1, z2,  x1, y2, z2,  x1, y2, z1, // west
+					x2, y1, z1,  x2, y2, z1,  x2, y2, z2,  x2, y1, z2, // east
+					x1, y1, z1,  x1, y2, z1,  x2, y2, z1,  x2, y1, z1, // north
+					x1, y1, z2,  x2, y1, z2,  x2, y2, z2,  x1, y2, z2  // south
 			};
 			
 			for (LineStyle line : this.style.getLines())
@@ -112,7 +113,10 @@ public class Render3DGrid extends RenderRegion
 			return;
 		}
 		
-		double cullAt = Render3DGrid.CULL_RANGE * this.spacing;
+		final double cullAt = Render3DGrid.CULL_RANGE * this.spacing;
+		final double cullAtY = cullAt - MathHelper.fractionalPart(y1);
+		final double cullAtX = cullAt - MathHelper.fractionalPart(x1);
+		final double cullAtZ = cullAt - MathHelper.fractionalPart(z1);
 		for (LineStyle line : this.style.getLines())
 		{
 			if (!line.prepare(this.style.getRenderType()))
@@ -122,8 +126,8 @@ public class Render3DGrid extends RenderRegion
 			
 			buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
 			line.applyColour();
-			
-			for (double y = Math.max(y1, -cullAt); y <= y2 && y <= cullAt; y += this.spacing)
+
+			for (double y = Math.max(y1, -cullAtY) + OFFSET; y <= y2 + OFFSET && y <= cullAtY; y += this.spacing)
 			{
 				buf.vertex(x1, y, z2).next();
 				buf.vertex(x2, y, z2).next();
@@ -135,7 +139,7 @@ public class Render3DGrid extends RenderRegion
 				buf.vertex(x2, y, z2).next();
 			}
 			
-			for (double x = Math.max(x1, -cullAt); x <= x2 && x <= cullAt; x += this.spacing)
+			for (double x = Math.max(x1, -cullAtX); x <= x2 && x <= cullAtX; x += this.spacing)
 			{
 				buf.vertex(x, y1, z1).next();
 				buf.vertex(x, y2, z1).next();
@@ -147,7 +151,7 @@ public class Render3DGrid extends RenderRegion
 				buf.vertex(x, y1, z2).next();
 			}
 			
-			for (double z = Math.max(z1, -cullAt); z <= z2 && z <= cullAt; z += this.spacing)
+			for (double z = Math.max(z1, -cullAtZ); z <= z2 && z <= cullAtZ; z += this.spacing)
 			{
 				buf.vertex(x1, y1, z).next();
 				buf.vertex(x2, y1, z).next();

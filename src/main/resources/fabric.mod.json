@@ -38,8 +38,5 @@
   },
   "suggests": {
     "worldedit": ">=7.2.0"
-  },
-  "custom": {
-    "modmenu:clientsideOnly": true
   }
 }

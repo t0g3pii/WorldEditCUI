@@ -12,6 +12,8 @@ import com.mumfrey.worldeditcui.util.Vector3;
  */
 public abstract class RenderRegion implements Observer
 {
+	protected static final double OFFSET = 0.001d; // to avoid z-fighting with blocks
+
 	protected RenderStyle style;
 	
 	protected RenderRegion(RenderStyle style)
