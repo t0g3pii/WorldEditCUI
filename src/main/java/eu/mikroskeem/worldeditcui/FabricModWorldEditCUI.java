@@ -1,10 +1,13 @@
 package eu.mikroskeem.worldeditcui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.config.CUIConfiguration;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerChannel;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerWorldRender;
 import eu.mikroskeem.worldeditcui.mixins.MinecraftClientAccess;
+import eu.mikroskeem.worldeditcui.mixins.RenderPhaseAccess;
+import grondag.frex.api.event.WorldRenderEvents;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
@@ -49,8 +52,8 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     private ClientPlayerEntity lastPlayer;
 
     private boolean visible = true;
+    private boolean alwaysOnTop = false;
     private int delayedHelo = 0;
-    private static RenderMode activeRenderMode;
 
     /**
      * Register a key binding
@@ -64,22 +67,32 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         return KeyBindingHelper.registerKeyBinding(new KeyBinding("key." + MOD_ID + '.' + name, type, code, KEYBIND_CATEGORY_WECUI));
     }
 
-    public static RenderMode getRenderMode() {
-        return activeRenderMode;
-    }
-
-    /* package */ static void setRenderMode(final RenderMode mode) {
-        activeRenderMode = mode;
-    }
-
     @Override
     public void onInitialize() {
         instance = this;
 
-        // Hook into game
+        // Set up event listeners
         ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
         ClientLifecycleEvents.CLIENT_STARTED.register(this::onGameInitDone);
         ClientSidePacketRegistry.INSTANCE.register(CHANNEL_WECUI, this::onPluginMessage);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(ctx -> {
+            if (MinecraftClient.isFabulousGraphicsOrBetter()) {
+                try {
+                    RenderSystem.pushMatrix();
+                    RenderSystem.multMatrix(ctx.matrixStack().peek().getModel());
+                    RenderPhaseAccess.getTranslucentTarget().startDrawing();
+                    this.onPostRenderEntities(ctx.tickDelta());
+                } finally {
+                    RenderPhaseAccess.getTranslucentTarget().endDrawing();
+                    RenderSystem.popMatrix();
+                }
+            }
+        });
+        WorldRenderEvents.LAST.register(ctx -> {
+            if (!MinecraftClient.isFabulousGraphicsOrBetter()) {
+                this.onPostRenderEntities(ctx.tickDelta());
+            }
+        });
     }
 
     private void onTick(MinecraftClient mc) {
@@ -112,10 +125,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         }
 
         if (inGame && clock && controller != null) {
-            if (activeRenderMode != RenderMode.FREX_POST_RENDER) {
-                activeRenderMode = config.isAlwaysOnTop() ? RenderMode.ALWAYS_ON_TOP : RenderMode.STANDARD;
-            }
-
+            this.alwaysOnTop = config.isAlwaysOnTop();
             if (mc.world != this.lastWorld || mc.player != this.lastPlayer) {
                 this.lastWorld = mc.world;
                 this.lastPlayer = mc.player;
@@ -166,15 +176,15 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     }
 
     public void onPostRenderEntities(float partialTicks) {
-        if (this.visible && activeRenderMode != RenderMode.ALWAYS_ON_TOP) {
-            worldRenderListener.onRender(partialTicks);
+        if (this.visible) {
+            this.worldRenderListener.onRender(partialTicks);
         }
     }
 
     public void onPostRender(float partialTicks) {
         // TODO: implement this?
-        if (this.visible && activeRenderMode == RenderMode.ALWAYS_ON_TOP) {
-            worldRenderListener.onRender(partialTicks);
+        if (this.visible && this.alwaysOnTop) {
+            this.worldRenderListener.onRender(partialTicks);
         }
     }
 

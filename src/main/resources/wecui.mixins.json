@@ -7,7 +7,7 @@
   "client": [
     "ClientPlayNetworkHandlerMixin",
     "MinecraftClientAccess",
-    "WorldRendererMixin"
+    "RenderPhaseAccess"
   ],
   "injectors": {
     "defaultRequire": 1

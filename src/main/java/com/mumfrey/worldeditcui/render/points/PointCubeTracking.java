@@ -39,7 +39,7 @@ public class PointCubeTracking extends PointCube
 	@Override
 	public void updatePoint(float partialTicks)
 	{
-		HitResult res = this.entity.rayTrace(this.traceDistance, partialTicks, false);
+		HitResult res = this.entity.raycast(this.traceDistance, partialTicks, false);
 		if (!(res instanceof BlockHitResult)) {
 			return;
 		}

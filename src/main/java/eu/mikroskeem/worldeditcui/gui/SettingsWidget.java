@@ -79,7 +79,7 @@ public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry>
     }
 
     @Override
-    protected int getRowLeft() {
+    public int getRowLeft() {
         return left + 6;
     }
 

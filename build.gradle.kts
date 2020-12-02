@@ -1,16 +1,16 @@
 plugins {
     java
-    id("fabric-loom") version "0.4-SNAPSHOT"
+    id("fabric-loom") version "0.5-SNAPSHOT"
 }
 
-val minecraftVersion = "1.16.2"
-val yarnVersion = "$minecraftVersion+build.1:v2"
-val fabricLoaderVersion = "0.9.1+build.205"
-val fabricApiVersion = "0.17.2+build.396-1.16"
-val modmenuVersion = "1.14.6+build.31"
+val minecraftVersion = "1.16.4"
+val yarnVersion = "$minecraftVersion+build.7:v2"
+val fabricLoaderVersion = "0.10.8"
+val fabricApiVersion = "0.27.1+1.16"
+val modmenuVersion = "1.14.13+build.22"
 
 group = "com.mumfrey.worldeditcui"
-version = "$minecraftVersion+01"
+version = "$minecraftVersion+01-SNAPSHOT"
 
 repositories {
     maven(url = "https://maven.enginehub.org/repo") {
@@ -21,9 +21,16 @@ repositories {
     }
 }
 
+val targetVersion = 8
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.toVersion(targetVersion)
+    targetCompatibility = sourceCompatibility
+}
+
+tasks.withType(JavaCompile::class) {
+    if (JavaVersion.current().isJava10Compatible) {
+        options.release.set(targetVersion)
+    }
 }
 
 dependencies {
@@ -34,10 +41,10 @@ dependencies {
     modImplementation("io.github.prospector:modmenu:$modmenuVersion")
     compileOnly("com.google.code.findbugs:jsr305:3.0.2") // compiler will crash without?
 
-    modImplementation("grondag:frex-mc116:3.1+") // for render event
+    modImplementation(include("grondag:frex-events-mc116:1.0.+")!!) // for render event
 
     // for development
-    modRuntime("com.sk89q.worldedit:worldedit-fabric-mc$minecraftVersion:7.2.0-SNAPSHOT") {
+    modRuntime("com.sk89q.worldedit:worldedit-fabric-mc1.16.3:7.3.0-SNAPSHOT") {
         exclude(group = "com.google.guava")
         exclude(group = "com.google.code.gson")
         exclude(group = "it.unimi.dsi")
