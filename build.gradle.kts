@@ -4,15 +4,15 @@ plugins {
     id("com.github.ben-manes.versions") version "0.36.0"
 }
 
-val minecraftVersion = "1.16.5"
-val yarnVersion = "$minecraftVersion+build.5:v2"
-val fabricLoaderVersion = "0.11.1"
-val fabricApiVersion = "0.31.0+1.16"
-val modmenuVersion = "1.16.8"
+val minecraftVersion = "21w08b"
+val yarnVersion = "$minecraftVersion+build.16:v2"
+val fabricLoaderVersion = "0.11.2"
+val fabricApiVersion = "0.31.2+1.17"
+val modmenuVersion = "2.0.0-beta.2"
 val multiconnectVersion = "1.3.34"
 
 group = "com.mumfrey.worldeditcui"
-version = "$minecraftVersion+03-SNAPSHOT"
+version = "$minecraftVersion+01-SNAPSHOT"
 
 repositories {
     maven(url = "https://maven.enginehub.org/repo") {
@@ -26,6 +26,11 @@ repositories {
     maven(url = "https://files.minecraftforge.net/maven") {
         name = "forge"
         content { includeGroup("net.minecraftforge") }
+    }
+    mavenLocal {
+        content {
+            includeGroup("com.sk89q.worldedit")
+        }
     }
 }
 
@@ -56,17 +61,17 @@ dependencies {
     modImplementation("net.earthcomputer:multiconnect:$multiconnectVersion:api")
 
     // for development
-    modRuntime("com.sk89q.worldedit:worldedit-fabric-mc1.16.3:7.2.3") {
+   /* modRuntime("com.sk89q.worldedit:worldedit-fabric-mc1.16.3:7.2.3") {
         exclude(group = "com.google.guava")
         exclude(group = "com.google.code.gson")
         exclude(group = "it.unimi.dsi")
         exclude(group = "org.apache.logging.log4j")
-    }
+    }*/
     runtimeOnly("net.minecraftforge:forgeflower:latest.release")
 }
 
 tasks.withType(net.fabricmc.loom.task.AbstractRunTask::class).configureEach {
-    // Midxin debug options
+    // Mixin debug options
     jvmArgs(
         // "-Dmixin.debug.verbose=true",
         // "-Dmixin.debug.export=true",
