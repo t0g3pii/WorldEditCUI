@@ -17,6 +17,5 @@
     "worldeditcui.color.cylinderpoint": "Цвет центральной точки цилиндра",
     "worldeditcui.options.compat.title": "Настройки совместимости",
     "worldeditcui.options.compat.spammy": "Неразборчивый режим (отправлять /we cui всё время)",
-    "worldeditcui.options.compat.ontop": "Всегда сверху (совместимость модов)",
     "worldeditcui.options.color.title": "Отображение цветов"
 }

@@ -36,7 +36,7 @@ public class SettingsEntry extends AlwaysSelectedEntryListWidget.Entry<SettingsE
         StringTokenizer tok = new StringTokenizer(name, " ");
         StringBuilder outputName = new StringBuilder(name.length());
         int lineLength = 0;
-        while(tok.hasMoreElements()) {
+        while (tok.hasMoreElements()) {
             String word = tok.nextToken();
 
             if(lineLength + this.client.textRenderer.getWidth(word) + this.client.textRenderer.getWidth(" ") > maxNameWidth) {

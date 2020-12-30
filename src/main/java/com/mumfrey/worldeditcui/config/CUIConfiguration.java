@@ -7,11 +7,6 @@ import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.resource.language.I18n;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -37,7 +32,6 @@ public final class CUIConfiguration implements InitialisationFactory
 	private boolean debugMode = false;
 	private boolean ignoreUpdates = false;
 	private boolean promiscuous = false;
-	private boolean alwaysOnTop = false;
 	private boolean clearAllOnKey = false;
 
     private Colour cuboidGridColor = ConfiguredColour.CUBOIDBOX.getDefault();
@@ -106,16 +100,6 @@ public final class CUIConfiguration implements InitialisationFactory
 		this.promiscuous = promiscuous;
 	}
 
-	public boolean isAlwaysOnTop()
-	{
-		return this.alwaysOnTop;
-	}
-
-	public void setAlwaysOnTop(boolean alwaysOnTop)
-	{
-		this.alwaysOnTop = alwaysOnTop;
-	}
-
 	public boolean isClearAllOnKey()
 	{
 		return this.clearAllOnKey;
@@ -157,7 +141,6 @@ public final class CUIConfiguration implements InitialisationFactory
 		configArray.put("debugMode", config.debugMode);
 		configArray.put("ignoreUpdates", config.ignoreUpdates);
 		configArray.put("promiscuous", config.promiscuous);
-		configArray.put("alwaysOnTop", config.alwaysOnTop);
 		configArray.put("clearAllOnKey", config.clearAllOnKey);
 
 		configArray.put("cuboidGridColor", config.cuboidGridColor);
@@ -190,7 +173,6 @@ public final class CUIConfiguration implements InitialisationFactory
 		debugMode 				= (Boolean) configArray.get("debugMode");
 		ignoreUpdates 			= (Boolean) configArray.get("ignoreUpdates");
 		promiscuous 			= (Boolean) configArray.get("promiscuous");
-		alwaysOnTop 			= (Boolean) configArray.get("alwaysOnTop");
 		clearAllOnKey 			= (Boolean) configArray.get("clearAllOnKey");
 
 		cuboidGridColor 		= (Colour) 	configArray.get("cuboidGridColor");
@@ -215,7 +197,6 @@ public final class CUIConfiguration implements InitialisationFactory
 			case "debugMode":
 			case "ignoreUpdates":
 			case "promiscuous":
-			case "alwaysOnTop":
 			case "clearAllOnKey": return false;
 
 			case "cuboidGridColor": return ConfiguredColour.CUBOIDBOX.getDefault();
@@ -242,7 +223,6 @@ public final class CUIConfiguration implements InitialisationFactory
 			case "debugMode": return I18n.translate("worldeditcui.options.debugMode");
 			case "ignoreUpdates": return I18n.translate("worldeditcui.options.ignoreUpdates");
 			case "promiscuous": return I18n.translate("worldeditcui.options.compat.spammy");
-			case "alwaysOnTop": return I18n.translate("worldeditcui.options.compat.ontop");
 			case "clearAllOnKey": return I18n.translate("worldeditcui.options.extra.clearall");
 
 			case "cuboidGridColor": return I18n.translate("worldeditcui.color.cuboidgrid");

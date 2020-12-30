@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -22,6 +23,7 @@ import java.util.function.Supplier;
  */
 public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
 
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final Text TRUE = new LiteralText("true").styled(s -> s.withFormatting(Formatting.DARK_GREEN));
     private static final Text FALSE = new LiteralText("false").styled(s -> s.withFormatting(Formatting.DARK_RED));
 
@@ -78,7 +80,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
             AbstractButtonWidget element;
             String textTemp = configuration.getDefaultDisplayName(text);
             if (value == null) {
-                LogManager.getLogger().warn("value null, adding nothing");
+                LOGGER.warn("value null, adding nothing");
                 continue;
             } else if(value instanceof Boolean) {
                 element = this.addButton(new AbstractButtonWidget(buttonX, y, 70, BUTTONHEIGHT, ((Boolean) value ? TRUE: FALSE)) {
@@ -125,7 +127,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
                     }
                 });
             } else {
-                LogManager.getLogger().warn("WorldEditCUI has option "+text+" with data type "+value.getClass().getName());
+                LOGGER.warn("WorldEditCUI has option " + text + " with data type " + value.getClass().getName());
                 continue;
             }
             this.configList.addEntry(new SettingsEntry(this.configList, (textTemp != null) ? textTemp : text, element, this.addButton(new AbstractButtonWidget(buttonX + 75, y, BUTTONHEIGHT, BUTTONHEIGHT, LiteralText.EMPTY) {

@@ -54,7 +54,6 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     private ClientPlayerEntity lastPlayer;
 
     private boolean visible = true;
-    private boolean alwaysOnTop = false;
     private int delayedHelo = 0;
 
     /**
@@ -105,11 +104,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
 
         if (inGame && mc.currentScreen == null) {
             while (this.keyBindToggleUI.wasPressed()) {
-                if (isPressed(mc, GLFW.GLFW_KEY_LEFT_SHIFT) || isPressed(mc, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
-                    config.setAlwaysOnTop(!config.isAlwaysOnTop());
-                } else {
-                    this.visible = !this.visible;
-                }
+                this.visible = !this.visible;
             }
 
             while (this.keyBindClearSel.wasPressed()) {
@@ -128,7 +123,6 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         }
 
         if (inGame && clock && controller != null) {
-            this.alwaysOnTop = config.isAlwaysOnTop();
             if (mc.world != this.lastWorld || mc.player != this.lastPlayer) {
                 this.lastWorld = mc.world;
                 this.lastPlayer = mc.player;
@@ -180,13 +174,6 @@ public final class FabricModWorldEditCUI implements ModInitializer {
 
     public void onPostRenderEntities(WorldRenderContext ctx) {
         if (this.visible) {
-            this.worldRenderListener.onRender(ctx.matrixStack(), ctx.tickDelta());
-        }
-    }
-
-    public void onPostRender(WorldRenderContext ctx) {
-        // TODO: implement this?
-        if (this.visible && this.alwaysOnTop) {
             this.worldRenderListener.onRender(ctx.matrixStack(), ctx.tickDelta());
         }
     }

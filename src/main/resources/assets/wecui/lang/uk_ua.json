@@ -17,6 +17,5 @@
     "worldeditcui.color.cylinderpoint": "Колір центральної точки циліндра",
     "worldeditcui.options.compat.title": "Параметри сумісності",
     "worldeditcui.options.compat.spammy": "Нерозбірливий режим (надсилає /we cui весь час)",
-    "worldeditcui.options.compat.ontop": "Завжди зверху (сумісність модів)",
     "worldeditcui.options.color.title": "Кольори виділення"
 }
