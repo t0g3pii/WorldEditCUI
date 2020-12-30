@@ -13,6 +13,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -77,6 +78,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
         ClientLifecycleEvents.CLIENT_STARTED.register(this::onGameInitDone);
         ClientPlayNetworking.registerGlobalReceiver(CHANNEL_WECUI, this::onPluginMessage);
+        ClientPlayConnectionEvents.JOIN.register(this::onJoinGame);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(ctx -> {
             if (ctx.advancedTranslucency()) {
                 try {
@@ -129,7 +131,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
 
                 controller.getDebugger().debug("World change detected, sending new handshake");
                 controller.clear();
-                this.helo();
+                this.helo(ClientPlayNetworking.getSender());
                 this.delayedHelo = FabricModWorldEditCUI.DELAYED_HELO_TICKS;
                 if (mc.player != null && config.isPromiscuous()) {
                     mc.player.sendChatMessage("/we cui"); //Tricks WE to send the current selection
@@ -139,7 +141,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
             if (this.delayedHelo > 0) {
                 this.delayedHelo--;
                 if (this.delayedHelo == 0) {
-                    this.helo();
+                    this.helo(ClientPlayNetworking.getSender());
                 }
             }
         }
@@ -166,10 +168,10 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         this.channelListener = new CUIListenerChannel(this.controller);
     }
 
-    public void onJoinGame() {
+    public void onJoinGame(final ClientPlayNetworkHandler handler, final PacketSender sender, final MinecraftClient client) {
         this.visible = true;
         controller.getDebugger().debug("Joined game, sending initial handshake");
-        this.helo();
+        this.helo(sender);
     }
 
     public void onPostRenderEntities(WorldRenderContext ctx) {
@@ -178,10 +180,10 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         }
     }
 
-    private void helo() {
+    private void helo(final PacketSender sender) {
         String message = "v|" + WorldEditCUI.PROTOCOL_VERSION;
         ByteBuf buffer = Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8));
-        ClientPlayNetworking.send(CHANNEL_WECUI, new PacketByteBuf(buffer));
+        sender.sendPacket(CHANNEL_WECUI, new PacketByteBuf(buffer));
     }
 
     private boolean isPressed(MinecraftClient client, int keycode) {
