@@ -44,12 +44,14 @@ public class LineStyle
 		
 		return false;
 	}
-	
+
+	@SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
 	public void applyColour()
 	{
 		GlStateManager.color4f(this.red, this.green, this.blue, this.alpha);
 	}
-	
+
+	@SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
 	public void applyColour(float tint)
 	{
 		GlStateManager.color4f(this.red, this.green, this.blue, this.alpha * tint);

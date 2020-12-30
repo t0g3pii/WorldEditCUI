@@ -30,6 +30,7 @@ public class CUIListenerWorldRender
 		this.minecraft = minecraft;
 	}
 
+	@SuppressWarnings("deprecation") // RenderSystem/immediate mode GL use
 	public void onRender(final MatrixStack matrices, float partialTicks)
 	{
 		try

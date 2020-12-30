@@ -30,6 +30,7 @@ public class RenderChunkBoundary extends RenderRegion
 	}
 	
 	@Override
+	@SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
 	public void render(CUIRenderContext ctx)
 	{
 		double yMax = this.mc.world != null ? this.mc.world.getHeight() : 256.0;

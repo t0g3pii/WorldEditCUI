@@ -30,7 +30,8 @@
   ],
   "depends": {
     "fabric-key-binding-api-v1": "^1.0.0",
-    "fabric-networking-v0": "^0.1.0",
+    "fabric-networking-api-v1": "*",
+    "fabric-rendering-v1": ">=1.5.0",
     "fabric-lifecycle-events-v1": "^1.0.0"
   },
   "suggests": {

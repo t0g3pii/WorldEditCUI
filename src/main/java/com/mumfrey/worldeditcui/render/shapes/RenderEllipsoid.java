@@ -37,6 +37,7 @@ public class RenderEllipsoid extends RenderRegion
 	}
 	
 	@Override
+	@SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
 	public void render(CUIRenderContext ctx)
 	{
 		GlStateManager.pushMatrix();

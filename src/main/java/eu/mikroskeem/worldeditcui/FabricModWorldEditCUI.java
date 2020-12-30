@@ -7,17 +7,18 @@ import com.mumfrey.worldeditcui.event.listeners.CUIListenerChannel;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerWorldRender;
 import eu.mikroskeem.worldeditcui.mixins.MinecraftClientAccess;
 import eu.mikroskeem.worldeditcui.mixins.RenderPhaseAccess;
-import grondag.frex.api.event.WorldRenderContext;
-import grondag.frex.api.event.WorldRenderEvents;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -69,13 +70,14 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     }
 
     @Override
+    @SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
     public void onInitialize() {
         instance = this;
 
         // Set up event listeners
         ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
         ClientLifecycleEvents.CLIENT_STARTED.register(this::onGameInitDone);
-        ClientSidePacketRegistry.INSTANCE.register(CHANNEL_WECUI, this::onPluginMessage);
+        ClientPlayNetworking.registerGlobalReceiver(CHANNEL_WECUI, this::onPluginMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(ctx -> {
             if (ctx.advancedTranslucency()) {
                 try {
@@ -149,12 +151,12 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         }
     }
 
-    private void onPluginMessage(PacketContext ctx, PacketByteBuf data) {
+    private void onPluginMessage(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf data, PacketSender sender) {
         try {
             int readableBytes = data.readableBytes();
             if (readableBytes > 0) {
                 String stringPayload = data.toString(0, data.readableBytes(), StandardCharsets.UTF_8);
-                ctx.getTaskQueue().execute(() -> channelListener.onMessage(stringPayload));
+                client.execute(() -> channelListener.onMessage(stringPayload));
             } else {
                 getController().getDebugger().debug("Warning, invalid (zero length) payload received from server");
             }
@@ -192,7 +194,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     private void helo() {
         String message = "v|" + WorldEditCUI.PROTOCOL_VERSION;
         ByteBuf buffer = Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8));
-        ClientSidePacketRegistry.INSTANCE.sendToServer(CHANNEL_WECUI, new PacketByteBuf(buffer));
+        ClientPlayNetworking.send(CHANNEL_WECUI, new PacketByteBuf(buffer));
     }
 
     private boolean isPressed(MinecraftClient client, int keycode) {

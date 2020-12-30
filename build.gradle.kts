@@ -6,7 +6,7 @@ plugins {
 val minecraftVersion = "1.16.4"
 val yarnVersion = "$minecraftVersion+build.7:v2"
 val fabricLoaderVersion = "0.10.8"
-val fabricApiVersion = "0.27.1+1.16"
+val fabricApiVersion = "0.29.0+1.16"
 val modmenuVersion = "1.14.13+build.22"
 
 group = "com.mumfrey.worldeditcui"
@@ -15,9 +15,6 @@ version = "$minecraftVersion+01-SNAPSHOT"
 repositories {
     maven(url = "https://maven.enginehub.org/repo") {
         name = "enginehub"
-    }
-    maven(url = "https://maven.dblsaiko.net/") {
-        name = "dblsaiko"
     }
 }
 
@@ -31,6 +28,8 @@ tasks.withType(JavaCompile::class) {
     if (JavaVersion.current().isJava10Compatible) {
         options.release.set(targetVersion)
     }
+    options.encoding = "UTF-8"
+    options.compilerArgs.add("-Xlint:all")
 }
 
 dependencies {
@@ -39,9 +38,6 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     modImplementation("io.github.prospector:modmenu:$modmenuVersion")
-    compileOnly("com.google.code.findbugs:jsr305:3.0.2") // compiler will crash without?
-
-    modImplementation(include("grondag:frex-events-mc116:1.0.+")!!) // for render event
 
     // for development
     modRuntime("com.sk89q.worldedit:worldedit-fabric-mc1.16.3:7.3.0-SNAPSHOT") {

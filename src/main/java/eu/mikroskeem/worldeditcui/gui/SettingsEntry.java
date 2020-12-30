@@ -28,6 +28,7 @@ public class SettingsEntry extends AlwaysSelectedEntryListWidget.Entry<SettingsE
     }
 
     @Override
+    @SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
     public void render(MatrixStack matrices, int index, int y, int x, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovering, float delta) {
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         String name = keyword;

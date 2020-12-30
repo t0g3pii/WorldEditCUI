@@ -6,8 +6,8 @@ import com.mumfrey.worldeditcui.exceptions.InitialisationException;
 import com.mumfrey.worldeditcui.util.ConsoleLogFormatter;
 import net.fabricmc.loader.api.FabricLoader;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -24,7 +24,7 @@ public final class CUIDebug implements InitialisationFactory
 	private static final Logger logger = Logger.getLogger("WorldEditCUI");
 	
 	private final WorldEditCUI controller;
-	private File debugFile;
+	private Path debugFile;
 	private boolean debugMode = false;
 	
 	public CUIDebug(WorldEditCUI controller)
@@ -45,12 +45,12 @@ public final class CUIDebug implements InitialisationFactory
 		
 		try
 		{
-			this.debugFile = new File(FabricLoader.getInstance().getGameDirectory(), "worldeditcui.debug.log");
+			this.debugFile = FabricLoader.getInstance().getGameDir().resolve("worldeditcui.debug.log");
 			this.debugMode = this.controller.getConfiguration().isDebugMode();
 			
 			if (this.debugMode)
 			{
-				FileHandler newHandler = new FileHandler(this.debugFile.getAbsolutePath());
+				FileHandler newHandler = new FileHandler(this.debugFile.toAbsolutePath().toString());
 				newHandler.setFormatter(formatter);
 				CUIDebug.logger.addHandler(newHandler);
 			}

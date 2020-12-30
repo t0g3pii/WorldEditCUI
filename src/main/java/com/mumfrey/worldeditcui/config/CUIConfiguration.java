@@ -16,6 +16,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -124,19 +126,19 @@ public final class CUIConfiguration implements InitialisationFactory
 		this.clearAllOnKey = clearAllOnKey;
 	}
 
-	private static File getConfigFile()
+	private static Path getConfigFile()
 	{
-		return new File(FabricLoader.getInstance().getConfigDirectory(), CUIConfiguration.CONFIG_FILE_NAME);
+		return FabricLoader.getInstance().getConfigDir().resolve(CUIConfiguration.CONFIG_FILE_NAME);
 	}
 
 	public static CUIConfiguration create()
 	{
-		File jsonFile = getConfigFile();
+		Path jsonFile = getConfigFile();
 
 		CUIConfiguration config = null;
-		if (jsonFile.exists())
+		if (Files.exists(jsonFile))
 		{
-			try (Reader fileReader = new InputStreamReader(new FileInputStream(jsonFile), StandardCharsets.UTF_8))
+			try (Reader fileReader = Files.newBufferedReader(jsonFile, StandardCharsets.UTF_8))
 			{
 				config = CUIConfiguration.GSON.fromJson(fileReader, CUIConfiguration.class);
 			}
@@ -264,7 +266,7 @@ public final class CUIConfiguration implements InitialisationFactory
 
 	public void save()
 	{
-		try(Writer fileWriter = new OutputStreamWriter(new FileOutputStream(getConfigFile()), StandardCharsets.UTF_8))
+		try(Writer fileWriter = Files.newBufferedWriter(getConfigFile(), StandardCharsets.UTF_8))
 		{
 			CUIConfiguration.GSON.toJson(this, fileWriter);
 		}
