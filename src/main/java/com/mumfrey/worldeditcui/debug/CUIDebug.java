@@ -3,15 +3,17 @@ package com.mumfrey.worldeditcui.debug;
 import com.mumfrey.worldeditcui.InitialisationFactory;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.exceptions.InitialisationException;
-import com.mumfrey.worldeditcui.util.ConsoleLogFormatter;
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.appender.RandomAccessFileAppender;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Debugging helper class
@@ -21,12 +23,10 @@ import java.util.logging.Logger;
  */
 public final class CUIDebug implements InitialisationFactory
 {
-	private static final Logger logger = Logger.getLogger("WorldEditCUI");
+	private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger("WorldEditCUI");
 	
 	private final WorldEditCUI controller;
-	private Path debugFile;
-	private boolean debugMode = false;
-	
+
 	public CUIDebug(WorldEditCUI controller)
 	{
 		this.controller = controller;
@@ -35,54 +35,54 @@ public final class CUIDebug implements InitialisationFactory
 	@Override
 	public void initialise() throws InitialisationException
 	{
-		
-		ConsoleLogFormatter formatter = new ConsoleLogFormatter();
-		ConsoleHandler handler = new ConsoleHandler();
-		handler.setFormatter(formatter);
-		
-		CUIDebug.logger.setUseParentHandlers(false);
-		CUIDebug.logger.addHandler(handler);
-		
-		try
-		{
-			this.debugFile = FabricLoader.getInstance().getGameDir().resolve("worldeditcui.debug.log");
-			this.debugMode = this.controller.getConfiguration().isDebugMode();
-			
-			if (this.debugMode)
-			{
-				FileHandler newHandler = new FileHandler(this.debugFile.toAbsolutePath().toString());
-				newHandler.setFormatter(formatter);
-				CUIDebug.logger.addHandler(newHandler);
+		// Create a logger that logs to console (if in debug mode), and logs to a debug file
+		final Logger loggerImpl = (Logger) LOGGER;
+
+		final Path debugFile = FabricLoader.getInstance().getGameDir().resolve("worldeditcui.debug.log");
+
+		// Apply defined layout from MC's configured file appender, if possible
+		Layout<?> layout = null;
+		for (final Appender appender : loggerImpl.getContext().getConfiguration().getAppenders().values()) {
+			if (appender instanceof FileAppender
+					|| appender instanceof RollingFileAppender
+					|| appender instanceof RollingRandomAccessFileAppender
+					|| appender instanceof RandomAccessFileAppender) {
+				layout = appender.getLayout();
+				break;
 			}
-			
 		}
-		catch (IOException e)
-		{
-			e.printStackTrace(System.err);
-			throw new InitialisationException();
-		}
-		
+
+		final FileAppender appender = FileAppender.newBuilder()
+				.withName("WECUIDebug")
+				.withFileName(debugFile.toAbsolutePath().toString())
+				.withCreateOnDemand(true)
+				.withFilter(new DebugModeEnabledFilter(this.controller.getConfiguration()))
+				.withLayout(layout)
+				.build();
+
+		loggerImpl.addAppender(appender);
 	}
 	
 	/**
-	 * Shows a message if debug mode is true
-	 * @param message 
+	 * Shows a message if debug mode is true.
+	 *
+	 * @param message the message to log
 	 */
 	public void debug(String message)
 	{
-		if (this.debugMode)
+		if (this.controller.getConfiguration().isDebugMode()) // TODO: do this with a filter and a MARKER, maybe eventually?
 		{
-			CUIDebug.logger.info("WorldEditCUI Debug - " + message);
+			CUIDebug.LOGGER.info("Debug - " + message);
 		}
 	}
 	
 	public void info(String message)
 	{
-		CUIDebug.logger.info(message);
+		CUIDebug.LOGGER.info(message);
 	}
 	
 	public void info(String message, Throwable e)
 	{
-		CUIDebug.logger.log(Level.INFO, message, e);
+		CUIDebug.LOGGER.info(message, e);
 	}
 }
