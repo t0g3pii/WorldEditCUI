@@ -5,6 +5,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
@@ -20,6 +22,7 @@ public class CUIListenerWorldRender
 	private final WorldEditCUI controller;
 
 	private final MinecraftClient minecraft;
+	private final CUIRenderContext ctx = new CUIRenderContext();
 
 	public CUIListenerWorldRender(WorldEditCUI controller, MinecraftClient minecraft)
 	{
@@ -27,10 +30,11 @@ public class CUIListenerWorldRender
 		this.minecraft = minecraft;
 	}
 
-	public void onRender(float partialTicks)
+	public void onRender(final MatrixStack matrices, float partialTicks)
 	{
 		try
 		{
+			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getCamera().getPos()), matrices, partialTicks);
 			RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE1, 240.0F, 240.0F);
 			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			RenderSystem.enableBlend();
@@ -44,12 +48,10 @@ public class CUIListenerWorldRender
 
 			try
 			{
-				Vector3 cameraPos = new Vector3(this.minecraft.gameRenderer.getCamera().getPos());
 				GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.5F);
-				this.controller.renderSelections(cameraPos, partialTicks);
+				this.controller.renderSelections(ctx);
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 			}
 
 			RenderSystem.depthFunc(GL11.GL_LEQUAL);

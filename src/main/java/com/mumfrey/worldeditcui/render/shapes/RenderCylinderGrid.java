@@ -1,9 +1,9 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.points.PointCube;
-import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
@@ -36,13 +36,13 @@ public class RenderCylinderGrid extends RenderRegion
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos)
+	public void render(CUIRenderContext ctx)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buf = tessellator.getBuffer();
 		
-		double xPos = this.centreX - cameraPos.getX();
-		double zPos = this.centreZ - cameraPos.getZ();
+		double xPos = this.centreX - ctx.cameraPos().getX();
+		double zPos = this.centreZ - ctx.cameraPos().getZ();
 
 		for (LineStyle line : this.style.getLines())
 		{
@@ -57,6 +57,7 @@ public class RenderCylinderGrid extends RenderRegion
 			int negRadiusX = (int)-Math.ceil(this.radX);
 			int posRadiusZ = (int)Math.ceil(this.radZ);
 			int negRadiusZ = (int)-Math.ceil(this.radZ);
+			final double cameraY = ctx.cameraPos().getY();
 			
 			for (double tempX = negRadiusX; tempX <= posRadiusX; ++tempX)
 			{
@@ -64,10 +65,10 @@ public class RenderCylinderGrid extends RenderRegion
 				buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
 				line.applyColour();
 				
-				buf.vertex(xPos + tempX, tmaxY - cameraPos.getY(), zPos + tempZ).next();
-				buf.vertex(xPos + tempX, tmaxY - cameraPos.getY(), zPos - tempZ).next();
-				buf.vertex(xPos + tempX, tminY - cameraPos.getY(), zPos - tempZ).next();
-				buf.vertex(xPos + tempX, tminY - cameraPos.getY(), zPos + tempZ).next();
+				buf.vertex(xPos + tempX, tmaxY - cameraY, zPos + tempZ).next();
+				buf.vertex(xPos + tempX, tmaxY - cameraY, zPos - tempZ).next();
+				buf.vertex(xPos + tempX, tminY - cameraY, zPos - tempZ).next();
+				buf.vertex(xPos + tempX, tminY - cameraY, zPos + tempZ).next();
 				
 				tessellator.draw();
 			}
@@ -78,10 +79,10 @@ public class RenderCylinderGrid extends RenderRegion
 				buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
 				line.applyColour();
 				
-				buf.vertex(xPos + tempX, tmaxY - cameraPos.getY(), zPos + tempZ).next();
-				buf.vertex(xPos - tempX, tmaxY - cameraPos.getY(), zPos + tempZ).next();
-				buf.vertex(xPos - tempX, tminY - cameraPos.getY(), zPos + tempZ).next();
-				buf.vertex(xPos + tempX, tminY - cameraPos.getY(), zPos + tempZ).next();
+				buf.vertex(xPos + tempX, tmaxY - cameraY, zPos + tempZ).next();
+				buf.vertex(xPos - tempX, tmaxY - cameraY, zPos + tempZ).next();
+				buf.vertex(xPos - tempX, tminY - cameraY, zPos + tempZ).next();
+				buf.vertex(xPos + tempX, tminY - cameraY, zPos + tempZ).next();
 				
 				tessellator.draw();
 			}

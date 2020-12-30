@@ -7,6 +7,7 @@ import com.mumfrey.worldeditcui.event.listeners.CUIListenerChannel;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerWorldRender;
 import eu.mikroskeem.worldeditcui.mixins.MinecraftClientAccess;
 import eu.mikroskeem.worldeditcui.mixins.RenderPhaseAccess;
+import grondag.frex.api.event.WorldRenderContext;
 import grondag.frex.api.event.WorldRenderEvents;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -76,12 +77,12 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         ClientLifecycleEvents.CLIENT_STARTED.register(this::onGameInitDone);
         ClientSidePacketRegistry.INSTANCE.register(CHANNEL_WECUI, this::onPluginMessage);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(ctx -> {
-            if (MinecraftClient.isFabulousGraphicsOrBetter()) {
+            if (ctx.advancedTranslucency()) {
                 try {
                     RenderSystem.pushMatrix();
                     RenderSystem.multMatrix(ctx.matrixStack().peek().getModel());
                     RenderPhaseAccess.getTranslucentTarget().startDrawing();
-                    this.onPostRenderEntities(ctx.tickDelta());
+                    this.onPostRenderEntities(ctx);
                 } finally {
                     RenderPhaseAccess.getTranslucentTarget().endDrawing();
                     RenderSystem.popMatrix();
@@ -89,8 +90,8 @@ public final class FabricModWorldEditCUI implements ModInitializer {
             }
         });
         WorldRenderEvents.LAST.register(ctx -> {
-            if (!MinecraftClient.isFabulousGraphicsOrBetter()) {
-                this.onPostRenderEntities(ctx.tickDelta());
+            if (!ctx.advancedTranslucency()) {
+                this.onPostRenderEntities(ctx);
             }
         });
     }
@@ -175,16 +176,16 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         this.helo();
     }
 
-    public void onPostRenderEntities(float partialTicks) {
+    public void onPostRenderEntities(WorldRenderContext ctx) {
         if (this.visible) {
-            this.worldRenderListener.onRender(partialTicks);
+            this.worldRenderListener.onRender(ctx.matrixStack(), ctx.tickDelta());
         }
     }
 
-    public void onPostRender(float partialTicks) {
+    public void onPostRender(WorldRenderContext ctx) {
         // TODO: implement this?
         if (this.visible && this.alwaysOnTop) {
-            this.worldRenderListener.onRender(partialTicks);
+            this.worldRenderListener.onRender(ctx.matrixStack(), ctx.tickDelta());
         }
     }
 

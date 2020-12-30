@@ -1,10 +1,10 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.points.PointRectangle;
 import com.mumfrey.worldeditcui.util.Vector2;
-import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
@@ -33,16 +33,16 @@ public class Render2DGrid extends RenderRegion
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos)
+	public void render(CUIRenderContext ctx)
 	{
 		double off = 0.03;
 		for (double height = this.min; height <= this.max + 1; height++)
 		{
-			this.drawPoly(cameraPos, height + off);
+			this.drawPoly(ctx, height + off);
 		}
 	}
 	
-	protected void drawPoly(Vector3 cameraPos, double height)
+	protected void drawPoly(final CUIRenderContext ctx, double height)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buf = tessellator.getBuffer();
@@ -60,9 +60,9 @@ public class Render2DGrid extends RenderRegion
 				if (point != null)
 				{
 					Vector2 pos = point.getPoint();
-					double x = pos.getX() - cameraPos.getX();
-					double z = pos.getY() - cameraPos.getZ();
-					buf.vertex(x + 0.5, height - cameraPos.getY(), z + 0.5).next();
+					double x = pos.getX() - ctx.cameraPos().getX();
+					double z = pos.getY() - ctx.cameraPos().getZ();
+					buf.vertex(x + 0.5, height - ctx.cameraPos().getY(), z + 0.5).next();
 				}
 			}
 			tessellator.draw();

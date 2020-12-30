@@ -1,5 +1,6 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.Vector3;
@@ -26,7 +27,7 @@ public class Render3DPolygon extends RenderRegion
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos)
+	public void render(CUIRenderContext ctx)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buf = tessellator.getBuffer();
@@ -42,7 +43,7 @@ public class Render3DPolygon extends RenderRegion
 			line.applyColour();
 			for (Vector3 vertex : this.vertices)
 			{
-				buf.vertex(vertex.getX() - cameraPos.getX(), vertex.getY() - cameraPos.getY(), vertex.getZ() - cameraPos.getZ()).next();
+				buf.vertex(vertex.getX() - ctx.cameraPos().getX(), vertex.getY() - ctx.cameraPos().getY(), vertex.getZ() - ctx.cameraPos().getZ()).next();
 			}
 			tessellator.draw();
 		}

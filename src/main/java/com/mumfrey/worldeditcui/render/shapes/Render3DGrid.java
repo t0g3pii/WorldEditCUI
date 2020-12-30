@@ -1,6 +1,7 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.BoundingBox;
@@ -67,17 +68,18 @@ public class Render3DGrid extends RenderRegion
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos)
+	public void render(CUIRenderContext ctx)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buf = tessellator.getBuffer();
-		double x1 = this.first.getX() - cameraPos.getX();
-		double y1 = this.first.getY() - cameraPos.getY();
-		double z1 = this.first.getZ() - cameraPos.getZ();
-		double x2 = this.second.getX() - cameraPos.getX();
-		double y2 = this.second.getY() - cameraPos.getY();
-		double z2 = this.second.getZ() - cameraPos.getZ();
-		
+		final Vector3 camera = ctx.cameraPos();
+		double x1 = this.first.getX() - camera.getX();
+		double y1 = this.first.getY() - camera.getY();
+		double z1 = this.first.getZ() - camera.getZ();
+		double x2 = this.second.getX() - camera.getX();
+		double y2 = this.second.getY() - camera.getY();
+		double z2 = this.second.getZ() - camera.getZ();
+
 		if (this.spacing != 1.0)
 		{
 			GlStateManager.disableCull();

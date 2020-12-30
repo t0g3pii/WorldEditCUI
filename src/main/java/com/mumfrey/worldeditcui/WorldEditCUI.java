@@ -3,6 +3,7 @@ package com.mumfrey.worldeditcui;
 import com.mumfrey.worldeditcui.config.CUIConfiguration;
 import com.mumfrey.worldeditcui.debug.CUIDebug;
 import com.mumfrey.worldeditcui.event.CUIEventDispatcher;
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.exceptions.InitialisationException;
 import com.mumfrey.worldeditcui.render.CUISelectionProvider;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
@@ -126,21 +127,21 @@ public class WorldEditCUI
 		this.activeRegion = region;
 	}
 
-	public void renderSelections(Vector3 cameraPos, float partialTicks)
+	public void renderSelections(final CUIRenderContext ctx)
 	{
 		if (this.selection != null)
 		{
-			this.selection.render(cameraPos, partialTicks);
+			this.selection.render(ctx);
 		}
 		
 		for (Region region : this.regions.values())
 		{
-			region.render(cameraPos, partialTicks);
+			region.render(ctx);
 		}
 		
 		if (this.chunkBorders)
 		{
-			this.chunkBorderRenderer.render(cameraPos);
+			this.chunkBorderRenderer.render(ctx);
 		}
 	}
 

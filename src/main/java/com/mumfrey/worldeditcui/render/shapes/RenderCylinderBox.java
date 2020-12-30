@@ -1,9 +1,9 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.points.PointCube;
-import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
@@ -33,13 +33,13 @@ public class RenderCylinderBox extends RenderRegion
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos)
+	public void render(CUIRenderContext ctx)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buf = tessellator.getBuffer();
 
-		double xPos = this.centreX - cameraPos.getX();
-		double zPos = this.centreZ - cameraPos.getZ();
+		double xPos = this.centreX - ctx.cameraPos().getX();
+		double zPos = this.centreZ - ctx.cameraPos().getZ();
 
 		for (LineStyle line : this.style.getLines())
 		{
@@ -60,7 +60,7 @@ public class RenderCylinderBox extends RenderRegion
 					double tempX = this.radX * Math.cos(tempTheta);
 					double tempZ = this.radZ * Math.sin(tempTheta);
 
-					buf.vertex(xPos + tempX, yBlock - cameraPos.getY(), zPos + tempZ).next();
+					buf.vertex(xPos + tempX, yBlock - ctx.cameraPos().getY(), zPos + tempZ).next();
 				}
 				tessellator.draw();
 			}

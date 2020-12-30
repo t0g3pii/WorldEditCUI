@@ -1,6 +1,7 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.points.PointCube;
@@ -36,10 +37,10 @@ public class RenderEllipsoid extends RenderRegion
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos)
+	public void render(CUIRenderContext ctx)
 	{
 		GlStateManager.pushMatrix();
-		GlStateManager.translated(this.centreX - cameraPos.getX(), this.centreY - cameraPos.getY(), this.centreZ - cameraPos.getZ());
+		GlStateManager.translated(this.centreX - ctx.cameraPos().getX(), this.centreY - ctx.cameraPos().getY(), this.centreZ - ctx.cameraPos().getZ());
 		
 		for (LineStyle line : this.style.getLines())
 		{

@@ -1,13 +1,13 @@
 package com.mumfrey.worldeditcui.render.region;
 
 import com.mumfrey.worldeditcui.WorldEditCUI;
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import com.mumfrey.worldeditcui.render.points.PointCube;
 import com.mumfrey.worldeditcui.render.points.PointCubeTracking;
 import com.mumfrey.worldeditcui.render.shapes.Render3DBox;
 import com.mumfrey.worldeditcui.render.shapes.Render3DGrid;
 import com.mumfrey.worldeditcui.util.BoundingBox;
-import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.entity.Entity;
 
 /**
@@ -19,7 +19,7 @@ import net.minecraft.entity.Entity;
  */
 public class CuboidRegion extends Region
 {
-	private PointCube[] points = new PointCube[2];
+	private final PointCube[] points = new PointCube[2];
 	
 	private Render3DGrid grid;
 	private Render3DBox box;
@@ -32,28 +32,28 @@ public class CuboidRegion extends Region
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos, float partialTicks)
+	public void render(CUIRenderContext ctx)
 	{
 		if (this.points[0] != null && this.points[1] != null)
 		{
-			this.points[0].updatePoint(partialTicks);
-			this.points[1].updatePoint(partialTicks);
+			this.points[0].updatePoint(ctx.dt());
+			this.points[1].updatePoint(ctx.dt());
 			
-			this.grid.render(cameraPos);
-			this.box.render(cameraPos);
+			this.grid.render(ctx);
+			this.box.render(ctx);
 			
-			this.points[0].render(cameraPos);
-			this.points[1].render(cameraPos);
+			this.points[0].render(ctx);
+			this.points[1].render(ctx);
 		}
 		else if (this.points[0] != null)
 		{
-			this.points[0].updatePoint(partialTicks);
-			this.points[0].render(cameraPos);
+			this.points[0].updatePoint(ctx.dt());
+			this.points[0].render(ctx);
 		}
 		else if (this.points[1] != null)
 		{
-			this.points[1].updatePoint(partialTicks);
-			this.points[1].render(cameraPos);
+			this.points[1].updatePoint(ctx.dt());
+			this.points[1].render(ctx);
 		}
 	}
 	

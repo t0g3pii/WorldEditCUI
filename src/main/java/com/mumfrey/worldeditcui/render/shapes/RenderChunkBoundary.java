@@ -1,6 +1,7 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.Vector3;
@@ -29,26 +30,26 @@ public class RenderChunkBoundary extends RenderRegion
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos)
+	public void render(CUIRenderContext ctx)
 	{
 		double yMax = this.mc.world != null ? this.mc.world.getHeight() : 256.0;
 		double yMin = 0.0;
 		
-		long xBlock = MathHelper.floor(cameraPos.getX());
-		long zBlock = MathHelper.floor(cameraPos.getZ());
+		long xBlock = MathHelper.floor(ctx.cameraPos().getX());
+		long zBlock = MathHelper.floor(ctx.cameraPos().getZ());
 		
 		int xChunk = (int)(xBlock >> 4);
 		int zChunk = (int)(zBlock >> 4);
 		
-		double xBase = 0 - (xBlock - (xChunk * 16)) - (cameraPos.getX() - xBlock);
-		double zBase = (0 - (zBlock - (zChunk * 16)) - (cameraPos.getZ() - zBlock)) + 16;
+		double xBase = 0 - (xBlock - (xChunk * 16)) - (ctx.cameraPos().getX() - xBlock);
+		double zBase = (0 - (zBlock - (zChunk * 16)) - (ctx.cameraPos().getZ() - zBlock)) + 16;
 		
 		this.grid.setPosition(new Vector3(xBase, yMin, zBase - 16), new Vector3(xBase + 16, yMax, zBase));
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translated(0.0, -cameraPos.getY(), 0.0);
+		GlStateManager.translated(0.0, -ctx.cameraPos().getY(), 0.0);
 
-		this.grid.render(Vector3.ZERO);
+		ctx.withCameraAt(Vector3.ZERO, this.grid::render);
 
 		this.renderChunkBorder(yMin, yMax, xBase, zBase);
 		

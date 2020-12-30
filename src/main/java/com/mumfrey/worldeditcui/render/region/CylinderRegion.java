@@ -1,12 +1,12 @@
 package com.mumfrey.worldeditcui.render.region;
 
 import com.mumfrey.worldeditcui.WorldEditCUI;
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import com.mumfrey.worldeditcui.render.points.PointCube;
 import com.mumfrey.worldeditcui.render.shapes.RenderCylinderBox;
 import com.mumfrey.worldeditcui.render.shapes.RenderCylinderCircles;
 import com.mumfrey.worldeditcui.render.shapes.RenderCylinderGrid;
-import com.mumfrey.worldeditcui.util.Vector3;
 
 /**
  * Main controller for a cylinder-type region
@@ -30,14 +30,14 @@ public class CylinderRegion extends Region
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos, float partialTicks)
+	public void render(CUIRenderContext ctx)
 	{
 		if (this.centre != null)
 		{
-			this.centre.render(cameraPos);
-			this.circles.render(cameraPos);
-			this.grid.render(cameraPos);
-			this.box.render(cameraPos);
+			this.centre.render(ctx);
+			this.circles.render(ctx);
+			this.grid.render(ctx);
+			this.box.render(ctx);
 		}
 	}
 

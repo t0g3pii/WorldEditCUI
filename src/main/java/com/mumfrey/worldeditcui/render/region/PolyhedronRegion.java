@@ -1,6 +1,7 @@
 package com.mumfrey.worldeditcui.render.region;
 
 import com.mumfrey.worldeditcui.WorldEditCUI;
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import com.mumfrey.worldeditcui.render.points.PointCube;
 import com.mumfrey.worldeditcui.render.shapes.Render3DPolygon;
@@ -19,10 +20,10 @@ public class PolyhedronRegion extends Region
 {
 	private static final Vector3 HALF = new Vector3(0.5, 0.5, 0.5);
 	
-	private List<PointCube> vertices = new ArrayList<PointCube>();
-	private List<Vector3[]> faces = new ArrayList<Vector3[]>();
+	private final List<PointCube> vertices = new ArrayList<>();
+	private final List<Vector3[]> faces = new ArrayList<>();
 	
-	private List<Render3DPolygon> faceRenders = new ArrayList<Render3DPolygon>();
+	private final List<Render3DPolygon> faceRenders = new ArrayList<>();
 	
 	public PolyhedronRegion(WorldEditCUI controller)
 	{
@@ -30,16 +31,16 @@ public class PolyhedronRegion extends Region
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos, float partialTicks)
+	public void render(CUIRenderContext ctx)
 	{
 		for (PointCube vertex : this.vertices)
 		{
-			vertex.render(cameraPos);
+			vertex.render(ctx);
 		}
 		
 		for (Render3DPolygon face : this.faceRenders)
 		{
-			face.render(cameraPos);
+			face.render(ctx);
 		}
 	}
 

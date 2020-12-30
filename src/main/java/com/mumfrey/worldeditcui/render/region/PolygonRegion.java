@@ -1,11 +1,11 @@
 package com.mumfrey.worldeditcui.render.region;
 
 import com.mumfrey.worldeditcui.WorldEditCUI;
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import com.mumfrey.worldeditcui.render.points.PointRectangle;
 import com.mumfrey.worldeditcui.render.shapes.Render2DBox;
 import com.mumfrey.worldeditcui.render.shapes.Render2DGrid;
-import com.mumfrey.worldeditcui.util.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class PolygonRegion extends Region
 {
-	private final List<PointRectangle> points = new ArrayList<PointRectangle>();
+	private final List<PointRectangle> points = new ArrayList<>();
 	private int min, max;
 	
 	private Render2DBox box;
@@ -31,7 +31,7 @@ public class PolygonRegion extends Region
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos, float partialTicks)
+	public void render(CUIRenderContext ctx)
 	{
 		if (this.points.size() < 1)
 		{
@@ -42,12 +42,12 @@ public class PolygonRegion extends Region
 		{
 			if (point != null)
 			{
-				point.render(cameraPos);
+				point.render(ctx);
 			}
 		}
 		
-		this.box.render(cameraPos);
-		this.grid.render(cameraPos);
+		this.box.render(ctx);
+		this.grid.render(ctx);
 	}
 	
 	@Override

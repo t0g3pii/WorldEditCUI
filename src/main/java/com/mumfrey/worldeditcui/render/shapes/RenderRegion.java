@@ -1,9 +1,9 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.Observable;
 import com.mumfrey.worldeditcui.util.Observer;
-import com.mumfrey.worldeditcui.util.Vector3;
 
 /**
  * Base class for region renderers
@@ -26,7 +26,7 @@ public abstract class RenderRegion implements Observer
 		this.style = style;
 	}
 	
-	public abstract void render(Vector3 cameraPos);
+	public abstract void render(CUIRenderContext ctx);
 	
 	@Override
 	public void notifyChanged(Observable<?> source)

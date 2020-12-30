@@ -1,5 +1,6 @@
 package com.mumfrey.worldeditcui.render.points;
 
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.shapes.Render3DBox;
@@ -54,9 +55,9 @@ public class PointCube extends Observable<BoundingBox>
 		return this.id;
 	}
 	
-	public void render(Vector3 cameraPos)
+	public void render(CUIRenderContext ctx)
 	{
-		this.box.render(cameraPos);
+		this.box.render(ctx);
 	}
 
 	public void updatePoint(float partialTicks)

@@ -1,6 +1,7 @@
 package com.mumfrey.worldeditcui.render.region;
 
 import com.mumfrey.worldeditcui.WorldEditCUI;
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import com.mumfrey.worldeditcui.render.points.PointCube;
 import com.mumfrey.worldeditcui.render.shapes.RenderEllipsoid;
@@ -26,16 +27,16 @@ public class EllipsoidRegion extends Region
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos, float partialTicks)
+	public void render(CUIRenderContext ctx)
 	{
 		if (this.centre != null && this.radii != null)
 		{
-			this.centre.render(cameraPos);
-			this.ellipsoid.render(cameraPos);
+			this.centre.render(ctx);
+			this.ellipsoid.render(ctx);
 		}
 		else if (this.centre != null)
 		{
-			this.centre.render(cameraPos);
+			this.centre.render(ctx);
 		}
 	}
 	

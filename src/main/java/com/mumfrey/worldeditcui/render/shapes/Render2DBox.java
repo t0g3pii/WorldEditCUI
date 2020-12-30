@@ -1,10 +1,10 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.points.PointRectangle;
 import com.mumfrey.worldeditcui.util.Vector2;
-import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
@@ -33,11 +33,11 @@ public class Render2DBox extends RenderRegion
 	}
 	
 	@Override
-	public void render(Vector3 cameraPos)
+	public void render(CUIRenderContext ctx)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buf = tessellator.getBuffer();
-		double off = 0.03 - cameraPos.getY();
+		double off = 0.03 - ctx.cameraPos().getY();
 		for (LineStyle line : this.style.getLines())
 		{
 			if (!line.prepare(this.style.getRenderType()))
@@ -53,8 +53,8 @@ public class Render2DBox extends RenderRegion
 				if (point != null)
 				{
 					Vector2 pos = point.getPoint();
-					double x = pos.getX() - cameraPos.getX();
-					double z = pos.getY() - cameraPos.getZ();
+					double x = pos.getX() - ctx.cameraPos().getX();
+					double z = pos.getY() - ctx.cameraPos().getZ();
 					buf.vertex(x + 0.5, this.min + off, z + 0.5).next();
 					buf.vertex(x + 0.5, this.max + 1 + off, z + 0.5).next();
 				}

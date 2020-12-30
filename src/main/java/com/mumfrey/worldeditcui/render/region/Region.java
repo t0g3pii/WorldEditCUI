@@ -2,10 +2,10 @@ package com.mumfrey.worldeditcui.render.region;
 
 import com.mumfrey.worldeditcui.InitialisationFactory;
 import com.mumfrey.worldeditcui.WorldEditCUI;
+import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.exceptions.InvalidSelectionTypeException;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle.RenderType;
-import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.entity.Entity;
 
 /**
@@ -35,7 +35,7 @@ public abstract class Region implements InitialisationFactory
 	{
 	}
 	
-	public abstract void render(Vector3 cameraPos, float partialTicks);
+	public abstract void render(CUIRenderContext ctx);
 	
 	public RenderStyle[] getDefaultStyles()
 	{
