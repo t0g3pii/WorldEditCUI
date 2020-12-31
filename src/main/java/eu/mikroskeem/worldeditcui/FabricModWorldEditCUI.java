@@ -14,7 +14,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -24,7 +23,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.lwjgl.glfw.GLFW;
 
@@ -40,7 +38,6 @@ public final class FabricModWorldEditCUI implements ModInitializer {
 
     public static final String MOD_ID = "worldeditcui";
     private static FabricModWorldEditCUI instance;
-    public static final Identifier CHANNEL_WECUI = new Identifier("worldedit", "cui");
 
     private static final String KEYBIND_CATEGORY_WECUI = "key.categories.worldeditcui";
     private final KeyBinding keyBindToggleUI = key("toggle", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN);
@@ -77,7 +74,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         // Set up event listeners
         ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
         ClientLifecycleEvents.CLIENT_STARTED.register(this::onGameInitDone);
-        ClientPlayNetworking.registerGlobalReceiver(CHANNEL_WECUI, this::onPluginMessage);
+        CUINetworking.subscribeToCuiPacket(this::onPluginMessage);
         ClientPlayConnectionEvents.JOIN.register(this::onJoinGame);
         WorldRenderEvents.AFTER_TRANSLUCENT.register(ctx -> {
             if (ctx.advancedTranslucency()) {
@@ -131,7 +128,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
 
                 controller.getDebugger().debug("World change detected, sending new handshake");
                 controller.clear();
-                this.helo(ClientPlayNetworking.getSender());
+                this.helo(mc.getNetworkHandler());
                 this.delayedHelo = FabricModWorldEditCUI.DELAYED_HELO_TICKS;
                 if (mc.player != null && config.isPromiscuous()) {
                     mc.player.sendChatMessage("/we cui"); //Tricks WE to send the current selection
@@ -141,7 +138,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
             if (this.delayedHelo > 0) {
                 this.delayedHelo--;
                 if (this.delayedHelo == 0) {
-                    this.helo(ClientPlayNetworking.getSender());
+                    this.helo(mc.getNetworkHandler());
                 }
             }
         }
@@ -171,7 +168,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     public void onJoinGame(final ClientPlayNetworkHandler handler, final PacketSender sender, final MinecraftClient client) {
         this.visible = true;
         controller.getDebugger().debug("Joined game, sending initial handshake");
-        this.helo(sender);
+        this.helo(handler);
     }
 
     public void onPostRenderEntities(WorldRenderContext ctx) {
@@ -180,10 +177,10 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         }
     }
 
-    private void helo(final PacketSender sender) {
+    private void helo(final ClientPlayNetworkHandler handler) {
         String message = "v|" + WorldEditCUI.PROTOCOL_VERSION;
         ByteBuf buffer = Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8));
-        sender.sendPacket(CHANNEL_WECUI, new PacketByteBuf(buffer));
+        CUINetworking.send(handler, new PacketByteBuf(buffer));
     }
 
     private boolean isPressed(MinecraftClient client, int keycode) {
