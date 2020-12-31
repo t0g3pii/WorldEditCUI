@@ -60,6 +60,7 @@ public final class CUIDebug implements InitialisationFactory
 				.withLayout(layout)
 				.build();
 
+		appender.start();
 		loggerImpl.addAppender(appender);
 	}
 	
