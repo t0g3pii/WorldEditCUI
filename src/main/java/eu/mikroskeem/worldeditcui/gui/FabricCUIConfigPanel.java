@@ -78,7 +78,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
             int buttonX = this.width - 140 - 20;
             Object value = configuration.getConfigArray().get(text);
             AbstractButtonWidget element;
-            String textTemp = configuration.getDefaultDisplayName(text);
+            TranslatableText textTemp = configuration.getDescription(text);
             if (value == null) {
                 LOGGER.warn("value null, adding nothing");
                 continue;
@@ -130,7 +130,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
                 LOGGER.warn("WorldEditCUI has option " + text + " with data type " + value.getClass().getName());
                 continue;
             }
-            this.configList.addEntry(new SettingsEntry(this.configList, (textTemp != null) ? textTemp : text, element, this.addButton(new AbstractButtonWidget(buttonX + 75, y, BUTTONHEIGHT, BUTTONHEIGHT, LiteralText.EMPTY) {
+            this.configList.addEntry(new SettingsEntry(this.configList, (textTemp != null) ? textTemp : new LiteralText(text), element, this.addButton(new AbstractButtonWidget(buttonX + 75, y, BUTTONHEIGHT, BUTTONHEIGHT, LiteralText.EMPTY) {
                 @Override
                 public void onClick(double mouseX, double mouseY) {
                     configuration.changeValue(text, configuration.getDefaultValue(text));

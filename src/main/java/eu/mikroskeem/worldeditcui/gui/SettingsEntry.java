@@ -1,25 +1,29 @@
 package eu.mikroskeem.worldeditcui.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 
-import java.util.StringTokenizer;
+import java.util.List;
 
 /**
  * @author Jesús Sanz - Modified to implement Config GUI / First Version
  */
 public class SettingsEntry extends AlwaysSelectedEntryListWidget.Entry<SettingsEntry> {
+    private static final int LINE_HEIGHT = 11;
 
     protected final MinecraftClient client;
     protected final SettingsWidget list;
-    protected final String keyword;
+    protected final Text keyword;
+    private List<OrderedText> wrappedKeyword;
+    private int lastWidth = -1;
     protected final AbstractButtonWidget widgetButton;
     protected final AbstractButtonWidget resetButton;
 
-    public SettingsEntry(SettingsWidget list, String keyword, AbstractButtonWidget widgetButton, AbstractButtonWidget resetButton) {
+    public SettingsEntry(SettingsWidget list, Text keyword, AbstractButtonWidget widgetButton, AbstractButtonWidget resetButton) {
         this.list = list;
         this.client = MinecraftClient.getInstance();
         this.keyword = keyword;
@@ -28,31 +32,22 @@ public class SettingsEntry extends AlwaysSelectedEntryListWidget.Entry<SettingsE
     }
 
     @Override
-    @SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
     public void render(MatrixStack matrices, int index, int y, int x, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovering, float delta) {
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-        String name = keyword;
-        int maxNameWidth = rowWidth / 2 - 40;
-        StringTokenizer tok = new StringTokenizer(name, " ");
-        StringBuilder outputName = new StringBuilder(name.length());
-        int lineLength = 0;
-        while (tok.hasMoreElements()) {
-            String word = tok.nextToken();
+        // Label
+        final int maxNameWidth = rowWidth / 2 - 40;
+        if (maxNameWidth != this.lastWidth) {
+            this.wrappedKeyword = this.client.textRenderer.wrapLines(this.keyword, maxNameWidth);
+            this.lastWidth = maxNameWidth;
+        }
 
-            if(lineLength + this.client.textRenderer.getWidth(word) + this.client.textRenderer.getWidth(" ") > maxNameWidth) {
-                outputName.append("\n");
-                lineLength = 0;
-            }
-            outputName.append(word).append(" ");
-            lineLength += this.client.textRenderer.getWidth(word);
+        int quarterEntries = this.wrappedKeyword.size() >= 2 ? this.wrappedKeyword.size() / 2 : 0;
+        int lineYOffset = (rowHeight / 2) - quarterEntries * (this.client.textRenderer.fontHeight + 2) - this.client.textRenderer.fontHeight / 2;
+        for (final OrderedText text : this.wrappedKeyword) {
+            this.client.textRenderer.draw(matrices, text, x + 50, y + lineYOffset, 0xFFFFFF);
+            lineYOffset += LINE_HEIGHT;
         }
-        tok = new StringTokenizer(outputName.toString(), "\n");
-        int quarterEntries = tok.countTokens() >= 2 ? tok.countTokens() / 2 : 0;
-        lineLength = (rowHeight / 2) - quarterEntries * (this.client.textRenderer.fontHeight + 2) - this.client.textRenderer.fontHeight / 2;
-        while(tok.hasMoreElements()) {
-            this.client.textRenderer.draw(matrices, tok.nextToken(), x + 50, y + lineLength, 0xFFFFFF);
-            lineLength += 10;
-        }
+
+        // Widgets
         this.widgetButton.y = this.resetButton.y = y + 1;
         this.widgetButton.render(matrices, mouseX, mouseY, delta);
         this.resetButton.render(matrices,mouseX, mouseY, delta);

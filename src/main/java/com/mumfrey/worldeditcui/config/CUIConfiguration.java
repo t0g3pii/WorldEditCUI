@@ -6,6 +6,8 @@ import com.mumfrey.worldeditcui.InitialisationFactory;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.TranslatableText;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -218,27 +220,27 @@ public final class CUIConfiguration implements InitialisationFactory
 		return null;
 	}
 
-	public String getDefaultDisplayName(String text) {
+	public @Nullable TranslatableText getDescription(String text) {
 		switch(text) {
-			case "debugMode": return I18n.translate("worldeditcui.options.debugMode");
-			case "ignoreUpdates": return I18n.translate("worldeditcui.options.ignoreUpdates");
-			case "promiscuous": return I18n.translate("worldeditcui.options.compat.spammy");
-			case "clearAllOnKey": return I18n.translate("worldeditcui.options.extra.clearall");
+			case "debugMode": return new TranslatableText("worldeditcui.options.debugMode");
+			case "ignoreUpdates": return new TranslatableText("worldeditcui.options.ignoreUpdates");
+			case "promiscuous": return new TranslatableText("worldeditcui.options.compat.spammy");
+			case "clearAllOnKey": return new TranslatableText("worldeditcui.options.extra.clearall");
 
-			case "cuboidGridColor": return I18n.translate("worldeditcui.color.cuboidgrid");
-			case "cuboidEdgeColor": return I18n.translate("worldeditcui.color.cuboidedge");
-			case "cuboidFirstPointColor": return I18n.translate("worldeditcui.color.cuboidpoint1");
-			case "cuboidSecondPointColor": return I18n.translate("worldeditcui.color.cuboidpoint2");
-			case "polyGridColor": return I18n.translate("worldeditcui.color.polygrid");
-			case "polyEdgeColor": return I18n.translate("worldeditcui.color.polyedge");
-			case "polyPointColor": return I18n.translate("worldeditcui.color.polypoint");
-			case "ellipsoidGridColor": return I18n.translate("worldeditcui.color.ellipsoidgrid");
-			case "ellipsoidPointColor": return I18n.translate("worldeditcui.color.ellipsoidpoint");
-			case "cylinderGridColor": return I18n.translate("worldeditcui.color.cylindergrid");
-			case "cylinderEdgeColor": return I18n.translate("worldeditcui.color.cylinderedge");
-			case "cylinderPointColor": return I18n.translate("worldeditcui.color.cylinderpoint");
-			case "chunkBoundaryColour": return I18n.translate("worldeditcui.color.chunkboundary");
-			case "chunkGridColour": return I18n.translate("worldeditcui.color.chunkgrid");
+			case "cuboidGridColor": return new TranslatableText("worldeditcui.color.cuboidgrid");
+			case "cuboidEdgeColor": return new TranslatableText("worldeditcui.color.cuboidedge");
+			case "cuboidFirstPointColor": return new TranslatableText("worldeditcui.color.cuboidpoint1");
+			case "cuboidSecondPointColor": return new TranslatableText("worldeditcui.color.cuboidpoint2");
+			case "polyGridColor": return new TranslatableText("worldeditcui.color.polygrid");
+			case "polyEdgeColor": return new TranslatableText("worldeditcui.color.polyedge");
+			case "polyPointColor": return new TranslatableText("worldeditcui.color.polypoint");
+			case "ellipsoidGridColor": return new TranslatableText("worldeditcui.color.ellipsoidgrid");
+			case "ellipsoidPointColor": return new TranslatableText("worldeditcui.color.ellipsoidpoint");
+			case "cylinderGridColor": return new TranslatableText("worldeditcui.color.cylindergrid");
+			case "cylinderEdgeColor": return new TranslatableText("worldeditcui.color.cylinderedge");
+			case "cylinderPointColor": return new TranslatableText("worldeditcui.color.cylinderpoint");
+			case "chunkBoundaryColour": return new TranslatableText("worldeditcui.color.chunkboundary");
+			case "chunkGridColour": return new TranslatableText("worldeditcui.color.chunkgrid");
 		}
 
 		return null;
