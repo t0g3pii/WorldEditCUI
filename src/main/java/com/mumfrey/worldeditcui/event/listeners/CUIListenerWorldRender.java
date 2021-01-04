@@ -1,11 +1,9 @@
 package com.mumfrey.worldeditcui.event.listeners;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -49,7 +47,6 @@ public class CUIListenerWorldRender
 
 			try
 			{
-				GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.5F);
 				this.controller.renderSelections(ctx);
 			}
 			catch (Exception e) {

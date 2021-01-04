@@ -39,8 +39,8 @@ public class Render3DPolygon extends RenderRegion
 				continue;
 			}
 			
-			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
-			line.applyColour();
+			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
+			line.applyColour(buf);
 			for (Vector3 vertex : this.vertices)
 			{
 				buf.vertex(vertex.getX() - ctx.cameraPos().getX(), vertex.getY() - ctx.cameraPos().getY(), vertex.getZ() - ctx.cameraPos().getZ()).next();

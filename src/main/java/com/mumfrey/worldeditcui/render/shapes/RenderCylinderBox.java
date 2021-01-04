@@ -51,8 +51,8 @@ public class RenderCylinderBox extends RenderRegion
 			double twoPi = Math.PI * 2;
 			for (int yBlock : new int[] { this.minY, this.maxY + 1 })
 			{
-				buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
-				line.applyColour();
+				buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
+				line.applyColour(buf);
 				
 				for (int i = 0; i <= 75; i++)
 				{
