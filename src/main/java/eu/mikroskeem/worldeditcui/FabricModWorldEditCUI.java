@@ -67,7 +67,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     }
 
     @Override
-    @SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
+    @SuppressWarnings("deprecation") // RenderSystem/immediate mode GL use
     public void onInitialize() {
         instance = this;
 
@@ -91,7 +91,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         });
         WorldRenderEvents.LAST.register(ctx -> {
             if (!ctx.advancedTranslucency()) {
-                this.onPostRenderEntities(ctx);
+                OptifineHooks.doOptifineAwareRender(ctx, this::onPostRenderEntities);
             }
         });
     }
@@ -171,7 +171,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         this.helo(handler);
     }
 
-    public void onPostRenderEntities(WorldRenderContext ctx) {
+    public void onPostRenderEntities(final WorldRenderContext ctx) {
         if (this.visible) {
             this.worldRenderListener.onRender(ctx.matrixStack(), ctx.tickDelta());
         }
@@ -179,12 +179,8 @@ public final class FabricModWorldEditCUI implements ModInitializer {
 
     private void helo(final ClientPlayNetworkHandler handler) {
         String message = "v|" + WorldEditCUI.PROTOCOL_VERSION;
-        ByteBuf buffer = Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8));
+        ByteBuf buffer = Unpooled.copiedBuffer(message, StandardCharsets.UTF_8);
         CUINetworking.send(handler, new PacketByteBuf(buffer));
-    }
-
-    private boolean isPressed(MinecraftClient client, int keycode) {
-        return InputUtil.isKeyPressed(client.getWindow().getHandle(), keycode);
     }
 
     public WorldEditCUI getController()

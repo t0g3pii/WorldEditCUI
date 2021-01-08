@@ -6,7 +6,7 @@ plugins {
 val minecraftVersion = "1.16.4"
 val yarnVersion = "$minecraftVersion+build.7:v2"
 val fabricLoaderVersion = "0.10.8"
-val fabricApiVersion = "0.29.0+1.16"
+val fabricApiVersion = "0.29.3+1.16"
 val modmenuVersion = "1.14.13+build.22"
 val multiconnectVersion = "1.3.34"
 
@@ -31,7 +31,7 @@ tasks.withType(JavaCompile::class) {
         options.release.set(targetVersion)
     }
     options.encoding = "UTF-8"
-    options.compilerArgs.add("-Xlint:all")
+    options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing"))
 }
 
 dependencies {
