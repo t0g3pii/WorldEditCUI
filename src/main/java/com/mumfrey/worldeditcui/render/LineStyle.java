@@ -1,8 +1,7 @@
 package com.mumfrey.worldeditcui.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mumfrey.worldeditcui.render.RenderStyle.RenderType;
-import net.minecraft.client.render.FixedColorVertexConsumer;
 
 /**
  * Stores data about a line that can be rendered
@@ -13,16 +12,15 @@ import net.minecraft.client.render.FixedColorVertexConsumer;
  */
 public class LineStyle
 {
-	public final float lineWidth;
-	public final int red, green, blue, alpha;
+	public final float lineWidth, red, green, blue, alpha;
 	public final RenderType renderType;
 	
-	public LineStyle(RenderType renderType, float lineWidth, int red, int green, int blue)
+	public LineStyle(RenderType renderType, float lineWidth, float red, float green, float blue)
 	{
-		this(renderType, lineWidth, red, green, blue, 0xff);
+		this(renderType, lineWidth, red, green, blue, 1.0f);
 	}
 	
-	public LineStyle(RenderType renderType, float lineWidth, int red, int green, int blue, int alpha)
+	public LineStyle(RenderType renderType, float lineWidth, float red, float green, float blue, float alpha)
 	{
 		this.lineWidth = lineWidth;
 		this.red = red;
@@ -39,21 +37,23 @@ public class LineStyle
 	{
 		if (this.renderType.matches(renderType))
 		{
-			RenderSystem.lineWidth(this.lineWidth);
-			RenderSystem.depthFunc(this.renderType.depthFunc);
+			GlStateManager.lineWidth(this.lineWidth);
+			GlStateManager.depthFunc(this.renderType.depthFunc);
 			return true;
 		}
 		
 		return false;
 	}
 
-	public void applyColour(final FixedColorVertexConsumer consumer)
+	@SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
+	public void applyColour()
 	{
-		consumer.fixedColor(this.red, this.green, this.blue, this.alpha);
+		GlStateManager.color4f(this.red, this.green, this.blue, this.alpha);
 	}
 
-	public void applyColour(final FixedColorVertexConsumer consumer, final float tint)
+	@SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
+	public void applyColour(float tint)
 	{
-		consumer.fixedColor(this.red, this.green, this.blue, Math.round(this.alpha * tint));
+		GlStateManager.color4f(this.red, this.green, this.blue, this.alpha * tint);
 	}
 }

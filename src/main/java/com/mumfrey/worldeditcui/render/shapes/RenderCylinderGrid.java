@@ -62,8 +62,8 @@ public class RenderCylinderGrid extends RenderRegion
 			for (double tempX = negRadiusX; tempX <= posRadiusX; ++tempX)
 			{
 				double tempZ = this.radZ * Math.cos(Math.asin(tempX / this.radX));
-				buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
-				line.applyColour(buf);
+				buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
+				line.applyColour();
 				
 				buf.vertex(xPos + tempX, tmaxY - cameraY, zPos + tempZ).next();
 				buf.vertex(xPos + tempX, tmaxY - cameraY, zPos - tempZ).next();
@@ -76,8 +76,8 @@ public class RenderCylinderGrid extends RenderRegion
 			for (double tempZ = negRadiusZ; tempZ <= posRadiusZ; ++tempZ)
 			{
 				double tempX = this.radX * Math.sin(Math.acos(tempZ / this.radZ));
-				buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
-				line.applyColour(buf);
+				buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
+				line.applyColour();
 				
 				buf.vertex(xPos + tempX, tmaxY - cameraY, zPos + tempZ).next();
 				buf.vertex(xPos - tempX, tmaxY - cameraY, zPos + tempZ).next();

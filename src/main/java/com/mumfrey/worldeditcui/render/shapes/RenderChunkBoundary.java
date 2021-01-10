@@ -1,6 +1,6 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
@@ -30,7 +30,7 @@ public class RenderChunkBoundary extends RenderRegion
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation") // RenderSystem/immediate mode GL use
+	@SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
 	public void render(CUIRenderContext ctx)
 	{
 		double yMax = this.mc.world != null ? this.mc.world.getHeight() : 256.0;
@@ -47,8 +47,8 @@ public class RenderChunkBoundary extends RenderRegion
 		
 		this.grid.setPosition(new Vector3(xBase - OFFSET, yMin, zBase - 16 - OFFSET), new Vector3(xBase + 16 + OFFSET, yMax, zBase + OFFSET));
 
-		RenderSystem.pushMatrix();
-		RenderSystem.translated(0.0, -ctx.cameraPos().getY(), 0.0);
+		GlStateManager.pushMatrix();
+		GlStateManager.translated(0.0, -ctx.cameraPos().getY(), 0.0);
 
 		ctx.withCameraAt(Vector3.ZERO, this.grid::render);
 
@@ -59,7 +59,7 @@ public class RenderChunkBoundary extends RenderRegion
 			this.renderChunkBoundary(xChunk, zChunk, xBase, zBase);
 		}
 
-		RenderSystem.popMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void renderChunkBorder(double yMin, double yMax, double xBase, double zBase)
@@ -73,8 +73,8 @@ public class RenderChunkBoundary extends RenderRegion
 		{
 			if (line.prepare(this.style.getRenderType()))
 			{
-				buf.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
-				line.applyColour(buf);
+				buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
+				line.applyColour();
 				
 				for (int x = -16; x <= 32; x += spacing)
 				{
@@ -114,8 +114,8 @@ public class RenderChunkBoundary extends RenderRegion
 		{
 			if (line.prepare(this.style.getRenderType()))
 			{
-				buf.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
-				line.applyColour(buf);
+				buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
+				line.applyColour();
 
 				int[][] lastHeight = { { -1, -1 }, { -1, -1 } };
 				for (int i = 0, height = 0; i < 16; i++)

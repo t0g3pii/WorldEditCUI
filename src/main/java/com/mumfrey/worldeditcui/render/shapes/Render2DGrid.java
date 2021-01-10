@@ -53,8 +53,8 @@ public class Render2DGrid extends RenderRegion
 				continue;
 			}
 			
-			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
-			line.applyColour(buf);
+			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
+			line.applyColour();
 			for (PointRectangle point : this.points)
 			{
 				if (point != null)

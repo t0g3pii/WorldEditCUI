@@ -76,8 +76,8 @@ public class Render3DBox extends RenderRegion
 			}
 			
 			// Draw bottom face
-			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
-			line.applyColour(buf);
+			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
+			line.applyColour();
 			buf.vertex(x1, y1, z1).next();
 			buf.vertex(x2, y1, z1).next();
 			buf.vertex(x2, y1, z2).next();
@@ -85,8 +85,8 @@ public class Render3DBox extends RenderRegion
 			tessellator.draw();
 			
 			// Draw top face
-			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
-			line.applyColour(buf);
+			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION);
+			line.applyColour();
 			buf.vertex(x1, y2, z1).next();
 			buf.vertex(x2, y2, z1).next();
 			buf.vertex(x2, y2, z2).next();
@@ -94,8 +94,8 @@ public class Render3DBox extends RenderRegion
 			tessellator.draw();
 			
 			// Draw join top and bottom faces
-			buf.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
-			line.applyColour(buf);
+			buf.begin(GL11.GL_LINES, VertexFormats.POSITION);
+			line.applyColour();
 			
 			buf.vertex(x1, y1, z1).next();
 			buf.vertex(x1, y2, z1).next();
