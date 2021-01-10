@@ -32,7 +32,7 @@ public class WorldEditCUI
 {
 	public static final int PROTOCOL_VERSION = 4;
 	
-	private final Map<UUID, Region> regions = new LinkedHashMap<UUID, Region>();
+	private final Map<UUID, Region> regions = new LinkedHashMap<>();
 	private Region selection, activeRegion;
 	private CUIDebug debugger;
 	private CUIConfiguration configuration;

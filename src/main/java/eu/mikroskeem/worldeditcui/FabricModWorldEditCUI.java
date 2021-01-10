@@ -25,6 +25,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 import org.lwjgl.glfw.GLFW;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.nio.charset.StandardCharsets;
 
@@ -69,6 +70,10 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     @Override
     @SuppressWarnings("deprecation") // RenderSystem/immediate mode GL use
     public void onInitialize() {
+        if (Boolean.getBoolean("wecui.debug.mixinaudit")) {
+            MixinEnvironment.getCurrentEnvironment().audit();
+        }
+
         instance = this;
 
         // Set up event listeners

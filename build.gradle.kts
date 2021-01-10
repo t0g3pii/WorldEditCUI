@@ -18,6 +18,10 @@ repositories {
         name = "enginehub"
     }
     maven(url = "https://dl.bintray.com/earthcomputer/mods")
+    maven(url = "https://files.minecraftforge.net/maven") {
+        name = "forge"
+        content { includeGroup("net.minecraftforge") }
+    }
 }
 
 val targetVersion = 8
@@ -48,6 +52,34 @@ dependencies {
         exclude(group = "com.google.code.gson")
         exclude(group = "it.unimi.dsi")
         exclude(group = "org.apache.logging.log4j")
+    }
+    runtimeOnly("net.minecraftforge:forgeflower:latest.release")
+}
+
+tasks.withType(net.fabricmc.loom.task.AbstractRunTask::class).configureEach {
+    // Midxin debug options
+    jvmArgs(
+        // "-Dmixin.debug.verbose=true",
+        // "-Dmixin.debug.export=true",
+        // "-Dmixin.debug.export.decompile.async=false", // to get decompiled sources when mixins straight up fail to apply
+        "-Dmixin.dumpTargetOnFailure=true",
+        "-Dmixin.checks.interfaces=true",
+        "-Dwecui.debug.mixinaudit=true"
+    )
+
+    // Configure mixin agent
+    jvmArgumentProviders += CommandLineArgumentProvider {
+        // Resolve the Mixin configuration
+        // Java agent: the jar file for mixin
+        val mixinJar = configurations.runtimeClasspath.get().resolvedConfiguration
+            .getFiles { it.name == "sponge-mixin" && it.group == "net.fabricmc" }
+            .firstOrNull()
+
+        if (mixinJar != null) {
+            listOf("-javaagent:$mixinJar")
+        } else {
+            emptyList()
+        }
     }
 }
 

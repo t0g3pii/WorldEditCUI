@@ -50,6 +50,7 @@ public class CUIListenerWorldRender
 				this.controller.renderSelections(ctx);
 			}
 			catch (Exception e) {
+				this.controller.getDebugger().error("Error while attempting to render WorldEdit CUI", e);
 			}
 
 			RenderSystem.depthFunc(GL11.GL_LEQUAL);
@@ -61,6 +62,7 @@ public class CUIListenerWorldRender
 			RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 		} catch (Exception ex)
 		{
+			this.controller.getDebugger().error("Failed while preparing state for WorldEdit CUI", ex);
 		}
 	}
 }

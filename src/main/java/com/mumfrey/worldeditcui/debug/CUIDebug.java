@@ -23,9 +23,11 @@ import java.nio.file.Path;
  */
 public final class CUIDebug implements InitialisationFactory
 {
+	private static final boolean LOG_ALL_ERRORS = Boolean.getBoolean("wecui.debug.logall");
 	private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger("WorldEditCUI");
 	
 	private final WorldEditCUI controller;
+	private boolean debugLogged;
 
 	public CUIDebug(WorldEditCUI controller)
 	{
@@ -74,6 +76,13 @@ public final class CUIDebug implements InitialisationFactory
 		if (this.controller.getConfiguration().isDebugMode()) // TODO: do this with a filter and a MARKER, maybe eventually?
 		{
 			CUIDebug.LOGGER.info("Debug - " + message);
+		}
+	}
+
+	public void error(String message, Throwable exception) {
+		if (!this.debugLogged || LOG_ALL_ERRORS) {
+			CUIDebug.LOGGER.error(message, exception);
+			this.debugLogged = true;
 		}
 	}
 	
