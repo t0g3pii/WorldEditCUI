@@ -20,6 +20,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderEllipsoid extends RenderRegion
 {
 	protected final static double TAU = Math.PI * 2.0;
+	protected static final double SUBDIVISIONS = 40;
 	
 	protected PointCube centre;
 	private final Vector3 radii;
@@ -67,9 +68,9 @@ public class RenderEllipsoid extends RenderRegion
 			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
 			line.applyColour(buf);
 			
-			for (int i = 0; i <= 40; i++)
+			for (int i = 0; i <= SUBDIVISIONS; i++)
 			{
-				double tempTheta = i * TAU / 40;
+				double tempTheta = i * TAU / SUBDIVISIONS;
 				double tempX = this.radii.getX() * Math.cos(tempTheta) * Math.cos(Math.asin(yBlock / this.radii.getY()));
 				double tempZ = this.radii.getZ() * Math.sin(tempTheta) * Math.cos(Math.asin(yBlock / this.radii.getY()));
 				
@@ -81,9 +82,9 @@ public class RenderEllipsoid extends RenderRegion
 		buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
 		line.applyColour(buf);
 		
-		for (int i = 0; i <= 40; i++)
+		for (int i = 0; i <= SUBDIVISIONS; i++)
 		{
-			double tempTheta = i * TAU / 40;
+			double tempTheta = i * TAU / SUBDIVISIONS;
 			double tempX = this.radii.getX() * Math.cos(tempTheta);
 			double tempZ = this.radii.getZ() * Math.sin(tempTheta);
 			
@@ -103,9 +104,9 @@ public class RenderEllipsoid extends RenderRegion
 			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
 			line.applyColour(buf);
 			
-			for (int i = 0; i <= 40; i++)
+			for (int i = 0; i <= SUBDIVISIONS; i++)
 			{
-				double tempTheta = i * TAU / 40;
+				double tempTheta = i * TAU / SUBDIVISIONS;
 				double tempY = this.radii.getY() * Math.cos(tempTheta) * Math.sin(Math.acos(xBlock / this.radii.getX()));
 				double tempZ = this.radii.getZ() * Math.sin(tempTheta) * Math.sin(Math.acos(xBlock / this.radii.getX()));
 				
@@ -117,9 +118,9 @@ public class RenderEllipsoid extends RenderRegion
 		buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
 		line.applyColour(buf);
 		
-		for (int i = 0; i <= 40; i++)
+		for (int i = 0; i <= SUBDIVISIONS; i++)
 		{
-			double tempTheta = i * TAU / 40;
+			double tempTheta = i * TAU / SUBDIVISIONS;
 			double tempY = this.radii.getY() * Math.cos(tempTheta);
 			double tempZ = this.radii.getZ() * Math.sin(tempTheta);
 			
@@ -139,9 +140,9 @@ public class RenderEllipsoid extends RenderRegion
 			buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
 			line.applyColour(buf);
 			
-			for (int i = 0; i <= 40; i++)
+			for (int i = 0; i <= SUBDIVISIONS; i++)
 			{
-				double tempTheta = i * TAU / 40;
+				double tempTheta = i * TAU / SUBDIVISIONS;
 				double tempX = this.radii.getX() * Math.sin(tempTheta) * Math.sin(Math.acos(zBlock / this.radii.getZ()));
 				double tempY = this.radii.getY() * Math.cos(tempTheta) * Math.sin(Math.acos(zBlock / this.radii.getZ()));
 				
@@ -153,9 +154,9 @@ public class RenderEllipsoid extends RenderRegion
 		buf.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
 		line.applyColour(buf);
 		
-		for (int i = 0; i <= 40; i++)
+		for (int i = 0; i <= SUBDIVISIONS; i++)
 		{
-			double tempTheta = i * TAU / 40;
+			double tempTheta = i * TAU / SUBDIVISIONS;
 			double tempX = this.radii.getX() * Math.cos(tempTheta);
 			double tempY = this.radii.getY() * Math.sin(tempTheta);
 			

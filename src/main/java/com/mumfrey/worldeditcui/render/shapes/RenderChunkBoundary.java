@@ -45,7 +45,7 @@ public class RenderChunkBoundary extends RenderRegion
 		double xBase = 0 - (xBlock - (xChunk * 16)) - (ctx.cameraPos().getX() - xBlock);
 		double zBase = (0 - (zBlock - (zChunk * 16)) - (ctx.cameraPos().getZ() - zBlock)) + 16;
 		
-		this.grid.setPosition(new Vector3(xBase, yMin, zBase - 16), new Vector3(xBase + 16, yMax, zBase));
+		this.grid.setPosition(new Vector3(xBase - OFFSET, yMin, zBase - 16 - OFFSET), new Vector3(xBase + 16 + OFFSET, yMax, zBase + OFFSET));
 
 		RenderSystem.pushMatrix();
 		RenderSystem.translated(0.0, -ctx.cameraPos().getY(), 0.0);
