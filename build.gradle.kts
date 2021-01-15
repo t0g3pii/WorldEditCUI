@@ -12,7 +12,7 @@ val modmenuVersion = "1.14.13+build.22"
 val multiconnectVersion = "1.3.34"
 
 group = "com.mumfrey.worldeditcui"
-version = "$minecraftVersion+01"
+version = "$minecraftVersion+02-SNAPSHOT"
 
 repositories {
     maven(url = "https://maven.enginehub.org/repo") {
