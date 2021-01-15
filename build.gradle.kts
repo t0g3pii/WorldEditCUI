@@ -1,11 +1,12 @@
 plugins {
     java
     id("fabric-loom") version "0.5-SNAPSHOT"
+    id("com.github.ben-manes.versions") version "0.36.0"
 }
 
-val minecraftVersion = "1.16.4"
-val yarnVersion = "$minecraftVersion+build.7:v2"
-val fabricLoaderVersion = "0.10.8"
+val minecraftVersion = "1.16.5"
+val yarnVersion = "$minecraftVersion+build.1:v2"
+val fabricLoaderVersion = "0.11.0"
 val fabricApiVersion = "0.29.3+1.16"
 val modmenuVersion = "1.14.13+build.22"
 val multiconnectVersion = "1.3.34"
