@@ -3,6 +3,7 @@ package eu.mikroskeem.worldeditcui;
 import net.earthcomputer.multiconnect.api.MultiConnectAPI;
 import net.earthcomputer.multiconnect.api.Protocols;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
@@ -15,25 +16,12 @@ import net.minecraft.util.Identifier;
  */
 final class CUINetworking {
 
-    private static final boolean MULTICONNECT_AVAILABLE;
+    private static final boolean MULTICONNECT_AVAILABLE = FabricLoader.getInstance().isModLoaded("multiconnect");
 
     private static final String CHANNEL_LEGACY = "WECUI"; // pre-1.13 channel name
     public static final Identifier CHANNEL_WECUI = new Identifier("worldedit", "cui");
 
-    static {
-        MULTICONNECT_AVAILABLE = isMultiConnectAvailable();
-    }
-
     private CUINetworking() {
-    }
-
-    private static boolean isMultiConnectAvailable() {
-        try {
-            Class.forName("net.earthcomputer.multiconnect.api.MultiConnectAPI");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false; // MultiConnect not installed
-        }
     }
 
     public static void send(final ClientPlayNetworkHandler handler, final PacketByteBuf codec) {
