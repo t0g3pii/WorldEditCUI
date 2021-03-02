@@ -40,6 +40,10 @@ tasks.withType(JavaCompile::class) {
 }
 
 dependencies {
+    constraints {
+        modRuntime("org.yaml:snakeyaml:1.27")
+    }
+
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings("net.fabricmc:yarn:$yarnVersion")
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
@@ -48,7 +52,7 @@ dependencies {
     modImplementation("net.earthcomputer:multiconnect:$multiconnectVersion:api")
 
     // for development
-    modRuntime("com.sk89q.worldedit:worldedit-fabric-mc1.16.3:7.3.0-SNAPSHOT") {
+    modRuntime("com.sk89q.worldedit:worldedit-fabric-mc1.16.3:7.2.3") {
         exclude(group = "com.google.guava")
         exclude(group = "com.google.code.gson")
         exclude(group = "it.unimi.dsi")
