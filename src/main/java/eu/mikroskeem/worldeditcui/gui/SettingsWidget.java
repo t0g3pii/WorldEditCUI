@@ -47,7 +47,7 @@ public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry>
 
     @Override
     protected void renderList(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float delta) {
-        int itemCount = this.getItemCount();
+        int itemCount = this.getEntryCount();
 
         for (int index = 0; index < itemCount; ++index) {
             int entryTop = this.getRowTop(index) + 2;
@@ -65,7 +65,7 @@ public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry>
     public final SettingsEntry getEntryAtPos(double x, double y) {
         int int_5 = MathHelper.floor(y - (double) this.top) - this.headerHeight + (int) this.getScrollAmount() - 4;
         int index = int_5 / this.itemHeight;
-        return x < (double) this.getScrollbarPositionX() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && int_5 >= 0 && index < this.getItemCount() ? this.children().get(index) : null;
+        return x < (double) this.getScrollbarPositionX() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && int_5 >= 0 && index < this.getEntryCount() ? this.children().get(index) : null;
     }
 
     @Override

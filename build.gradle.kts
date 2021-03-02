@@ -1,14 +1,14 @@
 plugins {
     java
-    id("fabric-loom") version "0.5-SNAPSHOT"
+    id("fabric-loom") version "0.6-SNAPSHOT"
     id("com.github.ben-manes.versions") version "0.36.0"
 }
 
 val minecraftVersion = "1.16.5"
-val yarnVersion = "$minecraftVersion+build.1:v2"
-val fabricLoaderVersion = "0.11.0"
-val fabricApiVersion = "0.29.3+1.16"
-val modmenuVersion = "1.14.13+build.22"
+val yarnVersion = "$minecraftVersion+build.5:v2"
+val fabricLoaderVersion = "0.11.1"
+val fabricApiVersion = "0.31.0+1.16"
+val modmenuVersion = "1.16.8"
 val multiconnectVersion = "1.3.34"
 
 group = "com.mumfrey.worldeditcui"
@@ -19,6 +19,10 @@ repositories {
         name = "enginehub"
     }
     maven(url = "https://dl.bintray.com/earthcomputer/mods")
+    maven(url = "https://maven.terraformersmc.com/releases/") {
+        name = "terraformers"
+        content { includeGroup("com.terraformersmc") }
+    }
     maven(url = "https://files.minecraftforge.net/maven") {
         name = "forge"
         content { includeGroup("net.minecraftforge") }
@@ -48,7 +52,7 @@ dependencies {
     mappings("net.fabricmc:yarn:$yarnVersion")
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
-    modImplementation("io.github.prospector:modmenu:$modmenuVersion")
+    modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
     modImplementation("net.earthcomputer:multiconnect:$multiconnectVersion:api")
 
     // for development
