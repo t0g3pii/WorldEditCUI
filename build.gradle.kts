@@ -1,7 +1,7 @@
 plugins {
     java
-    id("fabric-loom") version "0.6-SNAPSHOT"
-    id("com.github.ben-manes.versions") version "0.36.0"
+    id("fabric-loom") version "0.7-SNAPSHOT"
+    id("com.github.ben-manes.versions") version "0.39.0"
 }
 
 val minecraftVersion = "1.16.5"
@@ -9,7 +9,7 @@ val yarnVersion = "$minecraftVersion+build.5:v2"
 val fabricLoaderVersion = "0.11.1"
 val fabricApiVersion = "0.31.0+1.16"
 val modmenuVersion = "1.16.8"
-val multiconnectVersion = "1.3.34"
+val multiconnectVersion = "1.3.36"
 
 group = "com.mumfrey.worldeditcui"
 version = "$minecraftVersion+03-SNAPSHOT"
@@ -18,7 +18,6 @@ repositories {
     maven(url = "https://maven.enginehub.org/repo") {
         name = "enginehub"
     }
-    maven(url = "https://dl.bintray.com/earthcomputer/mods")
     maven(url = "https://maven.terraformersmc.com/releases/") {
         name = "terraformers"
         content { includeGroup("com.terraformersmc") }
@@ -44,24 +43,20 @@ tasks.withType(JavaCompile::class) {
 }
 
 dependencies {
-    constraints {
-        modRuntime("org.yaml:snakeyaml:1.27")
-    }
-
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings("net.fabricmc:yarn:$yarnVersion")
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
-    modImplementation("net.earthcomputer:multiconnect:$multiconnectVersion:api")
+    modImplementation("net.earthcomputer.multiconnect:multiconnect-api:$multiconnectVersion")
 
     // for development
-    modRuntime("com.sk89q.worldedit:worldedit-fabric-mc1.16.3:7.2.3") {
+    /*modRuntime("com.sk89q.worldedit:worldedit-fabric-mc1.16.3:7.2.5") {
         exclude(group = "com.google.guava")
         exclude(group = "com.google.code.gson")
         exclude(group = "it.unimi.dsi")
         exclude(group = "org.apache.logging.log4j")
-    }
+    }*/
     runtimeOnly("net.minecraftforge:forgeflower:latest.release")
 }
 
@@ -95,8 +90,7 @@ tasks.withType(net.fabricmc.loom.task.AbstractRunTask::class).configureEach {
 tasks.processResources.configure {
     inputs.property("version", project.version)
 
-    from(sourceSets["main"].resources.srcDirs) {
-        include("fabric.mod.json")
+    filesMatching("fabric.mod.json") {
         expand("version" to project.version)
     }
 }
