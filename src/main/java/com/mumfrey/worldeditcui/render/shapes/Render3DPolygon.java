@@ -39,8 +39,8 @@ public class Render3DPolygon extends RenderRegion
 				continue;
 			}
 			
-			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION);
-			line.applyColour();
+			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+			line.applyColour(buf);
 			for (int i = 0; i < this.vertices.length + 1; i++) // Loop around by one vertex to compensate for LINE_STRIP instead of LINE_LOOP
 			{
 				final Vector3 vertex = this.vertices[i % this.vertices.length];

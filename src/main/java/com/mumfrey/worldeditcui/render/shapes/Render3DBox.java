@@ -10,7 +10,6 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Draws a rectangular prism around 2 corners
@@ -77,8 +76,8 @@ public class Render3DBox extends RenderRegion
 			}
 			
 			// Draw bottom face
-			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION);
-			line.applyColour();
+			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+			line.applyColour(buf);
 			buf.vertex(x1, y1, z1).next();
 			buf.vertex(x2, y1, z1).next();
 			buf.vertex(x2, y1, z2).next();
@@ -87,8 +86,8 @@ public class Render3DBox extends RenderRegion
 			tessellator.draw();
 			
 			// Draw top face
-			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION);
-			line.applyColour();
+			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+			line.applyColour(buf);
 			buf.vertex(x1, y2, z1).next();
 			buf.vertex(x2, y2, z1).next();
 			buf.vertex(x2, y2, z2).next();
@@ -97,9 +96,9 @@ public class Render3DBox extends RenderRegion
 			tessellator.draw();
 			
 			// Draw join top and bottom faces
-			buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION);
-			line.applyColour();
-			
+			buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
+			line.applyColour(buf);
+
 			buf.vertex(x1, y1, z1).next();
 			buf.vertex(x1, y2, z1).next();
 			

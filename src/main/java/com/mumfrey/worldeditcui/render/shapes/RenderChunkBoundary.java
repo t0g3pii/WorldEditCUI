@@ -72,9 +72,9 @@ public class RenderChunkBoundary extends RenderRegion
 		{
 			if (line.prepare(this.style.getRenderType()))
 			{
-				buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION);
-				line.applyColour();
-				
+				buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
+				line.applyColour(buf);
+
 				for (int x = -16; x <= 32; x += spacing)
 				{
 					for (int z = -16; z <= 32; z += spacing)
@@ -113,8 +113,8 @@ public class RenderChunkBoundary extends RenderRegion
 		{
 			if (line.prepare(this.style.getRenderType()))
 			{
-				buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION);
-				line.applyColour();
+				buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
+				line.applyColour(buf);
 
 				int[][] lastHeight = { { -1, -1 }, { -1, -1 } };
 				for (int i = 0, height = 0; i < 16; i++)

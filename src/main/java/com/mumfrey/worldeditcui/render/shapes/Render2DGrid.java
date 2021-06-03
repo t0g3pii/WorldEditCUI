@@ -53,8 +53,8 @@ public class Render2DGrid extends RenderRegion
 				continue;
 			}
 			
-			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION);
-			line.applyColour();
+			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+			line.applyColour(buf);
 			for (PointRectangle point : this.points)
 			{
 				if (point != null)

@@ -48,7 +48,6 @@ public class RenderEllipsoid extends RenderRegion
 		ctx.matrices().push();
 		ctx.matrices().translate(this.centreX - ctx.cameraPos().getX(), this.centreY - ctx.cameraPos().getY(), this.centreZ - ctx.cameraPos().getZ());
 		ctx.applyMatrices();
-		RenderSystem.setShader(GameRenderer::getPositionShader);
 
 		for (LineStyle line : this.style.getLines())
 		{
@@ -71,9 +70,9 @@ public class RenderEllipsoid extends RenderRegion
 		int yRad = (int)Math.floor(this.radii.getY());
 		for (int yBlock = -yRad; yBlock < yRad; yBlock++)
 		{
-			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION);
-			line.applyColour();
-			
+			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+			line.applyColour(buf);
+
 			for (int i = 0; i <= SUBDIVISIONS + 1; i++)
 			{
 				double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS; // overlap by one for LINE_STRIP
@@ -85,9 +84,9 @@ public class RenderEllipsoid extends RenderRegion
 			tessellator.draw();
 		}
 		
-		buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION);
-		line.applyColour();
-		
+		buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+		line.applyColour(buf);
+
 		for (int i = 0; i <= SUBDIVISIONS + 1; i++)
 		{
 			double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS;
@@ -107,9 +106,9 @@ public class RenderEllipsoid extends RenderRegion
 		int xRad = (int)Math.floor(this.radii.getX());
 		for (int xBlock = -xRad; xBlock < xRad; xBlock++)
 		{
-			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION);
-			line.applyColour();
-			
+			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+			line.applyColour(buf);
+
 			for (int i = 0; i <= SUBDIVISIONS + 1; i++)
 			{
 				double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS;
@@ -121,9 +120,9 @@ public class RenderEllipsoid extends RenderRegion
 			tessellator.draw();
 		}
 		
-		buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION);
-		line.applyColour();
-		
+		buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+		line.applyColour(buf);
+
 		for (int i = 0; i <= SUBDIVISIONS + 1; i++)
 		{
 			double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS; // override by one for LINE_STRIP
@@ -143,9 +142,9 @@ public class RenderEllipsoid extends RenderRegion
 		int zRad = (int)Math.floor(this.radii.getZ());
 		for (int zBlock = -zRad; zBlock < zRad; zBlock++)
 		{
-			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION);
-			line.applyColour();
-			
+			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+			line.applyColour(buf);
+
 			for (int i = 0; i <= SUBDIVISIONS + 1; i++)
 			{
 				double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS; // overlap by one for LINE_STRIP
@@ -157,9 +156,9 @@ public class RenderEllipsoid extends RenderRegion
 			tessellator.draw();
 		}
 		
-		buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION);
-		line.applyColour();
-		
+		buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+		line.applyColour(buf);
+
 		for (int i = 0; i <= SUBDIVISIONS + 1; i++)
 		{
 			double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS; // overlap by one for LINE_STRIP

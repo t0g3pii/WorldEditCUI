@@ -8,7 +8,6 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Draws the top and bottom circles around a cylindrical region
@@ -52,9 +51,9 @@ public class RenderCylinderBox extends RenderRegion
 			double twoPi = Math.PI * 2;
 			for (int yBlock : new int[] { this.minY, this.maxY + 1 })
 			{
-				buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION);
-				line.applyColour();
-				
+				buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+				line.applyColour(buf);
+
 				for (int i = 0; i <= 75; i++)
 				{
 					double tempTheta = i * twoPi / 75;

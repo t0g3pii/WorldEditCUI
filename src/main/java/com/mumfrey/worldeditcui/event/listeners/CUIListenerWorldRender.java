@@ -1,15 +1,13 @@
 package com.mumfrey.worldeditcui.event.listeners;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 
 /**
  * Listener for WorldRenderEvent
@@ -45,9 +43,7 @@ public class CUIListenerWorldRender
 			RenderSystem.enableDepthTest();
 			RenderSystem.depthMask(false);
 			// this.ctx.matrices().push();
-			RenderSystem.setShaderFogStart(Float.MAX_VALUE);
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-			RenderSystem.setShader(GameRenderer::getPositionShader);
+			RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
 			try
 			{
@@ -57,7 +53,7 @@ public class CUIListenerWorldRender
 				this.controller.getDebugger().error("Error while attempting to render WorldEdit CUI", e);
 			}
 
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+			Tessellator.getInstance().getBuffer().unfixColor();
 			RenderSystem.depthFunc(GL11.GL_LEQUAL);
 			// this.ctx.matrices().pop();
 

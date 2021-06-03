@@ -1,8 +1,8 @@
 package com.mumfrey.worldeditcui.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.render.RenderStyle.RenderType;
+import net.minecraft.client.render.FixedColorVertexConsumer;
 
 /**
  * Stores data about a line that can be rendered
@@ -13,15 +13,16 @@ import com.mumfrey.worldeditcui.render.RenderStyle.RenderType;
  */
 public class LineStyle
 {
-	public final float lineWidth, red, green, blue, alpha;
+	public final float lineWidth;
+	public final int red, green, blue, alpha;
 	public final RenderType renderType;
 	
-	public LineStyle(RenderType renderType, float lineWidth, float red, float green, float blue)
+	public LineStyle(RenderType renderType, float lineWidth, int red, int green, int blue)
 	{
-		this(renderType, lineWidth, red, green, blue, 1.0f);
+		this(renderType, lineWidth, red, green, blue, 0xff);
 	}
 	
-	public LineStyle(RenderType renderType, float lineWidth, float red, float green, float blue, float alpha)
+	public LineStyle(RenderType renderType, float lineWidth, int red, int green, int blue, int alpha)
 	{
 		this.lineWidth = lineWidth;
 		this.red = red;
@@ -46,13 +47,13 @@ public class LineStyle
 		return false;
 	}
 
-	public void applyColour()
+	public void applyColour(final FixedColorVertexConsumer consumer)
 	{
-		RenderSystem.setShaderColor(this.red, this.green, this.blue, this.alpha);
+		consumer.fixedColor(this.red, this.green, this.blue, this.alpha);
 	}
 
-	public void applyColour(float tint)
+	public void applyColour(final FixedColorVertexConsumer consumer, final float tint)
 	{
-		RenderSystem.setShaderColor(this.red, this.green, this.blue, this.alpha * tint);
+		consumer.fixedColor(this.red, this.green, this.blue, Math.round(this.alpha * tint));
 	}
 }

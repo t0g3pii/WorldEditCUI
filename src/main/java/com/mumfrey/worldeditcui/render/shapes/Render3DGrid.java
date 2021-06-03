@@ -8,7 +8,6 @@ import com.mumfrey.worldeditcui.util.BoundingBox;
 import com.mumfrey.worldeditcui.util.Observable;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -98,8 +97,8 @@ public class Render3DGrid extends RenderRegion
 			{
 				if (line.prepare(this.style.getRenderType()))
 				{
-					buf.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-					line.applyColour(0.25F);
+					buf.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+					line.applyColour(buf, 0.25F);
 					for (int i = 0; i < vertices.length; i += 3)
 					{
 						buf.vertex(vertices[i], vertices[i + 1], vertices[i + 2]).next();
@@ -127,8 +126,8 @@ public class Render3DGrid extends RenderRegion
 				continue;
 			}
 			
-			buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION);
-			line.applyColour();
+			buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
+			line.applyColour(buf);
 
 			for (double y = Math.max(y1, -cullAtY) + OFFSET; y <= y2 + OFFSET && y <= cullAtY; y += this.spacing)
 			{
