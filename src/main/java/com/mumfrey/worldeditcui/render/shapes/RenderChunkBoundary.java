@@ -1,6 +1,5 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
@@ -30,7 +29,6 @@ public class RenderChunkBoundary extends RenderRegion
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
 	public void render(CUIRenderContext ctx)
 	{
 		double yMin = this.mc.world != null ? this.mc.world.getDimension().getMinimumY() : 0.0;
@@ -47,8 +45,9 @@ public class RenderChunkBoundary extends RenderRegion
 		
 		this.grid.setPosition(new Vector3(xBase - OFFSET, yMin, zBase - 16 - OFFSET), new Vector3(xBase + 16 + OFFSET, yMax, zBase + OFFSET));
 
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(0.0, -ctx.cameraPos().getY(), 0.0);
+		ctx.matrices().push();
+		ctx.matrices().translate(0.0, -ctx.cameraPos().getY(), 0.0);
+		ctx.applyMatrices();
 
 		ctx.withCameraAt(Vector3.ZERO, this.grid::render);
 
@@ -59,7 +58,7 @@ public class RenderChunkBoundary extends RenderRegion
 			this.renderChunkBoundary(xChunk, zChunk, xBase, zBase);
 		}
 
-		GlStateManager.popMatrix();
+		ctx.matrices().pop();
 	}
 
 	private void renderChunkBorder(double yMin, double yMax, double xBase, double zBase)

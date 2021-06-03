@@ -1,6 +1,7 @@
 package com.mumfrey.worldeditcui.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.render.RenderStyle.RenderType;
 
 /**
@@ -37,23 +38,21 @@ public class LineStyle
 	{
 		if (this.renderType.matches(renderType))
 		{
-			GlStateManager.lineWidth(this.lineWidth);
-			GlStateManager.depthFunc(this.renderType.depthFunc);
+			RenderSystem.lineWidth(this.lineWidth);
+			RenderSystem.depthFunc(this.renderType.depthFunc);
 			return true;
 		}
 		
 		return false;
 	}
 
-	@SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
 	public void applyColour()
 	{
-		GlStateManager.color4f(this.red, this.green, this.blue, this.alpha);
+		RenderSystem.setShaderColor(this.red, this.green, this.blue, this.alpha);
 	}
 
-	@SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
 	public void applyColour(float tint)
 	{
-		GlStateManager.color4f(this.red, this.green, this.blue, this.alpha * tint);
+		RenderSystem.setShaderColor(this.red, this.green, this.blue, this.alpha * tint);
 	}
 }

@@ -1,12 +1,13 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.points.PointCube;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -42,12 +43,13 @@ public class RenderEllipsoid extends RenderRegion
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation") // GLStateManager/immediate mode GL use
 	public void render(CUIRenderContext ctx)
 	{
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(this.centreX - ctx.cameraPos().getX(), this.centreY - ctx.cameraPos().getY(), this.centreZ - ctx.cameraPos().getZ());
-		
+		ctx.matrices().push();
+		ctx.matrices().translate(this.centreX - ctx.cameraPos().getX(), this.centreY - ctx.cameraPos().getY(), this.centreZ - ctx.cameraPos().getZ());
+		ctx.applyMatrices();
+		RenderSystem.setShader(GameRenderer::getPositionShader);
+
 		for (LineStyle line : this.style.getLines())
 		{
 			if (line.prepare(this.style.getRenderType()))
@@ -58,7 +60,7 @@ public class RenderEllipsoid extends RenderRegion
 			}
 		}
 
-		GlStateManager.popMatrix();
+		ctx.matrices().pop();
 	}
 	
 	protected void drawXZPlane(LineStyle line)

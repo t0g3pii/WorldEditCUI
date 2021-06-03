@@ -1,14 +1,14 @@
 plugins {
     java
-    id("fabric-loom") version "0.7-SNAPSHOT"
+    id("fabric-loom") version "0.8-SNAPSHOT"
     id("com.github.ben-manes.versions") version "0.39.0"
 }
 
-val minecraftVersion = "21w08b"
-val yarnVersion = "$minecraftVersion+build.16:v2"
-val fabricLoaderVersion = "0.11.2"
-val fabricApiVersion = "0.31.2+1.17"
-val modmenuVersion = "2.0.0-beta.2"
+val minecraftVersion = "1.17-pre2"
+val yarnVersion = "$minecraftVersion+build.1:v2"
+val fabricLoaderVersion = "0.11.3"
+val fabricApiVersion = "0.34.8+1.17"
+val modmenuVersion = "2.0.0-beta.7"
 val multiconnectVersion = "1.3.36"
 
 group = "com.mumfrey.worldeditcui"
@@ -33,16 +33,17 @@ repositories {
     }
 }
 
-val targetVersion = 8
+val targetVersion = 16
 java {
     sourceCompatibility = JavaVersion.toVersion(targetVersion)
     targetCompatibility = sourceCompatibility
+    if (JavaVersion.current() < JavaVersion.toVersion(targetVersion)) {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(targetVersion))
+    }
 }
 
 tasks.withType(JavaCompile::class) {
-    if (JavaVersion.current().isJava10Compatible) {
-        options.release.set(targetVersion)
-    }
+    options.release.set(targetVersion)
     options.encoding = "UTF-8"
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing"))
 }

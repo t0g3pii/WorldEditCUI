@@ -6,7 +6,6 @@ import com.mumfrey.worldeditcui.config.CUIConfiguration;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerChannel;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerWorldRender;
 import eu.mikroskeem.worldeditcui.mixins.MinecraftClientAccess;
-import eu.mikroskeem.worldeditcui.mixins.RenderPhaseAccess;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
@@ -84,13 +83,14 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(ctx -> {
             if (ctx.advancedTranslucency()) {
                 try {
-                    RenderSystem.pushMatrix();
-                    RenderSystem.multMatrix(ctx.matrixStack().peek().getModel());
-                    RenderPhaseAccess.getTranslucentTarget().startDrawing();
+                    RenderSystem.getModelViewStack().push();
+                    RenderSystem.getModelViewStack().method_34425(ctx.matrixStack().peek().getModel());
+                    RenderSystem.applyModelViewMatrix();
+                    ctx.worldRenderer().getTranslucentFramebuffer().beginWrite(false);
                     this.onPostRenderEntities(ctx);
                 } finally {
-                    RenderPhaseAccess.getTranslucentTarget().endDrawing();
-                    RenderSystem.popMatrix();
+                    MinecraftClient.getInstance().getFramebuffer().beginWrite(false);
+                    RenderSystem.getModelViewStack().pop();
                 }
             }
         });
