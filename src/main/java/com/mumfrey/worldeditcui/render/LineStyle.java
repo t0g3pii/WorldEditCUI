@@ -13,6 +13,8 @@ import net.minecraft.client.render.FixedColorVertexConsumer;
  */
 public class LineStyle
 {
+	public static final float DEFAULT_WIDTH = 3.0f;
+
 	public final float lineWidth;
 	public final int red, green, blue, alpha;
 	public final RenderType renderType;

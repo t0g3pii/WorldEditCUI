@@ -8,7 +8,7 @@ import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.math.MatrixStack;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL32;
 
 /**
  * Listener for WorldRenderEvent
@@ -36,7 +36,7 @@ public class CUIListenerWorldRender
 		{
 			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getCamera().getPos()), matrices, partialTicks);
 			RenderSystem.enableBlend();
-			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			RenderSystem.blendFunc(GL32.GL_SRC_ALPHA, GL32.GL_ONE_MINUS_SRC_ALPHA);
 			// RenderSystem.enableAlphaTest();
 			// RenderSystem.alphaFunc(GL11.GL_GREATER, 0.0F);
 			RenderSystem.disableTexture();
@@ -56,7 +56,7 @@ public class CUIListenerWorldRender
 			}
 
 			Tessellator.getInstance().getBuffer().unfixColor();
-			RenderSystem.depthFunc(GL11.GL_LEQUAL);
+			RenderSystem.depthFunc(GL32.GL_LEQUAL);
 
 			RenderSystem.setShaderFogStart(oldFog);
 			RenderSystem.depthMask(true);
