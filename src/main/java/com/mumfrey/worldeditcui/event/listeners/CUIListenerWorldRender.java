@@ -35,9 +35,15 @@ public class CUIListenerWorldRender
 		try
 		{
 			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getCamera().getPos()), matrices, partialTicks);
+			final var bufferBuilder = Tessellator.getInstance().getBuffer();
+			bufferBuilder.setCameraPosition(
+				 (float) this.ctx.cameraPos().getX(),
+				 (float) this.ctx.cameraPos().getY(),
+				 (float) this.ctx.cameraPos().getZ()
+			);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GL32.GL_SRC_ALPHA, GL32.GL_ONE_MINUS_SRC_ALPHA);
-			// RenderSystem.enableAlphaTest();
+			//RenderSystem.enableAlphaTest();
 			// RenderSystem.alphaFunc(GL11.GL_GREATER, 0.0F);
 			RenderSystem.disableTexture();
 			RenderSystem.enableDepthTest();
@@ -48,14 +54,14 @@ public class CUIListenerWorldRender
 
 			try
 			{
-				RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 0.5f);
+				RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 				this.controller.renderSelections(this.ctx);
 			}
 			catch (Exception e) {
 				this.controller.getDebugger().error("Error while attempting to render WorldEdit CUI", e);
 			}
 
-			Tessellator.getInstance().getBuffer().unfixColor();
+			bufferBuilder.unfixColor();
 			RenderSystem.depthFunc(GL32.GL_LEQUAL);
 
 			RenderSystem.setShaderFogStart(oldFog);
