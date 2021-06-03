@@ -60,6 +60,7 @@ public class RenderEllipsoid extends RenderRegion
 		}
 
 		ctx.matrices().pop();
+		ctx.applyMatrices();
 	}
 	
 	protected void drawXZPlane(LineStyle line)

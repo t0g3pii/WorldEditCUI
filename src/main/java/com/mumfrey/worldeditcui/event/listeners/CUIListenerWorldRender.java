@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.math.MatrixStack;
@@ -34,7 +35,6 @@ public class CUIListenerWorldRender
 		try
 		{
 			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getCamera().getPos()), matrices, partialTicks);
-			// RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE1, 240.0F, 240.0F);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			// RenderSystem.enableAlphaTest();
@@ -42,11 +42,13 @@ public class CUIListenerWorldRender
 			RenderSystem.disableTexture();
 			RenderSystem.enableDepthTest();
 			RenderSystem.depthMask(false);
-			// this.ctx.matrices().push();
-			RenderSystem.setShader(GameRenderer::getPositionColorShader);
+			final float oldFog = RenderSystem.getShaderFogStart();
+			BackgroundRenderer.method_23792(); // disableFog
+			RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
 
 			try
 			{
+				RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 0.5f);
 				this.controller.renderSelections(this.ctx);
 			}
 			catch (Exception e) {
@@ -55,8 +57,8 @@ public class CUIListenerWorldRender
 
 			Tessellator.getInstance().getBuffer().unfixColor();
 			RenderSystem.depthFunc(GL11.GL_LEQUAL);
-			// this.ctx.matrices().pop();
 
+			RenderSystem.setShaderFogStart(oldFog);
 			RenderSystem.depthMask(true);
 			RenderSystem.enableTexture();
 			RenderSystem.disableBlend();

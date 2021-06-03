@@ -8,6 +8,7 @@ import com.mumfrey.worldeditcui.util.BoundingBox;
 import com.mumfrey.worldeditcui.util.Observable;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -83,6 +84,7 @@ public class Render3DGrid extends RenderRegion
 		if (this.spacing != 1.0)
 		{
 			RenderSystem.disableCull();
+			RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
 			double[] vertices = {
 					x1, y1, z1,  x2, y1, z1,  x2, y1, z2,  x1, y1, z2, // bottom
@@ -107,6 +109,7 @@ public class Render3DGrid extends RenderRegion
 				}
 			}
 
+			RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
 			RenderSystem.enableCull();
 		}
 		

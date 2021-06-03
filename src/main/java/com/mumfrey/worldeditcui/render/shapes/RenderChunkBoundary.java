@@ -59,6 +59,7 @@ public class RenderChunkBoundary extends RenderRegion
 		}
 
 		ctx.matrices().pop();
+		ctx.applyMatrices();
 	}
 
 	private void renderChunkBorder(double yMin, double yMax, double xBase, double zBase)
