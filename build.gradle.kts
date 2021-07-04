@@ -15,16 +15,13 @@ group = "com.mumfrey.worldeditcui"
 version = "$minecraftVersion+01-SNAPSHOT"
 
 repositories {
-    maven(url = "https://maven.enginehub.org/repo") {
-        name = "enginehub"
-    }
-    maven(url = "https://maven.terraformersmc.com/releases/") {
-        name = "terraformers"
-        content { includeGroup("com.terraformersmc") }
-    }
-    maven(url = "https://files.minecraftforge.net/maven") {
-        name = "forge"
-        content { includeGroup("net.minecraftforge") }
+    // mirrors:
+    // - https://maven.enginehub.org/repo
+    // - https://maven.terraformersmc.com/releases/
+    // - https://files.minecraftforge.net/maven
+    maven(url = "https://repo.stellardrift.ca/repository/stable/") {
+        name = "stellardriftReleases"
+	mavenContent { releasesOnly() }
     }
     mavenLocal {
         content {
