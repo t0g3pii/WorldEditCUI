@@ -8,7 +8,7 @@ val minecraftVersion = "1.17-pre2"
 val yarnVersion = "$minecraftVersion+build.1:v2"
 val fabricLoaderVersion = "0.11.3"
 val fabricApiVersion = "0.34.8+1.17"
-val modmenuVersion = "2.0.0-beta.7"
+val modmenuVersion = "2.0.2"
 val multiconnectVersion = "1.3.36"
 
 group = "com.mumfrey.worldeditcui"
