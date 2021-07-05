@@ -129,7 +129,7 @@ public class Render3DGrid extends RenderRegion
 				continue;
 			}
 			
-			buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
+			buf.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
 			line.applyColour(buf);
 
 			for (double y = Math.max(y1, -cullAtY) + OFFSET; y <= y2 + OFFSET && y <= cullAtY; y += this.spacing)

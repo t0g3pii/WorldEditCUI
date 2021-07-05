@@ -54,7 +54,7 @@ public class RenderCylinderCircles extends RenderRegion
 			double twoPi = Math.PI * 2;
 			for (int yBlock = this.minY + 1; yBlock <= this.maxY; yBlock++)
 			{
-				buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+				buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 				line.applyColour(buf);
 
 				for (int i = 0; i <= 75; i++)

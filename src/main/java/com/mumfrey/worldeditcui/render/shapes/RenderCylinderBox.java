@@ -51,7 +51,7 @@ public class RenderCylinderBox extends RenderRegion
 			double twoPi = Math.PI * 2;
 			for (int yBlock : new int[] { this.minY, this.maxY + 1 })
 			{
-				buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+				buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 				line.applyColour(buf);
 
 				for (int i = 0; i <= 75; i++)

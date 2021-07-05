@@ -6,8 +6,10 @@ import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Shader;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.math.MatrixStack;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 
 /**
@@ -36,21 +38,24 @@ public class CUIListenerWorldRender
 		{
 			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getCamera().getPos()), matrices, partialTicks);
 			final var bufferBuilder = Tessellator.getInstance().getBuffer();
-			bufferBuilder.setCameraPosition(
+			/*bufferBuilder.setCameraPosition(
 				 (float) this.ctx.cameraPos().getX(),
 				 (float) this.ctx.cameraPos().getY(),
 				 (float) this.ctx.cameraPos().getZ()
-			);
+			);*/
 			RenderSystem.enableBlend();
-			RenderSystem.blendFunc(GL32.GL_SRC_ALPHA, GL32.GL_ONE_MINUS_SRC_ALPHA);
+			RenderSystem.defaultBlendFunc();
+			// RenderSystem.blendFunc(GL32.GL_SRC_ALPHA, GL32.GL_ONE_MINUS_SRC_ALPHA);
 			//RenderSystem.enableAlphaTest();
 			// RenderSystem.alphaFunc(GL11.GL_GREATER, 0.0F);
 			RenderSystem.disableTexture();
 			RenderSystem.enableDepthTest();
 			RenderSystem.depthMask(false);
+			RenderSystem.lineWidth(6.0f);
 			final float oldFog = RenderSystem.getShaderFogStart();
+			final Shader oldShader = RenderSystem.getShader();
 			BackgroundRenderer.method_23792(); // disableFog
-			RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
+			RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
 			try
 			{
@@ -65,6 +70,7 @@ public class CUIListenerWorldRender
 			RenderSystem.depthFunc(GL32.GL_LEQUAL);
 
 			RenderSystem.setShaderFogStart(oldFog);
+			RenderSystem.setShader(() -> oldShader);
 			RenderSystem.depthMask(true);
 			RenderSystem.enableTexture();
 			RenderSystem.disableBlend();

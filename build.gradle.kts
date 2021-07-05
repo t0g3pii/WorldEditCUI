@@ -21,7 +21,7 @@ repositories {
     // - https://files.minecraftforge.net/maven
     maven(url = "https://repo.stellardrift.ca/repository/stable/") {
         name = "stellardriftReleases"
-	mavenContent { releasesOnly() }
+        mavenContent { releasesOnly() }
     }
     mavenLocal {
         content {
@@ -60,7 +60,7 @@ dependencies {
         exclude(group = "it.unimi.dsi")
         exclude(group = "org.apache.logging.log4j")
     }*/
-    runtimeOnly("net.minecraftforge:forgeflower:latest.release")
+    runtimeOnly("net.minecraftforge:forgeflower:1.5.498.12")
 }
 
 tasks.withType(net.fabricmc.loom.task.AbstractRunTask::class).configureEach {

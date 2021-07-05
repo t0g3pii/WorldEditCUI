@@ -45,7 +45,7 @@ public class Render2DBox extends RenderRegion
 				continue;
 			}
 			
-			buf.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
+			buf.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
 			line.applyColour(buf);
 
 			for (PointRectangle point : this.points)

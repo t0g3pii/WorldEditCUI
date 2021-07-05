@@ -2,6 +2,7 @@ package com.mumfrey.worldeditcui.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.render.RenderStyle.RenderType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.FixedColorVertexConsumer;
 
 /**

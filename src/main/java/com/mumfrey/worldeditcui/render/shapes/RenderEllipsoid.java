@@ -71,7 +71,7 @@ public class RenderEllipsoid extends RenderRegion
 		int yRad = (int)Math.floor(this.radii.getY());
 		for (int yBlock = -yRad; yBlock < yRad; yBlock++)
 		{
-			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+			buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 			line.applyColour(buf);
 
 			for (int i = 0; i <= SUBDIVISIONS + 1; i++)
@@ -85,7 +85,7 @@ public class RenderEllipsoid extends RenderRegion
 			tessellator.draw();
 		}
 		
-		buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+		buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 		line.applyColour(buf);
 
 		for (int i = 0; i <= SUBDIVISIONS + 1; i++)
