@@ -1,13 +1,11 @@
 package com.mumfrey.worldeditcui.render.shapes;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.points.PointCube;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -107,7 +105,7 @@ public class RenderEllipsoid extends RenderRegion
 		int xRad = (int)Math.floor(this.radii.getX());
 		for (int xBlock = -xRad; xBlock < xRad; xBlock++)
 		{
-			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+			buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 			line.applyColour(buf);
 
 			for (int i = 0; i <= SUBDIVISIONS + 1; i++)
@@ -121,7 +119,7 @@ public class RenderEllipsoid extends RenderRegion
 			tessellator.draw();
 		}
 		
-		buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+		buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 		line.applyColour(buf);
 
 		for (int i = 0; i <= SUBDIVISIONS + 1; i++)
@@ -143,7 +141,7 @@ public class RenderEllipsoid extends RenderRegion
 		int zRad = (int)Math.floor(this.radii.getZ());
 		for (int zBlock = -zRad; zBlock < zRad; zBlock++)
 		{
-			buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+			buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 			line.applyColour(buf);
 
 			for (int i = 0; i <= SUBDIVISIONS + 1; i++)
@@ -157,7 +155,7 @@ public class RenderEllipsoid extends RenderRegion
 			tessellator.draw();
 		}
 		
-		buf.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+		buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 		line.applyColour(buf);
 
 		for (int i = 0; i <= SUBDIVISIONS + 1; i++)
