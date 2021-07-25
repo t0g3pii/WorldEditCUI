@@ -4,10 +4,10 @@ plugins {
     id("com.github.ben-manes.versions") version "0.39.0"
 }
 
-val minecraftVersion = "1.17-pre2"
-val yarnVersion = "$minecraftVersion+build.1:v2"
-val fabricLoaderVersion = "0.11.3"
-val fabricApiVersion = "0.34.8+1.17"
+val minecraftVersion = "1.17.1"
+val yarnVersion = "$minecraftVersion+build.29:v2"
+val fabricLoaderVersion = "0.11.6"
+val fabricApiVersion = "0.37.1+1.17"
 val modmenuVersion = "2.0.2"
 val multiconnectVersion = "1.3.36"
 
@@ -71,7 +71,8 @@ tasks.withType(net.fabricmc.loom.task.AbstractRunTask::class).configureEach {
         // "-Dmixin.debug.export.decompile.async=false", // to get decompiled sources when mixins straight up fail to apply
         "-Dmixin.dumpTargetOnFailure=true",
         "-Dmixin.checks.interfaces=true",
-        "-Dwecui.debug.mixinaudit=true"
+        "-Dwecui.debug.mixinaudit=true",
+            "-Doptifabric.extract=true"
     )
 
     // Configure mixin agent

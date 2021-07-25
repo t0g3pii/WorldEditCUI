@@ -62,7 +62,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
         done = this.addDrawableChild(new ClickableWidget(this.width / 2 - 205, this.height - 27, 70, 20, new TranslatableText("worldeditcui.options.done")) {
             @Override
             public void appendNarrations(NarrationMessageBuilder builder) {
-                this.method_37021(builder);
+                this.appendDefaultNarrations(builder);
             }
 
             @Override
@@ -76,7 +76,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
                 }
                 configuration.configChanged();
                 assert client != null;
-                client.openScreen(parent);
+                client.setScreen(parent);
             }
         });
 
@@ -93,7 +93,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
                 element = this.addDrawableChild(new ClickableWidget(buttonX, y, 70, BUTTONHEIGHT, ((Boolean) value ? TRUE: FALSE)) {
                     @Override
                     public void appendNarrations(NarrationMessageBuilder builder) {
-                        this.method_37021(builder);
+                        this.appendDefaultNarrations(builder);
                     }
 
                     @Override
@@ -145,7 +145,7 @@ public class FabricCUIConfigPanel extends Screen implements Supplier<Screen> {
             this.configList.addEntry(new SettingsEntry(this.configList, (textTemp != null) ? textTemp : new LiteralText(text), element, this.addDrawableChild(new ClickableWidget(buttonX + 75, y, BUTTONHEIGHT, BUTTONHEIGHT, LiteralText.EMPTY) {
                 @Override
                 public void appendNarrations(NarrationMessageBuilder builder) {
-                    this.method_37021(builder);
+                    this.appendDefaultNarrations(builder);
                 }
 
                 @Override

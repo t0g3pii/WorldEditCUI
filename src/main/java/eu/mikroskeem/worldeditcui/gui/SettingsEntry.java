@@ -54,7 +54,7 @@ public class SettingsEntry extends AlwaysSelectedEntryListWidget.Entry<SettingsE
     }
 
     @Override
-    public Text method_37006() {
+    public Text getNarration() {
         return this.keyword;
     }
 }
