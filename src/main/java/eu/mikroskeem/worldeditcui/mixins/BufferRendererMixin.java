@@ -12,7 +12,10 @@ import java.nio.ByteBuffer;
 @Mixin(BufferRenderer.class)
 public class BufferRendererMixin {
 
-    @Redirect(method = "draw(Ljava/nio/ByteBuffer;Lnet/minecraft/client/render/VertexFormat$DrawMode;Lnet/minecraft/client/render/VertexFormat;ILnet/minecraft/client/render/VertexFormat$IntType;IZ)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/VertexFormat$DrawMode;LINES:Lnet/minecraft/client/render/VertexFormat$DrawMode;", ordinal = 0, opcode = Opcodes.GETSTATIC))
+    @Redirect(method = {
+            "draw(Ljava/nio/ByteBuffer;Lnet/minecraft/client/render/VertexFormat$DrawMode;Lnet/minecraft/client/render/VertexFormat;ILnet/minecraft/client/render/VertexFormat$IntType;IZ)V",
+            "draw(Ljava/nio/ByteBuffer;Lnet/minecraft/client/render/VertexFormat$DrawMode;Lnet/minecraft/client/render/VertexFormat;ILnet/minecraft/client/render/VertexFormat$IntType;IZLnet/optifine/render/MultiTextureData;)V"
+    }, allow = 1, at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/VertexFormat$DrawMode;LINES:Lnet/minecraft/client/render/VertexFormat$DrawMode;", ordinal = 0, opcode = Opcodes.GETSTATIC))
     private static VertexFormat.DrawMode wecui$setWidthOnDebugLines(
         final ByteBuffer data,
         final VertexFormat.DrawMode mode
