@@ -59,38 +59,69 @@ dependencies {
     runtimeOnly("net.minecraftforge:forgeflower:1.5.498.12")
 }
 
-tasks.withType(net.fabricmc.loom.task.AbstractRunTask::class).configureEach {
-    // Mixin debug options
-    jvmArgs(
-        // "-Dmixin.debug.verbose=true",
-        // "-Dmixin.debug.export=true",
-        // "-Dmixin.debug.export.decompile.async=false", // to get decompiled sources when mixins straight up fail to apply
-        "-Dmixin.dumpTargetOnFailure=true",
-        "-Dmixin.checks.interfaces=true",
-        "-Dwecui.debug.mixinaudit=true",
-        "-Doptifabric.extract=true"
-    )
-
-    // Configure mixin agent
-    jvmArgumentProviders += CommandLineArgumentProvider {
-        // Resolve the Mixin configuration
-        // Java agent: the jar file for mixin
-        val mixinJar = configurations.runtimeClasspath.get().resolvedConfiguration
-            .getFiles { it.name == "sponge-mixin" && it.group == "net.fabricmc" }
-            .firstOrNull()
-
-        if (mixinJar != null) {
-            listOf("-javaagent:$mixinJar")
-        } else {
-            emptyList()
+tasks {
+    register("generateStandaloneRun") {
+        description = "Generate a script that will run WorldEdit CUI, for graphics debugging"
+        val scriptDest = project.layout.buildDirectory.file(if (System.getProperty("os.name").contains("windows", ignoreCase = true)) { "run-dev.bat" } else { "run-dev" })
+        val argsDest = project.layout.buildDirectory.file("run-dev-args.txt")
+        val taskClasspath = project.files(jar.map { it.outputs }, configurations.runtimeClasspath)
+        val toolchain = project.javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(targetVersion)) }
+        inputs.files(taskClasspath)
+                .ignoreEmptyDirectories()
+                .withPropertyName("runClasspath")
+        // inputs.property("javaLauncher", toolchain)
+        outputs.file(scriptDest)
+        outputs.file(argsDest)
+        doLast {
+            val clientRun = minecraft.runConfigs.getByName("client")
+            argsDest.get().asFile.writeText("""
+                -Dfabric.dli.config=${minecraft.devLauncherConfig.absolutePath}
+                -Dfabric.dli.env=client
+                -Dfabric.dli.main=${clientRun.defaultMainClass}
+                ${clientRun.vmArgs.joinToString(System.lineSeparator())}
+                -cp ${taskClasspath.asPath}
+                net.fabricmc.devlaunchinjector.Main
+                ${clientRun.programArgs.joinToString(System.lineSeparator())}
+            """.trimIndent(), Charsets.UTF_8)
+            scriptDest.get().asFile.writeText("""
+                ${toolchain.get().executablePath.asFile.absolutePath} "@${argsDest.get().asFile.absolutePath}"
+            """.trimIndent(), Charsets.UTF_8)
         }
     }
-}
 
-tasks.processResources.configure {
-    inputs.property("version", project.version)
+    withType(net.fabricmc.loom.task.AbstractRunTask::class).configureEach {
+        // Mixin debug options
+        jvmArgs(
+                // "-Dmixin.debug.verbose=true",
+                // "-Dmixin.debug.export=true",
+                // "-Dmixin.debug.export.decompile.async=false", // to get decompiled sources when mixins straight up fail to apply
+                "-Dmixin.dumpTargetOnFailure=true",
+                "-Dmixin.checks.interfaces=true",
+                "-Dwecui.debug.mixinaudit=true",
+                "-Doptifabric.extract=true"
+        )
 
-    filesMatching("fabric.mod.json") {
-        expand("version" to project.version)
+        // Configure mixin agent
+        jvmArgumentProviders += CommandLineArgumentProvider {
+            // Resolve the Mixin configuration
+            // Java agent: the jar file for mixin
+            val mixinJar = configurations.runtimeClasspath.get().resolvedConfiguration
+                    .getFiles { it.name == "sponge-mixin" && it.group == "net.fabricmc" }
+                    .firstOrNull()
+
+            if (mixinJar != null) {
+                listOf("-javaagent:$mixinJar")
+            } else {
+                emptyList()
+            }
+        }
+    }
+
+    processResources.configure {
+        inputs.property("version", project.version)
+
+        filesMatching("fabric.mod.json") {
+            expand("version" to project.version)
+        }
     }
 }
