@@ -1,20 +1,22 @@
 package eu.mikroskeem.worldeditcui;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.minecraft.client.render.Shader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  * Optifine shaders uses a lot more frame buffers to render the world -- we have to make sure we're on the right one.
  *
  * @see <a href="https://github.com/sp614x/optifine/blob/master/OptiFineDoc/doc/shaders.txt">the shaders documentation</a>
  */
-public final class OptifineHooks {
+public final class OptifineRenderWrapper implements RenderWrapper {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
@@ -73,29 +75,40 @@ public final class OptifineHooks {
         }
     }
 
+    @Override
+    public String id() {
+        return "optifine";
+    }
+
+    @Override
+    public boolean available() {
+        return SHADERS_END_LEASH != null && SHADERS_BEGIN_LEASH != null && CONFIG_IS_SHADERS != null && !optifineDisabled;
+    }
+
     /**
      * If optifine is available, modify shader state to do our rendering. Otherwise, just use our renderer.
      * @param renderer the actual callback to do some rendering
      */
-    public static void doOptifineAwareRender(final WorldRenderContext ctx, final Consumer<WorldRenderContext> renderer) {
-        if (SHADERS_END_LEASH == null || SHADERS_BEGIN_LEASH == null || CONFIG_IS_SHADERS == null || optifineDisabled) {
-            renderer.accept(ctx);
-            return;
+    @Override
+    public boolean render(WorldRenderContext ctx, BiConsumer<WorldRenderContext, Supplier<Shader>> renderer) {
+        if (!available()) {
+            return false;
         }
 
         try {
             final boolean shadersEnabled = (boolean) CONFIG_IS_SHADERS.invoke();
             if (!shadersEnabled) {
-              renderer.accept(ctx);
+                renderer.accept(ctx, NoOpRenderWrapper.VANILLA_SHADER); // optifine doesn't use the vanilla shader system
             } else if (!(boolean) SHADERS_IS_SHADOW_PASS.invoke()) {
                 SHADERS_BEGIN_LEASH.invoke();
-                renderer.accept(ctx);
+                renderer.accept(ctx, NoOpRenderWrapper.VANILLA_SHADER); // optifine doesn't use the vanilla shader system
                 SHADERS_END_LEASH.invoke();
             }
+            return true;
         } catch (final Throwable err) {
             optifineDisabled = true;
             LOGGER.error("Failed to render WECUI using OptiFine hooks", err);
+            return false;
         }
     }
-
 }

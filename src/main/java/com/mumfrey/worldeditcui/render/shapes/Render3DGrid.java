@@ -84,7 +84,7 @@ public class Render3DGrid extends RenderRegion
 		if (this.spacing != 1.0)
 		{
 			RenderSystem.disableCull();
-			RenderSystem.setShader(GameRenderer::getPositionColorShader);
+			// RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
 			double[] vertices = {
 					x1, y1, z1,  x2, y1, z1,  x2, y1, z2,  x1, y1, z2, // bottom
@@ -109,7 +109,7 @@ public class Render3DGrid extends RenderRegion
 				}
 			}
 
-			RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
+			// RenderSystem.setShader(GameRenderer::getPositionColorShader);
 			RenderSystem.enableCull();
 		}
 		

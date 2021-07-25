@@ -16,17 +16,16 @@ version = "$minecraftVersion+01-SNAPSHOT"
 
 repositories {
     // mirrors:
-    // - https://maven.enginehub.org/repo
+    // - https://maven.enginehub.org/repo/
     // - https://maven.terraformersmc.com/releases/
-    // - https://files.minecraftforge.net/maven
+    // - https://maven.minecraftforge.net/
     maven(url = "https://repo.stellardrift.ca/repository/stable/") {
         name = "stellardriftReleases"
         mavenContent { releasesOnly() }
     }
-    mavenLocal {
-        content {
-            includeGroup("com.sk89q.worldedit")
-        }
+    maven(url = "https://repo.stellardrift.ca/repository/snapshots/") {
+        name = "stellardriftSnapshots"
+        mavenContent { snapshotsOnly() }
     }
 }
 
@@ -52,14 +51,11 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
     modImplementation("net.earthcomputer.multiconnect:multiconnect-api:$multiconnectVersion")
+    // https://github.com/IrisShaders/Iris/tree/1.17, published manually
+    modImplementation("net.coderbot.iris_mc1_17:iris:1.1.0+rev.d3beab3")
 
     // for development
-    /*modRuntime("com.sk89q.worldedit:worldedit-fabric-mc1.16.3:7.2.5") {
-        exclude(group = "com.google.guava")
-        exclude(group = "com.google.code.gson")
-        exclude(group = "it.unimi.dsi")
-        exclude(group = "org.apache.logging.log4j")
-    }*/
+    modRuntime("com.sk89q.worldedit:worldedit-fabric-mc1.17.1:7.2.6-SNAPSHOT")
     runtimeOnly("net.minecraftforge:forgeflower:1.5.498.12")
 }
 
@@ -72,7 +68,7 @@ tasks.withType(net.fabricmc.loom.task.AbstractRunTask::class).configureEach {
         "-Dmixin.dumpTargetOnFailure=true",
         "-Dmixin.checks.interfaces=true",
         "-Dwecui.debug.mixinaudit=true",
-            "-Doptifabric.extract=true"
+        "-Doptifabric.extract=true"
     )
 
     // Configure mixin agent

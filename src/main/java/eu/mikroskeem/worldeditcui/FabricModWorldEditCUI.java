@@ -20,6 +20,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.render.Shader;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
@@ -27,6 +28,8 @@ import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Fabric mod entrypoint
@@ -44,6 +47,12 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     private final KeyBinding keyBindClearSel = key("clear", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN);
     private final KeyBinding keyBindChunkBorder = key("chunk", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN);
 
+    private static final List<RenderWrapper> RENDER_WRAPPERS = List.of(
+            new IrisRenderWrapper(),
+            new OptifineRenderWrapper(),
+            new NoOpRenderWrapper()
+    );
+
     private WorldEditCUI controller;
     private CUIListenerWorldRender worldRenderListener;
     private CUIListenerChannel channelListener;
@@ -51,6 +60,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     private World lastWorld;
     private ClientPlayerEntity lastPlayer;
 
+    private int activeWrapper = 0;
     private boolean visible = true;
     private int delayedHelo = 0;
 
@@ -67,7 +77,6 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     }
 
     @Override
-    @SuppressWarnings("deprecation") // RenderSystem/immediate mode GL use
     public void onInitialize() {
         if (Boolean.getBoolean("wecui.debug.mixinaudit")) {
             MixinEnvironment.getCurrentEnvironment().audit();
@@ -87,7 +96,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
                     RenderSystem.getModelViewStack().method_34425(ctx.matrixStack().peek().getModel());
                     RenderSystem.applyModelViewMatrix();
                     ctx.worldRenderer().getTranslucentFramebuffer().beginWrite(false);
-                    this.onPostRenderEntities(ctx);
+                    this.onPostRenderEntities(ctx, NoOpRenderWrapper.VANILLA_SHADER);
                 } finally {
                     MinecraftClient.getInstance().getFramebuffer().beginWrite(false);
                     RenderSystem.getModelViewStack().pop();
@@ -96,7 +105,22 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         });
         WorldRenderEvents.LAST.register(ctx -> {
             if (!ctx.advancedTranslucency()) {
-                OptifineHooks.doOptifineAwareRender(ctx, this::onPostRenderEntities);
+                boolean successfullyRendered = false;
+                for (int i = this.activeWrapper; i < RENDER_WRAPPERS.size(); ++i) {
+                    final RenderWrapper wrapper = RENDER_WRAPPERS.get(i);
+                    if (wrapper.available()) {
+                        if (wrapper.render(ctx, this::onPostRenderEntities)) {
+                            this.activeWrapper = i;
+                            successfullyRendered = true;
+                            break;
+                        } else {
+                            this.getController().getDebugger().info("Failed to render with wrapper " + wrapper.id() + ", which declared itself as available... trying next");
+                        }
+                    }
+                }
+                if (!successfullyRendered) {
+                    throw new IllegalStateException("No wrapper matched, this is not expected.");
+                }
             }
         });
     }
@@ -176,9 +200,9 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         this.helo(handler);
     }
 
-    public void onPostRenderEntities(final WorldRenderContext ctx) {
+    public void onPostRenderEntities(final WorldRenderContext ctx, final Supplier<Shader> shaderSupplier) {
         if (this.visible) {
-            this.worldRenderListener.onRender(ctx.matrixStack(), ctx.tickDelta());
+            this.worldRenderListener.onRender(ctx.matrixStack(), ctx.tickDelta(), shaderSupplier);
         }
     }
 

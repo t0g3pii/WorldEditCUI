@@ -12,6 +12,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 
+import java.util.function.Supplier;
+
 /**
  * Listener for WorldRenderEvent
  *
@@ -32,11 +34,11 @@ public class CUIListenerWorldRender
 		this.minecraft = minecraft;
 	}
 
-	public void onRender(final MatrixStack matrices, float partialTicks)
+	public void onRender(final MatrixStack matrices, float partialTicks, final Supplier<Shader> targetShader)
 	{
 		try
 		{
-			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getCamera().getPos()), matrices, partialTicks);
+			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getCamera().getPos()), matrices, partialTicks, targetShader);
 			final var bufferBuilder = Tessellator.getInstance().getBuffer();
 			/*bufferBuilder.setCameraPosition(
 				 (float) this.ctx.cameraPos().getX(),
@@ -55,7 +57,7 @@ public class CUIListenerWorldRender
 			final float oldFog = RenderSystem.getShaderFogStart();
 			final Shader oldShader = RenderSystem.getShader();
 			BackgroundRenderer.method_23792(); // disableFog
-			RenderSystem.setShader(GameRenderer::getPositionColorShader);
+			RenderSystem.setShader(ctx.shader());
 
 			try
 			{
