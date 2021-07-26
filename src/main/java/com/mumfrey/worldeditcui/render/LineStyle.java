@@ -1,9 +1,6 @@
 package com.mumfrey.worldeditcui.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.render.RenderStyle.RenderType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.FixedColorVertexConsumer;
 
 /**
  * Stores data about a line that can be rendered
@@ -33,30 +30,5 @@ public class LineStyle
 		this.blue = blue;
 		this.alpha = alpha;
 		this.renderType = renderType;
-	}
-	
-	/**
-	 * Sets the lineWidth and depthFunction based on this style
-	 */
-	public boolean prepare(RenderType renderType)
-	{
-		if (this.renderType.matches(renderType))
-		{
-			RenderSystem.lineWidth(this.lineWidth);
-			RenderSystem.depthFunc(this.renderType.depthFunc);
-			return true;
-		}
-		
-		return false;
-	}
-
-	public void applyColour(final FixedColorVertexConsumer consumer)
-	{
-		consumer.fixedColor(this.red, this.green, this.blue, this.alpha);
-	}
-
-	public void applyColour(final FixedColorVertexConsumer consumer, final float tint)
-	{
-		consumer.fixedColor(this.red, this.green, this.blue, Math.round(this.alpha * tint));
 	}
 }

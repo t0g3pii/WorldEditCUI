@@ -3,16 +3,15 @@ package com.mumfrey.worldeditcui.event.listeners;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
+import eu.mikroskeem.worldeditcui.render.PipelineProvider;
+import eu.mikroskeem.worldeditcui.render.RenderSink;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BackgroundRenderer;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Shader;
-import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.math.MatrixStack;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 
-import java.util.function.Supplier;
+import java.util.List;
 
 /**
  * Listener for WorldRenderEvent
@@ -27,29 +26,65 @@ public class CUIListenerWorldRender
 
 	private final MinecraftClient minecraft;
 	private final CUIRenderContext ctx = new CUIRenderContext();
+	private final List<PipelineProvider> pipelines;
+	private int currentPipelineIdx;
+	private RenderSink sink;
 
-	public CUIListenerWorldRender(WorldEditCUI controller, MinecraftClient minecraft)
+	public CUIListenerWorldRender(WorldEditCUI controller, MinecraftClient minecraft, final List<PipelineProvider> pipelines)
 	{
 		this.controller = controller;
 		this.minecraft = minecraft;
+		this.pipelines = List.copyOf(pipelines);
 	}
 
-	public void onRender(final MatrixStack matrices, float partialTicks, final Supplier<Shader> targetShader)
+	private RenderSink providePipeline()
+	{
+		if (this.sink != null)
+		{
+			return this.sink;
+		}
+
+		for (int i = currentPipelineIdx; i < this.pipelines.size(); i++)
+		{
+			final PipelineProvider pipeline = this.pipelines.get(i);
+			if (pipeline.available())
+			{
+				try
+				{
+					final RenderSink sink = pipeline.provide();
+					this.currentPipelineIdx = i;
+					return this.sink = sink;
+				}
+				catch (final Exception ex)
+				{
+					this.controller.getDebugger().info("Failed to render with pipeline " + pipeline.id() + ", which declared itself as available... trying next");
+				}
+			}
+		}
+
+		throw new IllegalStateException("No pipeline available to render with!");
+	}
+
+	private void invalidatePipeline() {
+		if (this.currentPipelineIdx < this.pipelines.size() - 1) {
+			this.currentPipelineIdx++;
+			this.sink = null;
+		}
+	}
+
+	public void onRender(final MatrixStack matrices, float partialTicks)
 	{
 		try
 		{
-			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getCamera().getPos()), matrices, partialTicks, targetShader);
-			final var bufferBuilder = Tessellator.getInstance().getBuffer();
-			/*bufferBuilder.setCameraPosition(
-				 (float) this.ctx.cameraPos().getX(),
-				 (float) this.ctx.cameraPos().getY(),
-				 (float) this.ctx.cameraPos().getZ()
-			);*/
+			final RenderSink sink = this.providePipeline();
+			if (!this.pipelines.get(this.currentPipelineIdx).shouldRender())
+			{
+				// allow ignoring eg. shadow pass
+				return;
+			}
+			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getCamera().getPos()), matrices, partialTicks, sink);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
-			// RenderSystem.blendFunc(GL32.GL_SRC_ALPHA, GL32.GL_ONE_MINUS_SRC_ALPHA);
-			//RenderSystem.enableAlphaTest();
-			// RenderSystem.alphaFunc(GL11.GL_GREATER, 0.0F);
 			RenderSystem.disableTexture();
 			RenderSystem.enableDepthTest();
 			RenderSystem.depthMask(false);
@@ -57,18 +92,17 @@ public class CUIListenerWorldRender
 			final float oldFog = RenderSystem.getShaderFogStart();
 			final Shader oldShader = RenderSystem.getShader();
 			BackgroundRenderer.method_23792(); // disableFog
-			RenderSystem.setShader(ctx.shader());
 
 			try
 			{
-				RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 				this.controller.renderSelections(this.ctx);
+				this.sink.flush();
 			}
 			catch (Exception e) {
 				this.controller.getDebugger().error("Error while attempting to render WorldEdit CUI", e);
+				this.invalidatePipeline();
 			}
 
-			bufferBuilder.unfixColor();
 			RenderSystem.depthFunc(GL32.GL_LEQUAL);
 
 			RenderSystem.setShaderFogStart(oldFog);
@@ -80,6 +114,7 @@ public class CUIListenerWorldRender
 		} catch (Exception ex)
 		{
 			this.controller.getDebugger().error("Failed while preparing state for WorldEdit CUI", ex);
+			this.invalidatePipeline();
 		}
 	}
 }

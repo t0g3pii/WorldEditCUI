@@ -5,10 +5,6 @@ import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.points.PointRectangle;
 import com.mumfrey.worldeditcui.util.Vector2;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 
 import java.util.List;
 
@@ -44,17 +40,15 @@ public class Render2DGrid extends RenderRegion
 	
 	protected void drawPoly(final CUIRenderContext ctx, double height)
 	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
 		for (LineStyle line : this.style.getLines())
 		{
-			if (!line.prepare(this.style.getRenderType()))
+			if (!ctx.apply(line, this.style.getRenderType()))
 			{
 				continue;
 			}
-			
-			buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-			line.applyColour(buf);
+
+			ctx.color(line);
+			ctx.beginLineLoop();
 			for (PointRectangle point : this.points)
 			{
 				if (point != null)
@@ -62,20 +56,10 @@ public class Render2DGrid extends RenderRegion
 					Vector2 pos = point.getPoint();
 					double x = pos.getX() - ctx.cameraPos().getX();
 					double z = pos.getY() - ctx.cameraPos().getZ();
-					buf.vertex(x + 0.5, height - ctx.cameraPos().getY(), z + 0.5).next();
+					ctx.vertex(x + 0.5, height - ctx.cameraPos().getY(), z + 0.5);
 				}
 			}
-
-			// Repeat of initial vertex for LINE_STRIP
-			final PointRectangle initialRepeat = this.points.get(0);
-			if (initialRepeat != null)
-			{
-				Vector2 pos = initialRepeat.getPoint();
-				double x = pos.getX() - ctx.cameraPos().getX();
-				double z = pos.getY() - ctx.cameraPos().getZ();
-				buf.vertex(x + 0.5, height - ctx.cameraPos().getY(), z + 0.5).next();
-			}
-			tessellator.draw();
+			ctx.endLineLoop();
 		}
 	}
 }

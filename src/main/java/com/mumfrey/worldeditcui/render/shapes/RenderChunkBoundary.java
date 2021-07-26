@@ -5,10 +5,6 @@ import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.Vector3;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
@@ -47,75 +43,71 @@ public class RenderChunkBoundary extends RenderRegion
 
 		ctx.matrices().push();
 		ctx.matrices().translate(0.0, -ctx.cameraPos().getY(), 0.0);
+		ctx.flush();
 		ctx.applyMatrices();
 
 		ctx.withCameraAt(Vector3.ZERO, this.grid::render);
 
-		this.renderChunkBorder(yMin, yMax, xBase, zBase);
+		this.renderChunkBorder(ctx, yMin, yMax, xBase, zBase);
 		
 		if (this.mc.world != null)
 		{
-			this.renderChunkBoundary(xChunk, zChunk, xBase, zBase);
+			this.renderChunkBoundary(ctx, xChunk, zChunk, xBase, zBase);
 		}
 
+		ctx.flush();
 		ctx.matrices().pop();
 		ctx.applyMatrices();
 	}
 
-	private void renderChunkBorder(double yMin, double yMax, double xBase, double zBase)
+	private void renderChunkBorder(final CUIRenderContext ctx, double yMin, double yMax, double xBase, double zBase)
 	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
-
-		int spacing = 16;
+		final int spacing = 16;
 		
 		for (LineStyle line : this.style.getLines())
 		{
-			if (line.prepare(this.style.getRenderType()))
+			if (ctx.apply(line, this.style.getRenderType()))
 			{
-				buf.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-				line.applyColour(buf);
+				ctx.color(line)
+					.beginLines();
 
 				for (int x = -16; x <= 32; x += spacing)
 				{
 					for (int z = -16; z <= 32; z += spacing)
 					{
-						buf.vertex(xBase + x, yMin, zBase - z).next();
-						buf.vertex(xBase + x, yMax, zBase - z).next();
+						ctx.vertex(xBase + x, yMin, zBase - z)
+							.vertex(xBase + x, yMax, zBase - z);
 					}
 				}
 				
 				for (double y = yMin; y <= yMax; y += yMax)
 				{
-					buf.vertex(xBase, y, zBase).next();
-					buf.vertex(xBase, y, zBase - 16).next();
-					buf.vertex(xBase, y, zBase - 16).next();
-					buf.vertex(xBase + 16, y, zBase - 16).next();
-					buf.vertex(xBase + 16, y, zBase - 16).next();
-					buf.vertex(xBase + 16, y, zBase).next();
-					buf.vertex(xBase + 16, y, zBase).next();
-					buf.vertex(xBase, y, zBase).next();
+					ctx.vertex(xBase, y, zBase)
+						.vertex(xBase, y, zBase - 16)
+						.vertex(xBase, y, zBase - 16)
+						.vertex(xBase + 16, y, zBase - 16)
+						.vertex(xBase + 16, y, zBase - 16)
+						.vertex(xBase + 16, y, zBase)
+						.vertex(xBase + 16, y, zBase)
+						.vertex(xBase, y, zBase);
 				}
 
-				tessellator.draw();
+				ctx.endLines();
 			}
 		}
 	}
 
-	private void renderChunkBoundary(int xChunk, int zChunk, double xBase, double zBase)
+	private void renderChunkBoundary(final CUIRenderContext ctx, int xChunk, int zChunk, double xBase, double zBase)
 	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
-
 		Chunk chunk = this.mc.world.getChunk(xChunk, zChunk);
 		Heightmap heightMap = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE);
 
 		for (LineStyle line : this.style.getLines())
 		{
-			if (line.prepare(this.style.getRenderType()))
+			if (ctx.apply(line, this.style.getRenderType()))
 			{
-				buf.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-				line.applyColour(buf);
+				ctx.beginLines()
+						.color(line);
 
 				int[][] lastHeight = { { -1, -1 }, { -1, -1 } };
 				for (int i = 0, height = 0; i < 16; i++)
@@ -129,17 +121,17 @@ public class RenderChunkBoundary extends RenderRegion
 							double zPos = axis == 0 ? zBase - 16 + i : zBase - 16 + (j * 16);
 							if (lastHeight[axis][j] > -1 && height != lastHeight[axis][j])
 							{
-								buf.vertex(xPos, lastHeight[axis][j] + OFFSET, zPos).next();
-								buf.vertex(xPos, height + OFFSET, zPos).next();
+								ctx.vertex(xPos, lastHeight[axis][j] + OFFSET, zPos)
+									.vertex(xPos, height + OFFSET, zPos);
 							}
-							buf.vertex(xPos, height + OFFSET, zPos).next();
-							buf.vertex(xPos + axis, height + OFFSET, zPos + (1 - axis)).next();
+							ctx.vertex(xPos, height + OFFSET, zPos)
+								.vertex(xPos + axis, height + OFFSET, zPos + (1 - axis));
 							lastHeight[axis][j] = height;
 						}
 					}
 				}
-				
-				tessellator.draw();
+
+				ctx.endLines();
 			}
 		}
 	}

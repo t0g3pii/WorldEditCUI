@@ -6,10 +6,6 @@ import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.BoundingBox;
 import com.mumfrey.worldeditcui.util.Observable;
 import com.mumfrey.worldeditcui.util.Vector3;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 
 /**
  * Draws a rectangular prism around 2 corners
@@ -58,8 +54,6 @@ public class Render3DBox extends RenderRegion
 	@Override
 	public void render(CUIRenderContext ctx)
 	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
 		final Vector3 camera = ctx.cameraPos();
 		double x1 = this.first.getX() - camera.getX();
 		double y1 = this.first.getY() - camera.getY();
@@ -70,48 +64,42 @@ public class Render3DBox extends RenderRegion
 		
 		for (LineStyle line : this.style.getLines())
 		{
-			if (!line.prepare(this.style.getRenderType()))
+			if (!ctx.apply(line, this.style.getRenderType()))
 			{
 				continue;
 			}
 			
 			// Draw bottom face
-			buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-			line.applyColour(buf);
-			buf.vertex(x1, y1, z1).next();
-			buf.vertex(x2, y1, z1).next();
-			buf.vertex(x2, y1, z2).next();
-			buf.vertex(x1, y1, z2).next();
-			buf.vertex(x1, y1, z1).next(); // Loop back for LINE_STRIP
-			tessellator.draw();
-			
-			// Draw top face
-			buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-			line.applyColour(buf);
-			buf.vertex(x1, y2, z1).next();
-			buf.vertex(x2, y2, z1).next();
-			buf.vertex(x2, y2, z2).next();
-			buf.vertex(x1, y2, z2).next();
-			buf.vertex(x1, y2, z1).next(); // Loop back for LINE_STRIP
-			tessellator.draw();
-			
-			// Draw join top and bottom faces
-			buf.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-			line.applyColour(buf);
+			ctx.color(line);
+			ctx.beginLineLoop()
+				.vertex(x1, y1, z1)
+				.vertex(x2, y1, z1)
+				.vertex(x2, y1, z2)
+				.vertex(x1, y1, z2)
+				.endLineLoop();
 
-			buf.vertex(x1, y1, z1).next();
-			buf.vertex(x1, y2, z1).next();
-			
-			buf.vertex(x2, y1, z1).next();
-			buf.vertex(x2, y2, z1).next();
-			
-			buf.vertex(x2, y1, z2).next();
-			buf.vertex(x2, y2, z2).next();
-			
-			buf.vertex(x1, y1, z2).next();
-			buf.vertex(x1, y2, z2).next();
-			
-			tessellator.draw();
+			// Draw top face
+			ctx.beginLineLoop()
+			.vertex(x1, y2, z1)
+			.vertex(x2, y2, z1)
+			.vertex(x2, y2, z2)
+			.vertex(x1, y2, z2)
+			.endLineLoop();
+
+			// Draw join top and bottom faces
+			ctx.beginLines()
+				.vertex(x1, y1, z1)
+				.vertex(x1, y2, z1)
+
+				.vertex(x2, y1, z1)
+				.vertex(x2, y2, z1)
+
+				.vertex(x2, y1, z2)
+				.vertex(x2, y2, z2)
+
+				.vertex(x1, y1, z2)
+				.vertex(x1, y2, z2)
+				.endLines();
 		}
 	}
 }

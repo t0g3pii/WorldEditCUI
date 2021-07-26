@@ -23,7 +23,7 @@ import java.nio.file.Path;
  */
 public final class CUIDebug implements InitialisationFactory
 {
-	private static final boolean LOG_ALL_ERRORS = Boolean.getBoolean("wecui.debug.logall");
+	private static final boolean LOG_ALL_ERRORS = Boolean.getBoolean("wecui.debug.logall") || FabricLoader.getInstance().isDevelopmentEnvironment();
 	private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger("WorldEditCUI");
 	
 	private final WorldEditCUI controller;

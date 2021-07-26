@@ -5,10 +5,6 @@ import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.points.PointCube;
 import com.mumfrey.worldeditcui.util.Vector3;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 
 /**
  * Draws an ellipsoid shape around a centre point.
@@ -43,129 +39,112 @@ public class RenderEllipsoid extends RenderRegion
 	@Override
 	public void render(CUIRenderContext ctx)
 	{
+		ctx.flush();
 		ctx.matrices().push();
 		ctx.matrices().translate(this.centreX - ctx.cameraPos().getX(), this.centreY - ctx.cameraPos().getY(), this.centreZ - ctx.cameraPos().getZ());
 		ctx.applyMatrices();
 
 		for (LineStyle line : this.style.getLines())
 		{
-			if (line.prepare(this.style.getRenderType()))
+			if (ctx.apply(line, this.style.getRenderType()))
 			{
-				this.drawXZPlane(line);
-				this.drawYZPlane(line);
-				this.drawXYPlane(line);
+				ctx.color(line);
+				this.drawXZPlane(ctx);
+				this.drawYZPlane(ctx);
+				this.drawXYPlane(ctx);
 			}
 		}
 
+		ctx.flush();
 		ctx.matrices().pop();
 		ctx.applyMatrices();
 	}
 	
-	protected void drawXZPlane(LineStyle line)
+	protected void drawXZPlane(final CUIRenderContext ctx)
 	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
-
 		int yRad = (int)Math.floor(this.radii.getY());
 		for (int yBlock = -yRad; yBlock < yRad; yBlock++)
 		{
-			buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-			line.applyColour(buf);
 
-			for (int i = 0; i <= SUBDIVISIONS + 1; i++)
+			ctx.beginLineLoop();
+			for (int i = 0; i <= SUBDIVISIONS; i++)
 			{
-				double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS; // overlap by one for LINE_STRIP
+				double tempTheta = i * TAU / SUBDIVISIONS;
 				double tempX = this.radii.getX() * Math.cos(tempTheta) * Math.cos(Math.asin(yBlock / this.radii.getY()));
 				double tempZ = this.radii.getZ() * Math.sin(tempTheta) * Math.cos(Math.asin(yBlock / this.radii.getY()));
 				
-				buf.vertex(tempX, yBlock, tempZ).next();
+				ctx.vertex(tempX, yBlock, tempZ);
 			}
-			tessellator.draw();
+			ctx.endLineLoop();
 		}
-		
-		buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-		line.applyColour(buf);
 
-		for (int i = 0; i <= SUBDIVISIONS + 1; i++)
+		ctx.beginLineLoop();
+		for (int i = 0; i <= SUBDIVISIONS; i++)
 		{
-			double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS;
+			double tempTheta = i * TAU / SUBDIVISIONS;
 			double tempX = this.radii.getX() * Math.cos(tempTheta);
 			double tempZ = this.radii.getZ() * Math.sin(tempTheta);
 			
-			buf.vertex(tempX, 0.0, tempZ).next();
+			ctx.vertex(tempX, 0.0, tempZ);
 		}
-		tessellator.draw();
+		ctx.endLineLoop();
 	}
 	
-	protected void drawYZPlane(LineStyle line)
+	protected void drawYZPlane(final CUIRenderContext ctx)
 	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
-
 		int xRad = (int)Math.floor(this.radii.getX());
 		for (int xBlock = -xRad; xBlock < xRad; xBlock++)
 		{
-			buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-			line.applyColour(buf);
-
-			for (int i = 0; i <= SUBDIVISIONS + 1; i++)
+			ctx.beginLineLoop();
+			for (int i = 0; i <= SUBDIVISIONS; i++)
 			{
-				double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS;
+				double tempTheta = i * TAU / SUBDIVISIONS;
 				double tempY = this.radii.getY() * Math.cos(tempTheta) * Math.sin(Math.acos(xBlock / this.radii.getX()));
 				double tempZ = this.radii.getZ() * Math.sin(tempTheta) * Math.sin(Math.acos(xBlock / this.radii.getX()));
 				
-				buf.vertex(xBlock, tempY, tempZ).next();
+				ctx.vertex(xBlock, tempY, tempZ);
 			}
-			tessellator.draw();
+			ctx.endLineLoop();
 		}
 		
-		buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-		line.applyColour(buf);
-
-		for (int i = 0; i <= SUBDIVISIONS + 1; i++)
+		ctx.beginLineLoop();
+		for (int i = 0; i <= SUBDIVISIONS; i++)
 		{
-			double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS; // override by one for LINE_STRIP
+			double tempTheta = i * TAU / SUBDIVISIONS;
 			double tempY = this.radii.getY() * Math.cos(tempTheta);
 			double tempZ = this.radii.getZ() * Math.sin(tempTheta);
 			
-			buf.vertex(0.0, tempY, tempZ).next();
+			ctx.vertex(0.0, tempY, tempZ);
 		}
-		tessellator.draw();
+		ctx.endLineLoop();
 	}
 	
-	protected void drawXYPlane(LineStyle line)
+	protected void drawXYPlane(final CUIRenderContext ctx)
 	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
-
 		int zRad = (int)Math.floor(this.radii.getZ());
 		for (int zBlock = -zRad; zBlock < zRad; zBlock++)
 		{
-			buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-			line.applyColour(buf);
-
-			for (int i = 0; i <= SUBDIVISIONS + 1; i++)
+			ctx.beginLineLoop();
+			for (int i = 0; i <= SUBDIVISIONS; i++)
 			{
-				double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS; // overlap by one for LINE_STRIP
+				double tempTheta = i * TAU / SUBDIVISIONS;
 				double tempX = this.radii.getX() * Math.sin(tempTheta) * Math.sin(Math.acos(zBlock / this.radii.getZ()));
 				double tempY = this.radii.getY() * Math.cos(tempTheta) * Math.sin(Math.acos(zBlock / this.radii.getZ()));
 				
-				buf.vertex(tempX, tempY, zBlock).next();
+				ctx.vertex(tempX, tempY, zBlock);
 			}
-			tessellator.draw();
+			ctx.endLineLoop();
 		}
-		
-		buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-		line.applyColour(buf);
 
-		for (int i = 0; i <= SUBDIVISIONS + 1; i++)
+		ctx.beginLineLoop();
+		for (int i = 0; i <= SUBDIVISIONS; i++)
 		{
-			double tempTheta = (i % (SUBDIVISIONS + 1)) * TAU / SUBDIVISIONS; // overlap by one for LINE_STRIP
+			double tempTheta = i * TAU / SUBDIVISIONS;
 			double tempX = this.radii.getX() * Math.cos(tempTheta);
 			double tempY = this.radii.getY() * Math.sin(tempTheta);
 			
-			buf.vertex(tempX, tempY, 0.0).next();
+			ctx.vertex(tempX, tempY, 0.0);
 		}
-		tessellator.draw();
+		ctx.endLineLoop();
 	}
 }

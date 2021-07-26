@@ -4,10 +4,6 @@ import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.points.PointCube;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 
 /**
  * Draws the top and bottom circles around a cylindrical region
@@ -35,37 +31,32 @@ public class RenderCylinderBox extends RenderRegion
 	@Override
 	public void render(CUIRenderContext ctx)
 	{
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buf = tessellator.getBuffer();
 
 		double xPos = this.centreX - ctx.cameraPos().getX();
 		double zPos = this.centreZ - ctx.cameraPos().getZ();
 
 		for (LineStyle line : this.style.getLines())
 		{
-			if (!line.prepare(this.style.getRenderType()))
+			if (!ctx.apply(line, this.style.getRenderType()))
 			{
 				continue;
 			}
 			
 			double twoPi = Math.PI * 2;
+			ctx.color(line);
 			for (int yBlock : new int[] { this.minY, this.maxY + 1 })
 			{
-				buf.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-				line.applyColour(buf);
-
+				ctx.beginLineLoop();
 				for (int i = 0; i <= 75; i++)
 				{
 					double tempTheta = i * twoPi / 75;
 					double tempX = this.radX * Math.cos(tempTheta);
 					double tempZ = this.radZ * Math.sin(tempTheta);
 
-					buf.vertex(xPos + tempX, yBlock - ctx.cameraPos().getY(), zPos + tempZ).next();
+					ctx.vertex(xPos + tempX, yBlock - ctx.cameraPos().getY(), zPos + tempZ);
 				}
 
-				// And back to initial vertex (because we have to use LINE_STRIP rather than LINE_LOOP)
-				buf.vertex(xPos + this.radX, yBlock - ctx.cameraPos().getY(), zPos).next();
-				tessellator.draw();
+				ctx.endLineLoop();
 			}
 		}
 	}

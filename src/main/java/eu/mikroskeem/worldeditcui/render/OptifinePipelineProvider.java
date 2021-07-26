@@ -1,22 +1,18 @@
-package eu.mikroskeem.worldeditcui;
+package eu.mikroskeem.worldeditcui.render;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.render.Shader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 /**
  * Optifine shaders uses a lot more frame buffers to render the world -- we have to make sure we're on the right one.
  *
  * @see <a href="https://github.com/sp614x/optifine/blob/master/OptiFineDoc/doc/shaders.txt">the shaders documentation</a>
  */
-public final class OptifineRenderWrapper implements RenderWrapper {
+public final class OptifinePipelineProvider implements PipelineProvider {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
@@ -85,30 +81,56 @@ public final class OptifineRenderWrapper implements RenderWrapper {
         return SHADERS_END_LEASH != null && SHADERS_BEGIN_LEASH != null && CONFIG_IS_SHADERS != null && !optifineDisabled;
     }
 
+    @Override
+    public boolean shouldRender() {
+        try {
+            return (boolean) SHADERS_IS_SHADOW_PASS.invoke();
+        } catch (final Throwable thr) {
+            optifineDisabled = true;
+            LOGGER.error("Failed to render WECUI using OptiFine hooks", thr);
+            return true; // skip optifine hooks
+        }
+    }
+
     /**
-     * If optifine is available, modify shader state to do our rendering. Otherwise, just use our renderer.
-     * @param renderer the actual callback to do some rendering
+     * If optifine is available, modify shader state to do our rendering.
+     *
+     * <p>Otherwise, just perform standard operations.</p>
      */
     @Override
-    public boolean render(WorldRenderContext ctx, BiConsumer<WorldRenderContext, Supplier<Shader>> renderer) {
-        if (!available()) {
-            return false;
-        }
+    public RenderSink provide() {
+        return new BufferBuilderRenderSink(
+                VanillaPipelineProvider.DefaultTypeFactory.INSTANCE, // optifine doesn't use the vanilla shader system?
+                () -> {
+                    if (!available()) {
+                        return;
+                    }
 
-        try {
-            final boolean shadersEnabled = (boolean) CONFIG_IS_SHADERS.invoke();
-            if (!shadersEnabled) {
-                renderer.accept(ctx, NoOpRenderWrapper.VANILLA_SHADER); // optifine doesn't use the vanilla shader system
-            } else if (!(boolean) SHADERS_IS_SHADOW_PASS.invoke()) {
-                SHADERS_BEGIN_LEASH.invoke();
-                renderer.accept(ctx, NoOpRenderWrapper.VANILLA_SHADER); // optifine doesn't use the vanilla shader system
-                SHADERS_END_LEASH.invoke();
-            }
-            return true;
-        } catch (final Throwable err) {
-            optifineDisabled = true;
-            LOGGER.error("Failed to render WECUI using OptiFine hooks", err);
-            return false;
-        }
+                    try {
+                        final boolean shadersEnabled = (boolean) CONFIG_IS_SHADERS.invoke();
+                        if (shadersEnabled) {
+                            SHADERS_BEGIN_LEASH.invoke();
+                        }
+                    } catch (final Throwable thr) {
+                        optifineDisabled = true;
+                        LOGGER.error("Failed to render WECUI using OptiFine hooks", thr);
+                    }
+                },
+                () -> {
+                    if (!available()) {
+                        return;
+                    }
+
+                    try {
+                        final boolean shadersEnabled = (boolean) CONFIG_IS_SHADERS.invoke();
+                        if (shadersEnabled) {
+                            SHADERS_END_LEASH.invoke();
+                        }
+                    } catch (final Throwable thr) {
+                        optifineDisabled = true;
+                        LOGGER.error("Failed to render WECUI using OptiFine hooks", thr);
+                    }
+                }
+        );
     }
 }

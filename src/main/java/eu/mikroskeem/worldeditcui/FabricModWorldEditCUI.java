@@ -6,6 +6,10 @@ import com.mumfrey.worldeditcui.config.CUIConfiguration;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerChannel;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerWorldRender;
 import eu.mikroskeem.worldeditcui.mixins.MinecraftClientAccess;
+import eu.mikroskeem.worldeditcui.render.IrisPipelineProvider;
+import eu.mikroskeem.worldeditcui.render.OptifinePipelineProvider;
+import eu.mikroskeem.worldeditcui.render.PipelineProvider;
+import eu.mikroskeem.worldeditcui.render.VanillaPipelineProvider;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
@@ -20,7 +24,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.Shader;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
@@ -29,7 +32,6 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * Fabric mod entrypoint
@@ -47,10 +49,10 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     private final KeyBinding keyBindClearSel = key("clear", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN);
     private final KeyBinding keyBindChunkBorder = key("chunk", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN);
 
-    private static final List<RenderWrapper> RENDER_WRAPPERS = List.of(
-            new IrisRenderWrapper(),
-            new OptifineRenderWrapper(),
-            new NoOpRenderWrapper()
+    private static final List<PipelineProvider> RENDER_PIPELINES = List.of(
+            new IrisPipelineProvider(),
+            new OptifinePipelineProvider(),
+            new VanillaPipelineProvider()
     );
 
     private WorldEditCUI controller;
@@ -60,7 +62,6 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     private World lastWorld;
     private ClientPlayerEntity lastPlayer;
 
-    private int activeWrapper = 0;
     private boolean visible = true;
     private int delayedHelo = 0;
 
@@ -96,7 +97,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
                     RenderSystem.getModelViewStack().method_34425(ctx.matrixStack().peek().getModel());
                     RenderSystem.applyModelViewMatrix();
                     ctx.worldRenderer().getTranslucentFramebuffer().beginWrite(false);
-                    this.onPostRenderEntities(ctx, NoOpRenderWrapper.VANILLA_SHADER);
+                    this.onPostRenderEntities(ctx);
                 } finally {
                     MinecraftClient.getInstance().getFramebuffer().beginWrite(false);
                     RenderSystem.getModelViewStack().pop();
@@ -105,22 +106,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         });
         WorldRenderEvents.LAST.register(ctx -> {
             if (!ctx.advancedTranslucency()) {
-                boolean successfullyRendered = false;
-                for (int i = this.activeWrapper; i < RENDER_WRAPPERS.size(); ++i) {
-                    final RenderWrapper wrapper = RENDER_WRAPPERS.get(i);
-                    if (wrapper.available()) {
-                        if (wrapper.render(ctx, this::onPostRenderEntities)) {
-                            this.activeWrapper = i;
-                            successfullyRendered = true;
-                            break;
-                        } else {
-                            this.getController().getDebugger().info("Failed to render with wrapper " + wrapper.id() + ", which declared itself as available... trying next");
-                        }
-                    }
-                }
-                if (!successfullyRendered) {
-                    throw new IllegalStateException("No wrapper matched, this is not expected.");
-                }
+                this.onPostRenderEntities(ctx);
             }
         });
     }
@@ -190,7 +176,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     public void onGameInitDone(MinecraftClient client) {
         this.controller = new WorldEditCUI();
         this.controller.initialise(client);
-        this.worldRenderListener = new CUIListenerWorldRender(this.controller, client);
+        this.worldRenderListener = new CUIListenerWorldRender(this.controller, client, RENDER_PIPELINES);
         this.channelListener = new CUIListenerChannel(this.controller);
     }
 
@@ -200,9 +186,9 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         this.helo(handler);
     }
 
-    public void onPostRenderEntities(final WorldRenderContext ctx, final Supplier<Shader> shaderSupplier) {
+    public void onPostRenderEntities(final WorldRenderContext ctx) {
         if (this.visible) {
-            this.worldRenderListener.onRender(ctx.matrixStack(), ctx.tickDelta(), shaderSupplier);
+            this.worldRenderListener.onRender(ctx.matrixStack(), ctx.tickDelta());
         }
     }
 

@@ -37,6 +37,11 @@ public interface RenderStyle
 		{
 			this.depthFunc = depthFunc;
 		}
+
+		public int depthFunc()
+		{
+			return this.depthFunc;
+		}
 		
 		public boolean matches(RenderType other)
 		{
