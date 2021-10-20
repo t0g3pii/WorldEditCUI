@@ -38,7 +38,7 @@ Yes, the original owner [@mikroskeem](https://github.com/mikroskeem) agreed to m
 Credits
 -------
 
- * [Mumfrey](https://github.com/Mumfrey), [mikroskeem](https://github.com/mikroskeem), and [zml](https://github.com/zml2008) for maintaining WorldEditCUI previously
+ * [Mumfrey](https://github.com/Mumfrey), [yetanotherx](https://github.com/yetanotherx), [mikroskeem](https://github.com/mikroskeem), and [zml](https://github.com/zml2008) for maintaining WorldEditCUI previously
  * [lahwran](https://github.com/lahwran) - Creator of the original WorldEdit CUI!
  * [sk89q](http://sk89q.com) for writing the WorldEdit plugin!
  * [Apache Commons](http://commons.apache.org/) for the join() methods!
