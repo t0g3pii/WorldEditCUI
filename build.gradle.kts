@@ -1,15 +1,15 @@
 plugins {
     java
-    id("fabric-loom") version "0.8-SNAPSHOT"
+    id("fabric-loom") version "0.10-SNAPSHOT"
     id("com.github.ben-manes.versions") version "0.39.0"
 }
 
-val minecraftVersion = "1.17.1"
-val yarnVersion = "$minecraftVersion+build.29:v2"
-val fabricLoaderVersion = "0.11.6"
-val fabricApiVersion = "0.37.1+1.17"
-val modmenuVersion = "2.0.2"
-val multiconnectVersion = "1.3.36"
+val minecraftVersion = "1.18.1"
+val yarnVersion = "$minecraftVersion+build.3"
+val fabricLoaderVersion = "0.12.11"
+val fabricApiVersion = "0.44.0+1.18"
+val modmenuVersion = "3.0.0"
+val multiconnectVersion = "1.5.6"
 
 group = "com.mumfrey.worldeditcui"
 version = "$minecraftVersion+01-SNAPSHOT"
@@ -27,9 +27,13 @@ repositories {
         name = "stellardriftSnapshots"
         mavenContent { snapshotsOnly() }
     }
+    maven(url = "https://api.modrinth.com/maven") {
+        name = "Modrinth"
+        mavenContent { includeGroup("maven.modrinth") }
+    }
 }
 
-val targetVersion = 16
+val targetVersion = 17
 java {
     sourceCompatibility = JavaVersion.toVersion(targetVersion)
     targetCompatibility = sourceCompatibility
@@ -46,17 +50,25 @@ tasks.withType(JavaCompile::class) {
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings("net.fabricmc:yarn:$yarnVersion")
+    mappings("net.fabricmc:yarn:$yarnVersion:v2")
+//    mappings loom.officialMojangMappings()
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
-    modImplementation("net.earthcomputer.multiconnect:multiconnect-api:$multiconnectVersion")
-    // https://github.com/IrisShaders/Iris/tree/1.17, published manually
-    modImplementation("net.coderbot.iris_mc1_17:iris:1.1.0+rev.d3beab3")
+    modImplementation("net.earthcomputer.multiconnect:multiconnect-api:$multiconnectVersion") {
+        isTransitive = false
+    }
+    modImplementation("maven.modrinth:iris:mc1.18.1-1.1.3")
 
     // for development
-    modRuntime("com.sk89q.worldedit:worldedit-fabric-mc1.17.1:7.2.6-SNAPSHOT")
-    runtimeOnly("net.minecraftforge:forgeflower:1.5.498.12")
+    modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.18.1:7.2.8") {
+        exclude("com.google.guava", "guava")
+        exclude("com.google.code.gson", "gson")
+        exclude("com.google.code.gson", "gson")
+        exclude("it.unimi.dsi", "fastutil")
+        exclude("org.apache.logging.log4j", "log4j-api")
+    }
+    modRuntimeOnly("net.minecraftforge:forgeflower:1.5.498.22")
 }
 
 tasks {
@@ -74,8 +86,8 @@ tasks {
         outputs.file(argsDest)
         doLast {
             val clientRun = minecraft.runConfigs.getByName("client")
-            argsDest.get().asFile.writeText("""
-                -Dfabric.dli.config=${minecraft.devLauncherConfig.absolutePath}
+            //-Dfabric.dli.config=${minecraft.devLauncherConfig.absolutePath} TODO
+            argsDest.get().asFile.writeText("""    
                 -Dfabric.dli.env=client
                 -Dfabric.dli.main=${clientRun.defaultMainClass}
                 ${clientRun.vmArgs.joinToString(System.lineSeparator())}

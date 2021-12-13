@@ -2,7 +2,7 @@
   "required": true,
   "package": "eu.mikroskeem.worldeditcui.mixins",
   "minVersion": "0.8",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "client": [
     "MinecraftClientAccess"
   ],

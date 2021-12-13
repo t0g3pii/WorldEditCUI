@@ -163,7 +163,7 @@ public class BufferBuilderRenderSink implements RenderSink {
         final double length = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
         final Vec3f normal = new Vec3f((float) (dX / length), (float) (dY / length), (float) (dZ / length));
         // normal.cross(MinecraftClient.getInstance().gameRenderer.getCamera().getRotation().method_35820() /* toXYZ */);
-        normal.transform(RenderSystem.getModelViewStack().peek().getNormal());
+        normal.transform(RenderSystem.getModelViewStack().peek().getNormalMatrix());
         // return new Vec3f(1, 1, 1);
         return normal;
     }

@@ -94,7 +94,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
             if (ctx.advancedTranslucency()) {
                 try {
                     RenderSystem.getModelViewStack().push();
-                    RenderSystem.getModelViewStack().method_34425(ctx.matrixStack().peek().getModel());
+                    RenderSystem.getModelViewStack().multiplyPositionMatrix(ctx.matrixStack().peek().getPositionMatrix());
                     RenderSystem.applyModelViewMatrix();
                     ctx.worldRenderer().getTranslucentFramebuffer().beginWrite(false);
                     this.onPostRenderEntities(ctx);

@@ -91,7 +91,7 @@ public class CUIListenerWorldRender
 			RenderSystem.lineWidth(6.0f);
 			final float oldFog = RenderSystem.getShaderFogStart();
 			final Shader oldShader = RenderSystem.getShader();
-			BackgroundRenderer.method_23792(); // disableFog
+			BackgroundRenderer.clearFog();
 
 			try
 			{
