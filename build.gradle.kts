@@ -27,10 +27,6 @@ repositories {
         name = "stellardriftSnapshots"
         mavenContent { snapshotsOnly() }
     }
-    maven(url = "https://api.modrinth.com/maven") {
-        name = "Modrinth"
-        mavenContent { includeGroup("maven.modrinth") }
-    }
 }
 
 val targetVersion = 17
@@ -58,7 +54,6 @@ dependencies {
     modImplementation("net.earthcomputer.multiconnect:multiconnect-api:$multiconnectVersion") {
         isTransitive = false
     }
-    modImplementation("maven.modrinth:iris:mc1.18.1-1.1.3")
 
     // for development
     modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.18.1:7.2.8") {

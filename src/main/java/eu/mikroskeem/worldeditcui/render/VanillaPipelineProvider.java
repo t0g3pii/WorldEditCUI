@@ -13,11 +13,10 @@ public final class VanillaPipelineProvider implements PipelineProvider {
         private static final BufferBuilderRenderSink.RenderType LINES = new BufferBuilderRenderSink.RenderType(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR, GameRenderer::getPositionColorShader);
         private static final BufferBuilderRenderSink.RenderType LINES_LOOP = new BufferBuilderRenderSink.RenderType(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR, GameRenderer::getPositionColorShader);
         // TODO: normals calculation is wrong
-        // private static final State LINES = new State(VertexFormat.DrawMode.LINES, VertexFormats.LINES, GameRenderer::getRenderTypeLinesShader);
-        // private static final State LINES_LOOP = new State(VertexFormat.DrawMode.LINES, VertexFormats.LINES, GameRenderer::getRenderTypeLinesShader);
+        //private static final State LINES = new State(VertexFormat.DrawMode.LINES, VertexFormats.LINES, GameRenderer::getRenderTypeLinesShader);
+        //private static final State LINES_LOOP = new State(VertexFormat.DrawMode.LINES, VertexFormats.LINES, GameRenderer::getRenderTypeLinesShader);
 
-        private DefaultTypeFactory() {
-        }
+        private DefaultTypeFactory() {}
 
         @Override
         public BufferBuilderRenderSink.RenderType quads() {

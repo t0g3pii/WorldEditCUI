@@ -6,7 +6,6 @@ import com.mumfrey.worldeditcui.config.CUIConfiguration;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerChannel;
 import com.mumfrey.worldeditcui.event.listeners.CUIListenerWorldRender;
 import eu.mikroskeem.worldeditcui.mixins.MinecraftClientAccess;
-import eu.mikroskeem.worldeditcui.render.IrisPipelineProvider;
 import eu.mikroskeem.worldeditcui.render.OptifinePipelineProvider;
 import eu.mikroskeem.worldeditcui.render.PipelineProvider;
 import eu.mikroskeem.worldeditcui.render.VanillaPipelineProvider;
@@ -50,7 +49,6 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     private final KeyBinding keyBindChunkBorder = key("chunk", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN);
 
     private static final List<PipelineProvider> RENDER_PIPELINES = List.of(
-            new IrisPipelineProvider(),
             new OptifinePipelineProvider(),
             new VanillaPipelineProvider()
     );
