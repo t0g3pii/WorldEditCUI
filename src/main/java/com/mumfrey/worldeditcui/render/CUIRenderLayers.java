@@ -1,14 +1,12 @@
 package com.mumfrey.worldeditcui.render;
 
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-
+import com.mojang.blaze3d.vertex.VertexFormat;
 import java.util.OptionalDouble;
+import net.minecraft.client.renderer.RenderType;
 
-public abstract class CUIRenderLayers extends RenderLayer {
+public abstract class CUIRenderLayers extends RenderType {
 
-    public CUIRenderLayers(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, Runnable startAction, Runnable endAction) {
+    public CUIRenderLayers(String name, VertexFormat vertexFormat, VertexFormat.Mode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, Runnable startAction, Runnable endAction) {
         super(name, vertexFormat, drawMode, expectedBufferSize, hasCrumbling, translucent, startAction, endAction);
     }
 

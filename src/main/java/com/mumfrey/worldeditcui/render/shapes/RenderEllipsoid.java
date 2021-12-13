@@ -40,7 +40,7 @@ public class RenderEllipsoid extends RenderRegion
 	public void render(CUIRenderContext ctx)
 	{
 		ctx.flush();
-		ctx.matrices().push();
+		ctx.matrices().pushPose();
 		ctx.matrices().translate(this.centreX - ctx.cameraPos().getX(), this.centreY - ctx.cameraPos().getY(), this.centreZ - ctx.cameraPos().getZ());
 		ctx.applyMatrices();
 
@@ -56,7 +56,7 @@ public class RenderEllipsoid extends RenderRegion
 		}
 
 		ctx.flush();
-		ctx.matrices().pop();
+		ctx.matrices().popPose();
 		ctx.applyMatrices();
 	}
 	

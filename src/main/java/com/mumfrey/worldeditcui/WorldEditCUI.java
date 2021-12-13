@@ -11,11 +11,10 @@ import com.mumfrey.worldeditcui.render.region.CuboidRegion;
 import com.mumfrey.worldeditcui.render.region.Region;
 import com.mumfrey.worldeditcui.render.shapes.RenderChunkBoundary;
 import com.mumfrey.worldeditcui.util.Vector3;
-import net.minecraft.client.MinecraftClient;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.client.Minecraft;
 
 /**
  * Main controller class. Uses a pseudo-JavaBeans paradigm. The only real
@@ -41,7 +40,7 @@ public class WorldEditCUI
 	private RenderChunkBoundary chunkBorderRenderer;
 	private boolean chunkBorders;
 	
-	public void initialise(MinecraftClient minecraft)
+	public void initialise(Minecraft minecraft)
 	{
 		this.selection = new CuboidRegion(this);
 		this.configuration = CUIConfiguration.create();

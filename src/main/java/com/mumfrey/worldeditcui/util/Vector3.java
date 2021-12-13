@@ -1,7 +1,7 @@
 package com.mumfrey.worldeditcui.util;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Represents a 3d vector.
@@ -51,7 +51,7 @@ public class Vector3 implements Comparable<Vector3>
 	 */
 	public Vector3(Entity entity, double partialTicks)
 	{
-		this(entity.getCameraPosVec((float) partialTicks));
+		this(entity.getEyePosition((float) partialTicks));
 	}
 	
 	/**
@@ -124,8 +124,8 @@ public class Vector3 implements Comparable<Vector3>
 	 *
 	 * @param nativeVector Native Vector
 	 */
-	public Vector3(Vec3d nativeVector) {
-		this(nativeVector.getX(), nativeVector.getY(), nativeVector.getZ());
+	public Vector3(Vec3 nativeVector) {
+		this(nativeVector.x(), nativeVector.y(), nativeVector.z());
 	}
 	
 	public double getX()

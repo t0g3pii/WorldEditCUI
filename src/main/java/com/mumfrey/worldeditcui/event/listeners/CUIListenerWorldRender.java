@@ -1,17 +1,17 @@
 package com.mumfrey.worldeditcui.event.listeners;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
 import eu.mikroskeem.worldeditcui.render.PipelineProvider;
 import eu.mikroskeem.worldeditcui.render.RenderSink;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BackgroundRenderer;
-import net.minecraft.client.render.Shader;
-import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.opengl.GL32;
 
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.ShaderInstance;
 
 /**
  * Listener for WorldRenderEvent
@@ -24,13 +24,13 @@ public class CUIListenerWorldRender
 {
 	private final WorldEditCUI controller;
 
-	private final MinecraftClient minecraft;
+	private final Minecraft minecraft;
 	private final CUIRenderContext ctx = new CUIRenderContext();
 	private final List<PipelineProvider> pipelines;
 	private int currentPipelineIdx;
 	private RenderSink sink;
 
-	public CUIListenerWorldRender(WorldEditCUI controller, MinecraftClient minecraft, final List<PipelineProvider> pipelines)
+	public CUIListenerWorldRender(WorldEditCUI controller, Minecraft minecraft, final List<PipelineProvider> pipelines)
 	{
 		this.controller = controller;
 		this.minecraft = minecraft;
@@ -72,7 +72,7 @@ public class CUIListenerWorldRender
 		}
 	}
 
-	public void onRender(final MatrixStack matrices, float partialTicks)
+	public void onRender(final PoseStack matrices, float partialTicks)
 	{
 		try
 		{
@@ -82,7 +82,7 @@ public class CUIListenerWorldRender
 				// allow ignoring eg. shadow pass
 				return;
 			}
-			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getCamera().getPos()), matrices, partialTicks, sink);
+			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getMainCamera().getPosition()), matrices, partialTicks, sink);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
 			RenderSystem.disableTexture();
@@ -90,8 +90,8 @@ public class CUIListenerWorldRender
 			RenderSystem.depthMask(false);
 			RenderSystem.lineWidth(6.0f);
 			final float oldFog = RenderSystem.getShaderFogStart();
-			final Shader oldShader = RenderSystem.getShader();
-			BackgroundRenderer.clearFog();
+			final ShaderInstance oldShader = RenderSystem.getShader();
+			FogRenderer.setupNoFog();
 
 			try
 			{

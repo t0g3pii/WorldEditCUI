@@ -8,7 +8,7 @@ import com.mumfrey.worldeditcui.render.points.PointCubeTracking;
 import com.mumfrey.worldeditcui.render.shapes.Render3DBox;
 import com.mumfrey.worldeditcui.render.shapes.Render3DGrid;
 import com.mumfrey.worldeditcui.util.BoundingBox;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 /**
  * Main controller for a cuboid-type region

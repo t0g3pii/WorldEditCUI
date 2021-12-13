@@ -5,7 +5,6 @@ plugins {
 }
 
 val minecraftVersion = "1.18.1"
-val yarnVersion = "$minecraftVersion+build.3"
 val fabricLoaderVersion = "0.12.11"
 val fabricApiVersion = "0.44.0+1.18"
 val modmenuVersion = "3.0.0"
@@ -46,8 +45,7 @@ tasks.withType(JavaCompile::class) {
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings("net.fabricmc:yarn:$yarnVersion:v2")
-//    mappings loom.officialMojangMappings()
+    mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     modImplementation("com.terraformersmc:modmenu:$modmenuVersion")

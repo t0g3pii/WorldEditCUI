@@ -4,17 +4,17 @@ import com.mumfrey.worldeditcui.event.listeners.CUIRenderContext;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.Vector3;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 public class RenderChunkBoundary extends RenderRegion
 {
-	private final MinecraftClient mc;
+	private final Minecraft mc;
 	private final Render3DGrid grid;
 	
-	public RenderChunkBoundary(RenderStyle boundaryStyle, RenderStyle gridStyle, MinecraftClient minecraft)
+	public RenderChunkBoundary(RenderStyle boundaryStyle, RenderStyle gridStyle, Minecraft minecraft)
 	{
 		super(boundaryStyle);
 
@@ -27,11 +27,11 @@ public class RenderChunkBoundary extends RenderRegion
 	@Override
 	public void render(CUIRenderContext ctx)
 	{
-		double yMin = this.mc.world != null ? this.mc.world.getDimension().getMinimumY() : 0.0;
-		double yMax = this.mc.world != null ? this.mc.world.getDimension().getLogicalHeight() - yMin : 256.0;
+		double yMin = this.mc.level != null ? this.mc.level.dimensionType().minY() : 0.0;
+		double yMax = this.mc.level != null ? this.mc.level.dimensionType().logicalHeight() - yMin : 256.0;
 
-		long xBlock = MathHelper.floor(ctx.cameraPos().getX());
-		long zBlock = MathHelper.floor(ctx.cameraPos().getZ());
+		long xBlock = Mth.floor(ctx.cameraPos().getX());
+		long zBlock = Mth.floor(ctx.cameraPos().getZ());
 
 		int xChunk = (int)(xBlock >> 4);
 		int zChunk = (int)(zBlock >> 4);
@@ -41,7 +41,7 @@ public class RenderChunkBoundary extends RenderRegion
 		
 		this.grid.setPosition(new Vector3(xBase - OFFSET, yMin, zBase - 16 - OFFSET), new Vector3(xBase + 16 + OFFSET, yMax, zBase + OFFSET));
 
-		ctx.matrices().push();
+		ctx.matrices().pushPose();
 		ctx.matrices().translate(0.0, -ctx.cameraPos().getY(), 0.0);
 		ctx.flush();
 		ctx.applyMatrices();
@@ -50,13 +50,13 @@ public class RenderChunkBoundary extends RenderRegion
 
 		this.renderChunkBorder(ctx, yMin, yMax, xBase, zBase);
 		
-		if (this.mc.world != null)
+		if (this.mc.level != null)
 		{
 			this.renderChunkBoundary(ctx, xChunk, zChunk, xBase, zBase);
 		}
 
 		ctx.flush();
-		ctx.matrices().pop();
+		ctx.matrices().popPose();
 		ctx.applyMatrices();
 	}
 
@@ -99,8 +99,8 @@ public class RenderChunkBoundary extends RenderRegion
 
 	private void renderChunkBoundary(final CUIRenderContext ctx, int xChunk, int zChunk, double xBase, double zBase)
 	{
-		Chunk chunk = this.mc.world.getChunk(xChunk, zChunk);
-		Heightmap heightMap = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE);
+		ChunkAccess chunk = this.mc.level.getChunk(xChunk, zChunk);
+		Heightmap heightMap = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE);
 
 		for (LineStyle line : this.style.getLines())
 		{
@@ -116,7 +116,7 @@ public class RenderChunkBoundary extends RenderRegion
 					{
 						for (int axis = 0; axis < 2; axis++)
 						{
-							height = axis == 0 ? heightMap.get(j * 15, i) : heightMap.get(i, j * 15);
+							height = axis == 0 ? heightMap.getFirstAvailable(j * 15, i) : heightMap.getFirstAvailable(i, j * 15);
 							double xPos = axis == 0 ? xBase + (j * 16) : xBase + i;
 							double zPos = axis == 0 ? zBase - 16 + i : zBase - 16 + (j * 16);
 							if (lastHeight[axis][j] > -1 && height != lastHeight[axis][j])

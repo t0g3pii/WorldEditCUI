@@ -1,49 +1,48 @@
 package eu.mikroskeem.worldeditcui.gui;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 
 /**
  * @author Jesús Sanz - Modified to implement Config GUI / First Version
  */
-public class SettingsEntry extends AlwaysSelectedEntryListWidget.Entry<SettingsEntry> {
+public class SettingsEntry extends ObjectSelectionList.Entry<SettingsEntry> {
     private static final int LINE_HEIGHT = 11;
 
-    protected final MinecraftClient client;
+    protected final Minecraft client;
     protected final SettingsWidget list;
-    protected final Text keyword;
-    private List<OrderedText> wrappedKeyword;
+    protected final Component keyword;
+    private List<FormattedCharSequence> wrappedKeyword;
     private int lastWidth = -1;
-    protected final ClickableWidget widgetButton;
-    protected final ClickableWidget resetButton;
+    protected final AbstractWidget widgetButton;
+    protected final AbstractWidget resetButton;
 
-    public SettingsEntry(SettingsWidget list, Text keyword, ClickableWidget widgetButton, ClickableWidget resetButton) {
+    public SettingsEntry(SettingsWidget list, Component keyword, AbstractWidget widgetButton, AbstractWidget resetButton) {
         this.list = list;
-        this.client = MinecraftClient.getInstance();
+        this.client = Minecraft.getInstance();
         this.keyword = keyword;
         this.widgetButton = widgetButton;
         this.resetButton = resetButton;
     }
 
     @Override
-    public void render(MatrixStack matrices, int index, int y, int x, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovering, float delta) {
+    public void render(PoseStack matrices, int index, int y, int x, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovering, float delta) {
         // Label
         final int maxNameWidth = rowWidth / 2 - 40;
         if (maxNameWidth != this.lastWidth) {
-            this.wrappedKeyword = this.client.textRenderer.wrapLines(this.keyword, maxNameWidth);
+            this.wrappedKeyword = this.client.font.split(this.keyword, maxNameWidth);
             this.lastWidth = maxNameWidth;
         }
 
         int quarterEntries = this.wrappedKeyword.size() >= 2 ? this.wrappedKeyword.size() / 2 : 0;
-        int lineYOffset = (rowHeight / 2) - quarterEntries * (this.client.textRenderer.fontHeight + 2) - this.client.textRenderer.fontHeight / 2;
-        for (final OrderedText text : this.wrappedKeyword) {
-            this.client.textRenderer.draw(matrices, text, x + 50, y + lineYOffset, 0xFFFFFF);
+        int lineYOffset = (rowHeight / 2) - quarterEntries * (this.client.font.lineHeight + 2) - this.client.font.lineHeight / 2;
+        for (final FormattedCharSequence text : this.wrappedKeyword) {
+            this.client.font.draw(matrices, text, x + 50, y + lineYOffset, 0xFFFFFF);
             lineYOffset += LINE_HEIGHT;
         }
 
@@ -54,7 +53,7 @@ public class SettingsEntry extends AlwaysSelectedEntryListWidget.Entry<SettingsE
     }
 
     @Override
-    public Text getNarration() {
+    public Component getNarration() {
         return this.keyword;
     }
 }

@@ -1,13 +1,12 @@
 package com.mumfrey.worldeditcui.event.listeners;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mumfrey.worldeditcui.config.Colour;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.Vector3;
 import eu.mikroskeem.worldeditcui.render.RenderSink;
-import net.minecraft.client.util.math.MatrixStack;
-
 import java.util.function.Consumer;
 
 /**
@@ -16,7 +15,7 @@ import java.util.function.Consumer;
  */
 public final class CUIRenderContext implements RenderSink {
     private Vector3 cameraPos;
-    private MatrixStack matrices = RenderSystem.getModelViewStack();
+    private PoseStack matrices = RenderSystem.getModelViewStack();
     private float dt;
     private RenderSink delegateSink;
 
@@ -24,7 +23,7 @@ public final class CUIRenderContext implements RenderSink {
         return this.cameraPos;
     }
 
-    public MatrixStack matrices() {
+    public PoseStack matrices() {
         return RenderSystem.getModelViewStack();
     }
 
@@ -46,7 +45,7 @@ public final class CUIRenderContext implements RenderSink {
         }
     }
 
-    void init(final Vector3 cameraPos, final MatrixStack matrices, final float dt, final RenderSink sink) {
+    void init(final Vector3 cameraPos, final PoseStack matrices, final float dt, final RenderSink sink) {
         this.cameraPos = cameraPos;
         this.matrices = matrices;
         this.dt = dt;
