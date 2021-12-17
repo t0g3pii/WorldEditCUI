@@ -18,6 +18,7 @@ repositories {
     // - https://maven.enginehub.org/repo/
     // - https://maven.terraformersmc.com/releases/
     // - https://maven.minecraftforge.net/
+    maven(url = "https://jitpack.io")
     maven(url = "https://repo.stellardrift.ca/repository/stable/") {
         name = "stellardriftReleases"
         mavenContent { releasesOnly() }
@@ -61,7 +62,9 @@ dependencies {
         exclude("it.unimi.dsi", "fastutil")
         exclude("org.apache.logging.log4j", "log4j-api")
     }
-    modRuntimeOnly("net.minecraftforge:forgeflower:1.5.498.22")
+
+    //OptiFabric
+    modImplementation("com.github.Chocohead:OptiFabric:d444e69642")
 }
 
 tasks {
