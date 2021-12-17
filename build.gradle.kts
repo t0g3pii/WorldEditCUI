@@ -5,7 +5,7 @@ plugins {
 }
 
 val minecraftVersion = "1.18.1"
-val fabricLoaderVersion = "0.12.11"
+val fabricLoaderVersion = "0.12.12"
 val fabricApiVersion = "0.44.0+1.18"
 val modmenuVersion = "3.0.0"
 val multiconnectVersion = "1.5.6"
@@ -46,7 +46,11 @@ tasks.withType(JavaCompile::class) {
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings(loom.officialMojangMappings())
+    mappings(loom.layered {
+        officialMojangMappings {
+            nameSyntheticMembers = false
+        }
+    })
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
@@ -62,9 +66,6 @@ dependencies {
         exclude("it.unimi.dsi", "fastutil")
         exclude("org.apache.logging.log4j", "log4j-api")
     }
-
-    //OptiFabric
-    modImplementation("com.github.Chocohead:OptiFabric:d444e69642")
 }
 
 tasks {
