@@ -19,6 +19,7 @@ repositories {
     // - https://maven.terraformersmc.com/releases/
     // - https://maven.minecraftforge.net/
     maven(url = "https://jitpack.io")
+    maven(url = "https://maven.parchmentmc.org")
     maven(url = "https://repo.stellardrift.ca/repository/stable/") {
         name = "stellardriftReleases"
         mavenContent { releasesOnly() }
@@ -50,6 +51,7 @@ dependencies {
         officialMojangMappings {
             nameSyntheticMembers = false
         }
+        parchment("org.parchmentmc.data:parchment-1.18.1:2021.12.19@zip")
     })
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
