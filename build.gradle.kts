@@ -66,6 +66,7 @@ dependencies {
         exclude("it.unimi.dsi", "fastutil")
         exclude("org.apache.logging.log4j", "log4j-api")
     }
+    modRuntimeOnly("net.minecraftforge:forgeflower:1.5.498.12");
 }
 
 tasks {

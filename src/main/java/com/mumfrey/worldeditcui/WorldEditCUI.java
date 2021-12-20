@@ -10,11 +10,11 @@ import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import com.mumfrey.worldeditcui.render.region.CuboidRegion;
 import com.mumfrey.worldeditcui.render.region.Region;
 import com.mumfrey.worldeditcui.render.shapes.RenderChunkBoundary;
-import com.mumfrey.worldeditcui.util.Vector3;
+import net.minecraft.client.Minecraft;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
-import net.minecraft.client.Minecraft;
 
 /**
  * Main controller class. Uses a pseudo-JavaBeans paradigm. The only real

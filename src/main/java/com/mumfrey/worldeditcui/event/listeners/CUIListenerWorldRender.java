@@ -1,17 +1,16 @@
 package com.mumfrey.worldeditcui.event.listeners;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.util.Vector3;
 import eu.mikroskeem.worldeditcui.render.PipelineProvider;
 import eu.mikroskeem.worldeditcui.render.RenderSink;
-import org.lwjgl.opengl.GL32;
-
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
+import org.lwjgl.opengl.GL32;
+
+import java.util.List;
 
 /**
  * Listener for WorldRenderEvent
@@ -72,7 +71,7 @@ public class CUIListenerWorldRender
 		}
 	}
 
-	public void onRender(final PoseStack matrices, float partialTicks)
+	public void onRender(float partialTicks)
 	{
 		try
 		{
@@ -82,7 +81,7 @@ public class CUIListenerWorldRender
 				// allow ignoring eg. shadow pass
 				return;
 			}
-			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getMainCamera().getPosition()), matrices, partialTicks, sink);
+			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getMainCamera().getPosition()), partialTicks, sink);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
 			RenderSystem.disableTexture();

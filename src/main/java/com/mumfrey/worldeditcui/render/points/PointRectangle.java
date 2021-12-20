@@ -5,7 +5,6 @@ import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.render.shapes.Render3DBox;
 import com.mumfrey.worldeditcui.util.Vector2;
-import com.mumfrey.worldeditcui.util.Vector3;
 
 /**
  * Stores data about a prism surrounding two blocks in the world. Used to store

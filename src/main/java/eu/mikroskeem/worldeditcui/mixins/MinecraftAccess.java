@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
  * @author Mark Vainomaa
  */
 @Mixin(value = Minecraft.class)
-public interface MinecraftClientAccess {
+public interface MinecraftAccess {
     @Accessor
     Timer getTimer();
 }

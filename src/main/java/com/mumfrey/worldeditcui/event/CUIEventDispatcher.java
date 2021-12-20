@@ -4,10 +4,6 @@ import com.mumfrey.worldeditcui.InitialisationFactory;
 import com.mumfrey.worldeditcui.WorldEditCUI;
 import com.mumfrey.worldeditcui.exceptions.InitialisationException;
 
-import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Adam Mummery-Smith
  */

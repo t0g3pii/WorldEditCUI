@@ -8,13 +8,13 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Vector3f;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
+import net.minecraft.client.renderer.ShaderInstance;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 
 import java.util.Objects;
 import java.util.function.Supplier;
-import net.minecraft.client.renderer.ShaderInstance;
 
 public class BufferBuilderRenderSink implements RenderSink {
 

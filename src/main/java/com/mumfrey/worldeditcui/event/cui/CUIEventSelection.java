@@ -1,11 +1,11 @@
 package com.mumfrey.worldeditcui.event.cui;
 
-import java.util.UUID;
-
 import com.mumfrey.worldeditcui.event.CUIEvent;
 import com.mumfrey.worldeditcui.event.CUIEventArgs;
 import com.mumfrey.worldeditcui.event.CUIEventType;
 import com.mumfrey.worldeditcui.render.region.Region;
+
+import java.util.UUID;
 
 /**
  * Called when selection event is received

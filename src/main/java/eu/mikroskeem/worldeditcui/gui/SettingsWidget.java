@@ -2,10 +2,11 @@ package eu.mikroskeem.worldeditcui.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mumfrey.worldeditcui.config.CUIConfiguration;
-import java.util.Objects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.util.Mth;
+
+import java.util.Objects;
 
 /**
  * @author Jesús Sanz - Modified to implement Config GUI / First Version
