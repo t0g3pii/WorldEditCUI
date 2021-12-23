@@ -3,6 +3,10 @@ package eu.mikroskeem.worldeditcui.render;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+
+import java.util.function.Function;
 
 public final class VanillaPipelineProvider implements PipelineProvider {
 
@@ -10,8 +14,8 @@ public final class VanillaPipelineProvider implements PipelineProvider {
         public static final DefaultTypeFactory INSTANCE = new DefaultTypeFactory();
 
         private static final BufferBuilderRenderSink.RenderType QUADS = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, GameRenderer::getPositionColorShader);
-        private static final BufferBuilderRenderSink.RenderType LINES = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR, GameRenderer::getPositionColorShader);
-        private static final BufferBuilderRenderSink.RenderType LINES_LOOP = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR, GameRenderer::getPositionColorShader);
+        private static final BufferBuilderRenderSink.RenderType LINES = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR, GameRenderer::getRendertypeLinesShader);
+        private static final BufferBuilderRenderSink.RenderType LINES_LOOP = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR, GameRenderer::getRendertypeLinesShader);
 
         private DefaultTypeFactory() {}
 

@@ -8,6 +8,7 @@ import eu.mikroskeem.worldeditcui.render.RenderSink;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.world.phys.Vec3;
 import org.lwjgl.opengl.GL32;
 
 import java.util.List;
@@ -82,33 +83,45 @@ public class CUIListenerWorldRender
 				return;
 			}
 			this.ctx.init(new Vector3(this.minecraft.gameRenderer.getMainCamera().getPosition()), partialTicks, sink);
-			RenderSystem.enableBlend();
-			RenderSystem.defaultBlendFunc();
-			RenderSystem.disableTexture();
-			RenderSystem.enableDepthTest();
-			RenderSystem.depthMask(false);
-			RenderSystem.lineWidth(6.0f);
-			final float oldFog = RenderSystem.getShaderFogStart();
-			final ShaderInstance oldShader = RenderSystem.getShader();
+			float fogStart = RenderSystem.getShaderFogStart();
 			FogRenderer.setupNoFog();
 
-			try
-			{
-				this.controller.renderSelections(this.ctx);
-				this.sink.flush();
-			}
-			catch (Exception e) {
-				this.controller.getDebugger().error("Error while attempting to render WorldEdit CUI", e);
-				this.invalidatePipeline();
-			}
+			RenderSystem.disableCull();
 
-			RenderSystem.depthFunc(GL32.GL_LEQUAL);
+			RenderSystem.enableBlend();
 
-			RenderSystem.setShaderFogStart(oldFog);
+			RenderSystem.disableTexture();
+			RenderSystem.depthMask(false);
+//			RenderSystem.defaultBlendFunc();
+
+			RenderSystem.disableDepthTest();
+			RenderSystem.lineWidth(6.0f);
+
+//			final float oldFog = RenderSystem.getShaderFogStart();
+			final ShaderInstance oldShader = RenderSystem.getShader();
+//			FogRenderer.setupNoFog();
+//
+//			try
+//			{
+//				this.controller.renderSelections(this.ctx);
+//				this.sink.flush();
+//			}
+//			catch (Exception e) {
+//				this.controller.getDebugger().error("Error while attempting to render WorldEdit CUI", e);
+//				this.invalidatePipeline();
+//			}
+
+//			RenderSystem.depthFunc(GL32.GL_LEQUAL);
+
 			RenderSystem.setShader(() -> oldShader);
+			RenderSystem.enableDepthTest();
 			RenderSystem.depthMask(true);
 			RenderSystem.enableTexture();
+
 			RenderSystem.disableBlend();
+
+			RenderSystem.enableCull();
+			RenderSystem.setShaderFogStart(fogStart);
 			// RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 		} catch (Exception ex)
 		{
