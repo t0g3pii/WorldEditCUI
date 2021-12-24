@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Vector3f;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
@@ -162,9 +163,7 @@ public class BufferBuilderRenderSink implements RenderSink {
         final double dZ = (z1 - z0);
         final double length = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
         final Vector3f normal = new Vector3f((float) (dX / length), (float) (dY / length), (float) (dZ / length));
-        // normal.cross(MinecraftClient.getInstance().gameRenderer.getCamera().getRotation().method_35820() /* toXYZ */);
         normal.transform(RenderSystem.getModelViewStack().last().normal());
-        // return new Vec3f(1, 1, 1);
         return normal;
     }
 

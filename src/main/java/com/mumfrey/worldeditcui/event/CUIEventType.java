@@ -1,6 +1,15 @@
 package com.mumfrey.worldeditcui.event;
 
-import com.mumfrey.worldeditcui.event.cui.*;
+import com.mumfrey.worldeditcui.event.cui.CUIEventBounds;
+import com.mumfrey.worldeditcui.event.cui.CUIEventColour;
+import com.mumfrey.worldeditcui.event.cui.CUIEventCylinder;
+import com.mumfrey.worldeditcui.event.cui.CUIEventEllipsoid;
+import com.mumfrey.worldeditcui.event.cui.CUIEventGrid;
+import com.mumfrey.worldeditcui.event.cui.CUIEventPoint2D;
+import com.mumfrey.worldeditcui.event.cui.CUIEventPoint3D;
+import com.mumfrey.worldeditcui.event.cui.CUIEventPolygon;
+import com.mumfrey.worldeditcui.event.cui.CUIEventSelection;
+import com.mumfrey.worldeditcui.event.cui.CUIEventUpdate;
 
 import java.util.HashMap;
 import java.util.Map;

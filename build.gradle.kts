@@ -18,7 +18,6 @@ repositories {
     // - https://maven.enginehub.org/repo/
     // - https://maven.terraformersmc.com/releases/
     // - https://maven.minecraftforge.net/
-    maven(url = "https://jitpack.io")
     maven(url = "https://maven.parchmentmc.org")
     maven(url = "https://repo.stellardrift.ca/repository/stable/") {
         name = "stellardriftReleases"
