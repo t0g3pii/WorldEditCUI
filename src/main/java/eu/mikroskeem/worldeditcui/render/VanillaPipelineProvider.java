@@ -13,9 +13,9 @@ public final class VanillaPipelineProvider implements PipelineProvider {
     public static class DefaultTypeFactory implements BufferBuilderRenderSink.TypeFactory {
         public static final DefaultTypeFactory INSTANCE = new DefaultTypeFactory();
 
-        private static final BufferBuilderRenderSink.RenderType QUADS = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, GameRenderer::getRendertypeLinesShader);
-        private static final BufferBuilderRenderSink.RenderType LINES = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR, GameRenderer::getRendertypeLinesShader);
-        private static final BufferBuilderRenderSink.RenderType LINES_LOOP = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR, GameRenderer::getRendertypeLinesShader);
+        private static final BufferBuilderRenderSink.RenderType QUADS = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_NORMAL, GameRenderer::getRendertypeLinesShader);
+        private static final BufferBuilderRenderSink.RenderType LINES = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL, GameRenderer::getRendertypeLinesShader);
+        private static final BufferBuilderRenderSink.RenderType LINES_LOOP = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL, GameRenderer::getRendertypeLinesShader);
 
         private DefaultTypeFactory() {}
 
