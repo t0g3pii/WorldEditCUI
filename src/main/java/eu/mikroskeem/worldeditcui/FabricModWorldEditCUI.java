@@ -88,24 +88,8 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         ClientLifecycleEvents.CLIENT_STARTED.register(this::onGameInitDone);
         CUINetworking.subscribeToCuiPacket(this::onPluginMessage);
         ClientPlayConnectionEvents.JOIN.register(this::onJoinGame);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(ctx -> {
-            if (ctx.advancedTranslucency()) {
-                try {
-                    RenderSystem.getModelViewStack().pushPose();
-                    RenderSystem.getModelViewStack().mulPoseMatrix(ctx.matrixStack().last().pose());
-                    RenderSystem.applyModelViewMatrix();
-                    ctx.worldRenderer().getTranslucentTarget().bindWrite(false);
-                    this.onPostRenderEntities(ctx);
-                } finally {
-                    Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
-                    RenderSystem.getModelViewStack().popPose();
-                }
-            }
-        });
         WorldRenderEvents.LAST.register(ctx -> {
-            if (!ctx.advancedTranslucency()) {
-                this.onPostRenderEntities(ctx);
-            }
+            this.onPostRenderEntities(ctx);
         });
     }
 

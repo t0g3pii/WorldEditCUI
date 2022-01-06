@@ -91,8 +91,8 @@ public class CUIListenerWorldRender
 			RenderSystem.disableCull();
 			RenderSystem.enableBlend();
 			RenderSystem.disableTexture();
-			RenderSystem.depthMask(false);
 			RenderSystem.disableDepthTest();
+			RenderSystem.depthMask(false);
 			RenderSystem.lineWidth(6.0f);
 
 			final ShaderInstance oldShader = RenderSystem.getShader();
