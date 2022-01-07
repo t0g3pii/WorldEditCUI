@@ -88,15 +88,31 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         ClientLifecycleEvents.CLIENT_STARTED.register(this::onGameInitDone);
         CUINetworking.subscribeToCuiPacket(this::onPluginMessage);
         ClientPlayConnectionEvents.JOIN.register(this::onJoinGame);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(ctx -> {
+            if (ctx.advancedTranslucency()) {
+                try {
+                    RenderSystem.getModelViewStack().pushPose();
+                    RenderSystem.getModelViewStack().mulPoseMatrix(ctx.matrixStack().last().pose());
+                    RenderSystem.applyModelViewMatrix();
+                    ctx.worldRenderer().getTranslucentTarget().bindWrite(false);
+                    this.onPostRenderEntities(ctx);
+                } finally {
+                    Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
+                    RenderSystem.getModelViewStack().popPose();
+                }
+            }
+        });
         WorldRenderEvents.LAST.register(ctx -> {
-            this.onPostRenderEntities(ctx);
+            if (!ctx.advancedTranslucency()) {
+                this.onPostRenderEntities(ctx);
+            }
         });
     }
 
-    private void onTick(Minecraft mc) {
-        CUIConfiguration config = controller.getConfiguration();
-        boolean inGame = mc.player != null;
-        boolean clock = ((MinecraftAccess) mc).getTimer().partialTick > 0;
+    private void onTick(final Minecraft mc) {
+        final CUIConfiguration config = this.controller.getConfiguration();
+        final boolean inGame = mc.player != null;
+        final boolean clock = ((MinecraftAccess) mc).getTimer().partialTick > 0;
 
         if (inGame && mc.screen == null) {
             while (this.keyBindToggleUI.consumeClick()) {
@@ -109,22 +125,22 @@ public final class FabricModWorldEditCUI implements ModInitializer {
                 }
 
                 if (config.isClearAllOnKey()) {
-                    controller.clearRegions();
+                    this.controller.clearRegions();
                 }
             }
 
             while (this.keyBindChunkBorder.consumeClick()) {
-                controller.toggleChunkBorders();
+                this.controller.toggleChunkBorders();
             }
         }
 
-        if (inGame && clock && controller != null) {
+        if (inGame && clock && this.controller != null) {
             if (mc.level != this.lastWorld || mc.player != this.lastPlayer) {
                 this.lastWorld = mc.level;
                 this.lastPlayer = mc.player;
 
-                controller.getDebugger().debug("World change detected, sending new handshake");
-                controller.clear();
+                this.controller.getDebugger().debug("World change detected, sending new handshake");
+                this.controller.clear();
                 this.helo(mc.getConnection());
                 this.delayedHelo = FabricModWorldEditCUI.DELAYED_HELO_TICKS;
                 if (mc.player != null && config.isPromiscuous()) {
@@ -141,21 +157,21 @@ public final class FabricModWorldEditCUI implements ModInitializer {
         }
     }
 
-    private void onPluginMessage(Minecraft client, ClientPacketListener handler, FriendlyByteBuf data, PacketSender sender) {
+    private void onPluginMessage(final Minecraft client, final ClientPacketListener handler, final FriendlyByteBuf data, final PacketSender sender) {
         try {
-            int readableBytes = data.readableBytes();
+            final int readableBytes = data.readableBytes();
             if (readableBytes > 0) {
-                String stringPayload = data.toString(0, data.readableBytes(), StandardCharsets.UTF_8);
-                client.execute(() -> channelListener.onMessage(stringPayload));
+                final String stringPayload = data.toString(0, data.readableBytes(), StandardCharsets.UTF_8);
+                client.execute(() -> this.channelListener.onMessage(stringPayload));
             } else {
-                getController().getDebugger().debug("Warning, invalid (zero length) payload received from server");
+                this.getController().getDebugger().debug("Warning, invalid (zero length) payload received from server");
             }
-        } catch (Exception ex) {
-            getController().getDebugger().info("Error decoding payload from server", ex);
+        } catch (final Exception ex) {
+            this.getController().getDebugger().info("Error decoding payload from server", ex);
         }
     }
 
-    public void onGameInitDone(Minecraft client) {
+    public void onGameInitDone(final Minecraft client) {
         this.controller = new WorldEditCUI();
         this.controller.initialise(client);
         this.worldRenderListener = new CUIListenerWorldRender(this.controller, client, RENDER_PIPELINES);
@@ -164,7 +180,7 @@ public final class FabricModWorldEditCUI implements ModInitializer {
 
     public void onJoinGame(final ClientPacketListener handler, final PacketSender sender, final Minecraft client) {
         this.visible = true;
-        controller.getDebugger().debug("Joined game, sending initial handshake");
+        this.controller.getDebugger().debug("Joined game, sending initial handshake");
         this.helo(handler);
     }
 
@@ -175,8 +191,8 @@ public final class FabricModWorldEditCUI implements ModInitializer {
     }
 
     private void helo(final ClientPacketListener handler) {
-        String message = "v|" + WorldEditCUI.PROTOCOL_VERSION;
-        ByteBuf buffer = Unpooled.copiedBuffer(message, StandardCharsets.UTF_8);
+        final String message = "v|" + WorldEditCUI.PROTOCOL_VERSION;
+        final ByteBuf buffer = Unpooled.copiedBuffer(message, StandardCharsets.UTF_8);
         CUINetworking.send(handler, new FriendlyByteBuf(buffer));
     }
 

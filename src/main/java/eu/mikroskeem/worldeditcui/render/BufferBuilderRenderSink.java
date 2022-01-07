@@ -2,13 +2,11 @@ package eu.mikroskeem.worldeditcui.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Vector3f;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
@@ -66,7 +64,7 @@ public class BufferBuilderRenderSink implements RenderSink {
     }
 
     @Override
-    public RenderSink color(float r, float g, float b, float alpha) {
+    public RenderSink color(final float r, final float g, final float b, final float alpha) {
         this.r = r;
         this.g = g;
         this.b = b;
@@ -75,7 +73,7 @@ public class BufferBuilderRenderSink implements RenderSink {
     }
 
     @Override
-    public boolean apply(LineStyle line, RenderStyle.RenderType type) {
+    public boolean apply(final LineStyle line, final RenderStyle.RenderType type) {
         if (line.renderType.matches(type))
         {
             if (line.lineWidth != this.lastLineWidth || line.renderType.depthFunc() != this.lastDepthFunc) {
@@ -84,7 +82,7 @@ public class BufferBuilderRenderSink implements RenderSink {
                     this.canFlush = true;
                     this.builder = Tesselator.getInstance().getBuilder();
                     RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-                    this.builder.begin(this.activeRenderType.mode, DefaultVertexFormat.POSITION_COLOR);
+                    this.builder.begin(this.activeRenderType.mode, this.activeRenderType.format);
                 }
                 LineWidth.set(this.lastLineWidth = line.lineWidth);
                 RenderSystem.depthFunc(this.lastDepthFunc = line.renderType.depthFunc());
@@ -96,8 +94,8 @@ public class BufferBuilderRenderSink implements RenderSink {
     }
 
     @Override
-    public RenderSink vertex(double x, double y, double z) {
-        if (r == -1f) {
+    public RenderSink vertex(final double x, final double y, final double z) {
+        if (this.r == -1f) {
             throw new IllegalStateException("No colour has been set!");
         }
         if (!this.active) {
@@ -163,7 +161,7 @@ public class BufferBuilderRenderSink implements RenderSink {
         final double dZ = (z1 - z0);
         final double length = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
         final Vector3f normal = new Vector3f((float) (dX / length), (float) (dY / length), (float) (dZ / length));
-        normal.transform(RenderSystem.getModelViewStack().last().normal());
+        // normal.transform(RenderSystem.getModelViewStack().last().normal());
         return normal;
     }
 

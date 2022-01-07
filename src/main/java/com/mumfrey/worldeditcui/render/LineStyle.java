@@ -4,25 +4,25 @@ import com.mumfrey.worldeditcui.render.RenderStyle.RenderType;
 
 /**
  * Stores data about a line that can be rendered
- * 
+ *
  * @author lahwran
  * @author yetanotherx
  * @author Adam Mummery-Smith
  */
 public class LineStyle
 {
-	public static final float DEFAULT_WIDTH = 6.0f;
+	public static final float DEFAULT_WIDTH = 3.0f;
 
 	public final float lineWidth;
 	public final int red, green, blue, alpha;
 	public final RenderType renderType;
-	
-	public LineStyle(RenderType renderType, float lineWidth, int red, int green, int blue)
+
+	public LineStyle(final RenderType renderType, final float lineWidth, final int red, final int green, final int blue)
 	{
 		this(renderType, lineWidth, red, green, blue, 0xff);
 	}
-	
-	public LineStyle(RenderType renderType, float lineWidth, int red, int green, int blue, int alpha)
+
+	public LineStyle(final RenderType renderType, final float lineWidth, final int red, final int green, final int blue, final int alpha)
 	{
 		this.lineWidth = lineWidth;
 		this.red = red;
