@@ -35,9 +35,9 @@ public final class OptifinePipelineProvider implements PipelineProvider {
         MethodHandle shadersActiveProgram = null;
         MethodHandle shadersIsShadowPass = null;
         try {
-            Class<?> config = Class.forName("net.optifine.Config");
-            Class<?> shaders = Class.forName("net.optifine.shaders.Shaders");
-            Class<?> program = Class.forName("net.optifine.shaders.Program");
+            final Class<?> config = Class.forName("net.optifine.Config");
+            final Class<?> shaders = Class.forName("net.optifine.shaders.Shaders");
+            final Class<?> program = Class.forName("net.optifine.shaders.Program");
             configIsShaders = LOOKUP.findStatic(config, "isShaders", MethodType.methodType(boolean.class));
             shadersEndLeash = LOOKUP.findStatic(shaders, "endLeash", MethodType.methodType(void.class));
             shadersBeginLeash = LOOKUP.findStatic(shaders, "beginLeash", MethodType.methodType(void.class));
@@ -84,7 +84,7 @@ public final class OptifinePipelineProvider implements PipelineProvider {
     @Override
     public boolean shouldRender() {
         try {
-            return (boolean) SHADERS_IS_SHADOW_PASS.invoke();
+            return !(boolean) SHADERS_IS_SHADOW_PASS.invoke();
         } catch (final Throwable thr) {
             optifineDisabled = true;
             LOGGER.error("Failed to render WECUI using OptiFine hooks", thr);
@@ -102,7 +102,7 @@ public final class OptifinePipelineProvider implements PipelineProvider {
         return new BufferBuilderRenderSink(
                 VanillaPipelineProvider.DefaultTypeFactory.INSTANCE, // optifine doesn't use the vanilla shader system?
                 () -> {
-                    if (!available()) {
+                    if (!this.available()) {
                         return;
                     }
 
@@ -117,7 +117,7 @@ public final class OptifinePipelineProvider implements PipelineProvider {
                     }
                 },
                 () -> {
-                    if (!available()) {
+                    if (!this.available()) {
                         return;
                     }
 
