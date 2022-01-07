@@ -12,7 +12,11 @@ out/
 # Eclipse
 .classpath
 .project
-.settings
+.settings/
+/bin/
+/*/bin/
+/*.launch
+/*/*.launch
 
 # Maven
 target/
@@ -21,11 +25,11 @@ dependency-reduced-pom.xml
 # Gradle
 !gradle-wrapper.jar
 .gradle/
-build/
+/build/
 */build/
 
 # Fabric stuff
-run/
+/run/
 
 # OS X quirks
 .DS_Store
