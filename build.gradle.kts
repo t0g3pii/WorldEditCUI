@@ -1,7 +1,8 @@
 plugins {
     java
     id("fabric-loom") version "0.10-SNAPSHOT"
-    id("com.github.ben-manes.versions") version "0.39.0"
+    id("io.github.juuxel.loom-quiltflower-mini") version "1.2.1"
+    id("com.github.ben-manes.versions") version "0.41.0"
 }
 
 val minecraftVersion = "1.18.1"
@@ -18,7 +19,7 @@ repositories {
     // - https://maven.enginehub.org/repo/
     // - https://maven.terraformersmc.com/releases/
     // - https://maven.minecraftforge.net/
-    maven(url = "https://maven.parchmentmc.org")
+    // - https://maven.parchmentmc.org/
     maven(url = "https://repo.stellardrift.ca/repository/stable/") {
         name = "stellardriftReleases"
         mavenContent { releasesOnly() }
@@ -27,6 +28,10 @@ repositories {
         name = "stellardriftSnapshots"
         mavenContent { snapshotsOnly() }
     }
+}
+
+quiltflower {
+    addToRuntimeClasspath.set(true)
 }
 
 val targetVersion = 17
@@ -67,7 +72,6 @@ dependencies {
         exclude("it.unimi.dsi", "fastutil")
         exclude("org.apache.logging.log4j", "log4j-api")
     }
-    modRuntimeOnly("net.minecraftforge:forgeflower:1.5.498.12");
 }
 
 tasks {
