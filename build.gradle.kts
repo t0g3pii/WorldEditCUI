@@ -11,7 +11,7 @@ val fabricApiVersion = "0.44.0+1.18"
 val modmenuVersion = "3.0.0"
 val multiconnectVersion = "1.5.6"
 
-group = "com.mumfrey.worldeditcui"
+group = "org.enginehub.worldeditcui"
 version = "$minecraftVersion+01-SNAPSHOT"
 
 repositories {
