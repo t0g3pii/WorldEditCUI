@@ -1,37 +1,37 @@
 package eu.mikroskeem.worldeditcui.gui;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mumfrey.worldeditcui.config.CUIConfiguration;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.util.Mth;
 
 import java.util.Objects;
 
 /**
  * @author Jesús Sanz - Modified to implement Config GUI / First Version
  */
-public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry> {
+public class SettingsWidget extends ObjectSelectionList<SettingsEntry> {
 
     private final FabricCUIConfigPanel parent;
     private boolean scrolling;
     private CUIConfiguration configuration;
 
-    public SettingsWidget(MinecraftClient client, int width, int height, int y1, int y2, int entryHeight, CUIConfiguration configuration, FabricCUIConfigPanel parent) {
+    public SettingsWidget(Minecraft client, int width, int height, int y1, int y2, int entryHeight, CUIConfiguration configuration, FabricCUIConfigPanel parent) {
         super(client, width, height, y1, y2, entryHeight);
         this.configuration = configuration;
         this.parent = parent;
-        setScrollAmount(parent.getScrollPercent() * Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4)));
+        setScrollAmount(parent.getScrollPercent() * Math.max(0, this.getMaxPosition() - (this.y1 - this.y0 - 4)));
     }
 
     @Override
     public void setScrollAmount(double amount) {
         super.setScrollAmount(amount);
-        int denominator = Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4));
+        int denominator = Math.max(0, this.getMaxPosition() - (this.y1 - this.y0 - 4));
         if(denominator <= 0) {
             parent.updateScrollPercent(0);
         } else {
-            parent.updateScrollPercent(getScrollAmount() / Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4)));
+            parent.updateScrollPercent(getScrollAmount() / Math.max(0, this.getMaxPosition() - (this.y1 - this.y0 - 4)));
         }
     }
 
@@ -46,13 +46,13 @@ public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry>
     }
 
     @Override
-    protected void renderList(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float delta) {
-        int itemCount = this.getEntryCount();
+    protected void renderList(PoseStack matrices, int x, int y, int mouseX, int mouseY, float delta) {
+        int itemCount = this.getItemCount();
 
         for (int index = 0; index < itemCount; ++index) {
             int entryTop = this.getRowTop(index) + 2;
             int entryBottom = this.getRowTop(index) + this.itemHeight;
-            if (entryBottom >= this.top && entryTop <= this.bottom) {
+            if (entryBottom >= this.y0 && entryTop <= this.y1) {
                 int entryHeight = this.itemHeight - 4;
                 SettingsEntry entry = this.getEntry(index);
                 int rowWidth = this.getRowWidth();
@@ -63,24 +63,24 @@ public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry>
     }
 
     public final SettingsEntry getEntryAtPos(double x, double y) {
-        int int_5 = MathHelper.floor(y - (double) this.top) - this.headerHeight + (int) this.getScrollAmount() - 4;
+        int int_5 = Mth.floor(y - (double) this.y0) - this.headerHeight + (int) this.getScrollAmount() - 4;
         int index = int_5 / this.itemHeight;
-        return x < (double) this.getScrollbarPositionX() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && int_5 >= 0 && index < this.getEntryCount() ? this.children().get(index) : null;
+        return x < (double) this.getScrollbarPosition() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && int_5 >= 0 && index < this.getItemCount() ? this.children().get(index) : null;
     }
 
     @Override
-    protected int getScrollbarPositionX() {
+    protected int getScrollbarPosition() {
         return this.width - 6;
     }
 
     @Override
     public int getRowWidth() {
-        return this.width - (Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4)) > 0 ? 18 : 12);
+        return this.width - (Math.max(0, this.getMaxPosition() - (this.y1 - this.y0 - 4)) > 0 ? 18 : 12);
     }
 
     @Override
     public int getRowLeft() {
-        return left + 6;
+        return x0 + 6;
     }
 
     public int getWidth() {
@@ -95,7 +95,7 @@ public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry>
     @Override
     protected void updateScrollingState(double double_1, double double_2, int int_1) {
         super.updateScrollingState(double_1, double_2, int_1);
-        this.scrolling = int_1 == 0 && double_1 >= (double) this.getScrollbarPositionX() && double_1 < (double) (this.getScrollbarPositionX() + 6);
+        this.scrolling = int_1 == 0 && double_1 >= (double) this.getScrollbarPosition() && double_1 < (double) (this.getScrollbarPosition() + 6);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class SettingsWidget extends AlwaysSelectedEntryListWidget<SettingsEntry>
                     return true;
                 }
             } else if (button == 0) {
-                this.clickedHeader((int) (mouseX - (double) (this.left + this.width / 2 - this.getRowWidth() / 2)), (int) (mouseY - (double) this.top) + (int) this.getScrollAmount() - 4);
+                this.clickedHeader((int) (mouseX - (double) (this.x0 + this.width / 2 - this.getRowWidth() / 2)), (int) (mouseY - (double) this.y0) + (int) this.getScrollAmount() - 4);
                 return true;
             }
 

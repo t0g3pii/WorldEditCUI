@@ -1,9 +1,8 @@
 package com.mumfrey.worldeditcui.render;
 
 import com.mumfrey.worldeditcui.config.Colour;
-import com.mumfrey.worldeditcui.render.ConfiguredColour.Style;
 import com.mumfrey.worldeditcui.render.RenderStyle.RenderType;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 /**
  * Stores style data for each type of line.
@@ -83,7 +82,7 @@ public enum ConfiguredColour
 	
 	public String getDisplayName()
 	{
-		return I18n.translate("worldeditcui.color." + this.displayName);
+		return I18n.get("worldeditcui.color." + this.displayName);
 	}
 	
 	public RenderStyle style()

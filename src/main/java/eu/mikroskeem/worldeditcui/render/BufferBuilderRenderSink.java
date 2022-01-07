@@ -1,14 +1,15 @@
 package eu.mikroskeem.worldeditcui.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Vector3f;
 import com.mumfrey.worldeditcui.render.LineStyle;
 import com.mumfrey.worldeditcui.render.RenderStyle;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Shader;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ShaderInstance;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
@@ -81,9 +82,9 @@ public class BufferBuilderRenderSink implements RenderSink {
                 this.flush();
                 if (this.active && this.activeRenderType != null) {
                     this.canFlush = true;
-                    this.builder = Tessellator.getInstance().getBuffer();
+                    this.builder = Tesselator.getInstance().getBuilder();
                     RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-                    this.builder.begin(this.activeRenderType.mode, VertexFormats.POSITION_COLOR);
+                    this.builder.begin(this.activeRenderType.mode, DefaultVertexFormat.POSITION_COLOR);
                 }
                 LineWidth.set(this.lastLineWidth = line.lineWidth);
                 RenderSystem.depthFunc(this.lastDepthFunc = line.renderType.depthFunc());
@@ -107,18 +108,18 @@ public class BufferBuilderRenderSink implements RenderSink {
         if (this.activeRenderType == this.lineLoop) {
             // duplicate last
             if (this.canLoop) {
-                final Vec3f normal = this.activeRenderType.hasNormals ? this.computeNormal(this.loopX, this.loopY, this.loopZ, x, y, z) : null;
+                final Vector3f normal = this.activeRenderType.hasNormals ? this.computeNormal(this.loopX, this.loopY, this.loopZ, x, y, z) : null;
                 builder.vertex(this.loopX, this.loopY, this.loopZ).color(this.r, this.g, this.b, this.a);
                 if (normal != null) {
                     // we need to compute normals pointing directly towards the screen
-                    builder.normal(normal.getX(), normal.getY(), normal.getZ());
+                    builder.normal(normal.x(), normal.y(), normal.z());
                 }
-                builder.next();
+                builder.endVertex();
                 builder.vertex(x, y, z).color(this.r, this.g, this.b, this.a);
                 if (normal != null) {
-                    builder.normal(normal.getX(), normal.getY(), normal.getZ());
+                    builder.normal(normal.x(), normal.y(), normal.z());
                 }
-                builder.next();
+                builder.endVertex();
             } else {
                 this.loopFirstX = x;
                 this.loopFirstY = y;
@@ -131,17 +132,17 @@ public class BufferBuilderRenderSink implements RenderSink {
         } else if (this.activeRenderType == this.lines) {
             // we buffer vertices so we can compute normals here
             if (this.canLoop) {
-                final Vec3f normal = this.activeRenderType.hasNormals ? this.computeNormal(this.loopX, this.loopY, this.loopZ, x, y, z) : null;
+                final Vector3f normal = this.activeRenderType.hasNormals ? this.computeNormal(this.loopX, this.loopY, this.loopZ, x, y, z) : null;
                 builder.vertex(this.loopX, this.loopY, this.loopZ).color(this.r, this.g, this.b, this.a);
                 if (normal != null) {
-                    builder.normal(normal.getX(), normal.getY(), normal.getZ());
+                    builder.normal(normal.x(), normal.y(), normal.z());
                 }
-                builder.next();
+                builder.endVertex();
                 builder.vertex(x, y, z).color(this.r, this.g, this.b, this.a);
                 if (normal != null) {
-                    builder.normal(normal.getX(), normal.getY(), normal.getZ());
+                    builder.normal(normal.x(), normal.y(), normal.z());
                 }
-                builder.next();
+                builder.endVertex();
                 this.canLoop = false;
             } else {
                 this.loopX = x;
@@ -150,21 +151,19 @@ public class BufferBuilderRenderSink implements RenderSink {
                 this.canLoop = true;
             }
         } else {
-            builder.vertex(x, y, z).color(this.r, this.g, this.b, this.a).next();
+            builder.vertex(x, y, z).color(this.r, this.g, this.b, this.a).endVertex();
         }
         return this;
     }
 
-    private Vec3f computeNormal(final double x0, final double y0, final double z0, final double x1, final double y1, final double z1) {
+    private Vector3f computeNormal(final double x0, final double y0, final double z0, final double x1, final double y1, final double z1) {
         // we need to compute normals so all drawn planes appear perpendicular to the screen
         final double dX = (x1 - x0);
         final double dY = (y1 - y0);
         final double dZ = (z1 - z0);
         final double length = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
-        final Vec3f normal = new Vec3f((float) (dX / length), (float) (dY / length), (float) (dZ / length));
-        // normal.cross(MinecraftClient.getInstance().gameRenderer.getCamera().getRotation().method_35820() /* toXYZ */);
-        normal.transform(RenderSystem.getModelViewStack().peek().getNormal());
-        // return new Vec3f(1, 1, 1);
+        final Vector3f normal = new Vector3f((float) (dX / length), (float) (dY / length), (float) (dZ / length));
+        normal.transform(RenderSystem.getModelViewStack().last().normal());
         return normal;
     }
 
@@ -179,18 +178,18 @@ public class BufferBuilderRenderSink implements RenderSink {
         this.end(this.lineLoop);
         if (this.canLoop) {
             this.canLoop = false;
-            final Vec3f normal = this.activeRenderType.hasNormals ? this.computeNormal(this.loopX, this.loopY, this.loopZ, this.loopFirstX, this.loopFirstY, this.loopFirstZ) : null;
+            final Vector3f normal = this.activeRenderType.hasNormals ? this.computeNormal(this.loopX, this.loopY, this.loopZ, this.loopFirstX, this.loopFirstY, this.loopFirstZ) : null;
             this.builder.vertex(this.loopX, this.loopY, this.loopZ).color(this.r, this.g, this.b, this.a);
             if (normal != null) {
-                this.builder.normal(normal.getX(), normal.getY(), normal.getZ());
+                this.builder.normal(normal.x(), normal.y(), normal.z());
             }
-            this.builder.next();
+            this.builder.endVertex();
 
             this.builder.vertex(this.loopFirstX, this.loopFirstY, this.loopFirstZ).color(this.r, this.g, this.b, this.a);
             if (normal != null) {
-                this.builder.normal(normal.getX(), normal.getY(), normal.getZ());
+                this.builder.normal(normal.x(), normal.y(), normal.z());
             }
-            this.builder.next();
+            this.builder.endVertex();
         }
         return this;
     }
@@ -233,7 +232,7 @@ public class BufferBuilderRenderSink implements RenderSink {
             if (this.activeRenderType != null) {
                 RenderSystem.setShader(this.activeRenderType.shader);
             }
-            Tessellator.getInstance().draw();
+            Tesselator.getInstance().end();
         } finally {
             this.postFlush.run();
             this.builder = null;
@@ -261,7 +260,7 @@ public class BufferBuilderRenderSink implements RenderSink {
         if (this.activeRenderType == null || this.activeRenderType.mode != renderType.mode) {
             this.canFlush = true;
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-            this.builder = Tessellator.getInstance().getBuffer();
+            this.builder = Tesselator.getInstance().getBuilder();
             this.builder.begin(renderType.mode, renderType.format);
         }
         this.activeRenderType = renderType;
@@ -270,19 +269,19 @@ public class BufferBuilderRenderSink implements RenderSink {
 
     public static class RenderType {
 
-        private final VertexFormat.DrawMode mode;
+        private final VertexFormat.Mode mode;
         private final VertexFormat format;
         private final boolean hasNormals;
-        private final Supplier<Shader> shader;
+        private final Supplier<ShaderInstance> shader;
 
-        public RenderType(final VertexFormat.DrawMode mode, final VertexFormat format, final Supplier<Shader> shader) {
+        public RenderType(final VertexFormat.Mode mode, final VertexFormat format, final Supplier<ShaderInstance> shader) {
             this.mode = mode;
             this.format = format;
-            this.hasNormals = format.getShaderAttributes().contains("Normal");
+            this.hasNormals = format.getElementAttributeNames().contains("Normal");
             this.shader = shader;
         }
 
-        VertexFormat.DrawMode mode() {
+        VertexFormat.Mode mode() {
             return this.mode;
         }
 
@@ -294,7 +293,7 @@ public class BufferBuilderRenderSink implements RenderSink {
             return this.hasNormals;
         }
 
-        Supplier<Shader> shader() {
+        Supplier<ShaderInstance> shader() {
             return this.shader;
         }
 

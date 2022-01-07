@@ -7,7 +7,7 @@ import com.mumfrey.worldeditcui.render.RenderStyle;
 import com.mumfrey.worldeditcui.util.BoundingBox;
 import com.mumfrey.worldeditcui.util.Observable;
 import com.mumfrey.worldeditcui.util.Vector3;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 /**
  * Draws the grid for a region between
@@ -112,9 +112,9 @@ public class Render3DGrid extends RenderRegion
 		}
 		
 		final double cullAt = Render3DGrid.CULL_RANGE * this.spacing;
-		final double cullAtY = cullAt - MathHelper.fractionalPart(y1);
-		final double cullAtX = cullAt - MathHelper.fractionalPart(x1);
-		final double cullAtZ = cullAt - MathHelper.fractionalPart(z1);
+		final double cullAtY = cullAt - Mth.frac(y1);
+		final double cullAtX = cullAt - Mth.frac(x1);
+		final double cullAtZ = cullAt - Mth.frac(z1);
 		for (LineStyle line : this.style.getLines())
 		{
 			if (!ctx.apply(line, this.style.getRenderType()))

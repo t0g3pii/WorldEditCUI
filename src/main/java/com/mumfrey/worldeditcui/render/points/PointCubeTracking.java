@@ -1,10 +1,10 @@
 package com.mumfrey.worldeditcui.render.points;
 
 import com.mumfrey.worldeditcui.util.Vector3;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 /**
  * A PointCube which tracks the specified entity location
@@ -39,7 +39,7 @@ public class PointCubeTracking extends PointCube
 	@Override
 	public void updatePoint(float partialTicks)
 	{
-		HitResult res = this.entity.raycast(this.traceDistance, partialTicks, false);
+		HitResult res = this.entity.pick(this.traceDistance, partialTicks, false);
 		if (!(res instanceof BlockHitResult)) {
 			return;
 		}

@@ -5,8 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.mumfrey.worldeditcui.InitialisationFactory;
 import com.mumfrey.worldeditcui.render.ConfiguredColour;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Reader;
@@ -220,27 +219,27 @@ public final class CUIConfiguration implements InitialisationFactory
 		return null;
 	}
 
-	public @Nullable TranslatableText getDescription(String text) {
+	public @Nullable TranslatableComponent getDescription(String text) {
 		switch(text) {
-			case "debugMode": return new TranslatableText("worldeditcui.options.debugMode");
-			case "ignoreUpdates": return new TranslatableText("worldeditcui.options.ignoreUpdates");
-			case "promiscuous": return new TranslatableText("worldeditcui.options.compat.spammy");
-			case "clearAllOnKey": return new TranslatableText("worldeditcui.options.extra.clearall");
+			case "debugMode": return new TranslatableComponent("worldeditcui.options.debugMode");
+			case "ignoreUpdates": return new TranslatableComponent("worldeditcui.options.ignoreUpdates");
+			case "promiscuous": return new TranslatableComponent("worldeditcui.options.compat.spammy");
+			case "clearAllOnKey": return new TranslatableComponent("worldeditcui.options.extra.clearall");
 
-			case "cuboidGridColor": return new TranslatableText("worldeditcui.color.cuboidgrid");
-			case "cuboidEdgeColor": return new TranslatableText("worldeditcui.color.cuboidedge");
-			case "cuboidFirstPointColor": return new TranslatableText("worldeditcui.color.cuboidpoint1");
-			case "cuboidSecondPointColor": return new TranslatableText("worldeditcui.color.cuboidpoint2");
-			case "polyGridColor": return new TranslatableText("worldeditcui.color.polygrid");
-			case "polyEdgeColor": return new TranslatableText("worldeditcui.color.polyedge");
-			case "polyPointColor": return new TranslatableText("worldeditcui.color.polypoint");
-			case "ellipsoidGridColor": return new TranslatableText("worldeditcui.color.ellipsoidgrid");
-			case "ellipsoidPointColor": return new TranslatableText("worldeditcui.color.ellipsoidpoint");
-			case "cylinderGridColor": return new TranslatableText("worldeditcui.color.cylindergrid");
-			case "cylinderEdgeColor": return new TranslatableText("worldeditcui.color.cylinderedge");
-			case "cylinderPointColor": return new TranslatableText("worldeditcui.color.cylinderpoint");
-			case "chunkBoundaryColour": return new TranslatableText("worldeditcui.color.chunkboundary");
-			case "chunkGridColour": return new TranslatableText("worldeditcui.color.chunkgrid");
+			case "cuboidGridColor": return new TranslatableComponent("worldeditcui.color.cuboidgrid");
+			case "cuboidEdgeColor": return new TranslatableComponent("worldeditcui.color.cuboidedge");
+			case "cuboidFirstPointColor": return new TranslatableComponent("worldeditcui.color.cuboidpoint1");
+			case "cuboidSecondPointColor": return new TranslatableComponent("worldeditcui.color.cuboidpoint2");
+			case "polyGridColor": return new TranslatableComponent("worldeditcui.color.polygrid");
+			case "polyEdgeColor": return new TranslatableComponent("worldeditcui.color.polyedge");
+			case "polyPointColor": return new TranslatableComponent("worldeditcui.color.polypoint");
+			case "ellipsoidGridColor": return new TranslatableComponent("worldeditcui.color.ellipsoidgrid");
+			case "ellipsoidPointColor": return new TranslatableComponent("worldeditcui.color.ellipsoidpoint");
+			case "cylinderGridColor": return new TranslatableComponent("worldeditcui.color.cylindergrid");
+			case "cylinderEdgeColor": return new TranslatableComponent("worldeditcui.color.cylinderedge");
+			case "cylinderPointColor": return new TranslatableComponent("worldeditcui.color.cylinderpoint");
+			case "chunkBoundaryColour": return new TranslatableComponent("worldeditcui.color.chunkboundary");
+			case "chunkGridColour": return new TranslatableComponent("worldeditcui.color.chunkgrid");
 		}
 
 		return null;
