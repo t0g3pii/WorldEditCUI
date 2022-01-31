@@ -1,5 +1,8 @@
 package org.enginehub.worldeditcui.render;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.GameRenderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -71,6 +74,31 @@ public final class OptifinePipelineProvider implements PipelineProvider {
         }
     }
 
+    public static class OptifineTypeFactory implements BufferBuilderRenderSink.TypeFactory {
+        public static final OptifineTypeFactory INSTANCE = new OptifineTypeFactory();
+
+        private static final BufferBuilderRenderSink.RenderType QUADS = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, GameRenderer::getPositionColorShader);
+        private static final BufferBuilderRenderSink.RenderType LINES = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR, GameRenderer::getPositionColorShader);
+        private static final BufferBuilderRenderSink.RenderType LINES_LOOP = new BufferBuilderRenderSink.RenderType(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR, GameRenderer::getPositionColorShader);
+
+        private OptifineTypeFactory() {}
+
+        @Override
+        public BufferBuilderRenderSink.RenderType quads() {
+            return QUADS;
+        }
+
+        @Override
+        public BufferBuilderRenderSink.RenderType lines() {
+            return LINES;
+        }
+
+        @Override
+        public BufferBuilderRenderSink.RenderType linesLoop() {
+            return LINES_LOOP;
+        }
+    }
+
     @Override
     public String id() {
         return "optifine";
@@ -100,7 +128,7 @@ public final class OptifinePipelineProvider implements PipelineProvider {
     @Override
     public RenderSink provide() {
         return new BufferBuilderRenderSink(
-                VanillaPipelineProvider.DefaultTypeFactory.INSTANCE, // optifine doesn't use the vanilla shader system?
+                OptifineTypeFactory.INSTANCE, // optifine doesn't use the vanilla shader system?
                 () -> {
                     if (!this.available()) {
                         return;
