@@ -3,6 +3,7 @@ plugins {
     id("fabric-loom") version "0.10-SNAPSHOT"
     id("io.github.juuxel.loom-quiltflower-mini") version "1.2.1"
     id("com.github.ben-manes.versions") version "0.41.0"
+    id("de.jjohannes.missing-metadata-guava") version "0.5"
 }
 
 val minecraftVersion = "1.18.1"
