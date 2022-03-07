@@ -6,9 +6,9 @@ plugins {
     id("de.jjohannes.missing-metadata-guava") version "0.5"
 }
 
-val minecraftVersion = "1.18.1"
-val fabricLoaderVersion = "0.12.12"
-val fabricApiVersion = "0.44.0+1.18"
+val minecraftVersion = "1.18.2"
+val fabricLoaderVersion = "0.13.3"
+val fabricApiVersion = "0.47.10+1.18.2"
 val modmenuVersion = "3.0.0"
 val multiconnectVersion = "1.5.6"
 
