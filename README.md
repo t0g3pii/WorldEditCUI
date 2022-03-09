@@ -23,17 +23,16 @@ Compiling
 
 Run `_JAVA_OPTIONS="-Xmx2G" ./gradlew build`
 
-To import the project into your IDE, see [FabricMC Wiki article](https://fabricmc.net/wiki/tutorial:setup) and start from **Step 3**
+To import the project into your IDE, see [FabricMC Wiki article](https://fabricmc.net/wiki/tutorial:setup) and start from **Step 3**.
 
 Misc
 ----
 
-You can subscribe to updates either by watching this repository, or [joining this Discord guild](https://discord.gg/KqqdgE7).
-
-Please note that the Discord guild is not yet moved to EngineHub's Discord guild, but that will likely occur in the near future.
+You can subscribe to updates either by watching this repository, or by [joining the EngineHub Discord guild](https://discord.gg/enginehub). Support questions
+belong in the `#worldedit` channel.
 
 ### Wait, EngineHub owns this repository now?
-Yes, the original owner [@mikroskeem](https://github.com/mikroskeem) agreed to move it under our ownership. We'll soon be working on supporting it in a more official fashion.
+Yes, the original owner [@mikroskeem](https://github.com/mikroskeem) agreed to move it under our ownership.
 
 Credits
 -------
