@@ -29,7 +29,7 @@ Misc
 ----
 
 You can subscribe to updates either by watching this repository, or by [joining the EngineHub Discord guild](https://discord.gg/enginehub). Support questions
-belong in the `#worldedit` channel.
+belong in the `#worldedit-cui` channel.
 
 ### Wait, EngineHub owns this repository now?
 Yes, the original owner [@mikroskeem](https://github.com/mikroskeem) agreed to move it under our ownership.
