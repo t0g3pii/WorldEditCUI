@@ -66,7 +66,7 @@ dependencies {
     }
 
     // for development
-    modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.18.1:7.2.8") {
+    modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10-SNAPSHOT") {
         exclude("com.google.guava", "guava")
         exclude("com.google.code.gson", "gson")
         exclude("com.google.code.gson", "gson")

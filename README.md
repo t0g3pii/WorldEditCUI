@@ -14,8 +14,8 @@ Installation
 ------------
 
 1. Install [Fabric](https://fabricmc.net/use)
-2. Install [Fabric API mod](https://minecraft.curseforge.com/projects/fabric) into Minecraft mods folder
-3. Install [this mod](https://github.com/EngineHub/WorldEditCUI/releases) into Minecraft mods folder
+2. Install [Fabric API mod](https://www.curseforge.com/minecraft/mc-mods/fabric-api) into Minecraft mods folder
+3. Install [this mod](https://www.curseforge.com/minecraft/mc-mods/worldeditcui-fabric) into Minecraft mods folder
 
 WorldEdit selections will be shown without any configuration necessary, but the colours used are configurable as long as [Mod Menu](https://www.curseforge.com/minecraft/mc-mods/modmenu) is installed.
 
@@ -41,8 +41,7 @@ Credits
  * [Mumfrey](https://github.com/Mumfrey), [yetanotherx](https://github.com/yetanotherx), [mikroskeem](https://github.com/mikroskeem), and [zml](https://github.com/zml2008) for maintaining WorldEditCUI previously
  * [lahwran](https://github.com/lahwran) - Creator of the original WorldEdit CUI!
  * [sk89q](http://sk89q.com) for writing the WorldEdit plugin!
- * [Apache Commons](http://commons.apache.org/) for the join() methods!
- * [Mojang](http://mojang.com) - for making such an awesome game!
+  * [Mojang](http://mojang.com) - for making such an awesome game!
 
 Legal stuff
 -----------
