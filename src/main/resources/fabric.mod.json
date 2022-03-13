@@ -12,27 +12,28 @@
     "mikroskeem"
   ],
   "contact": {
-    "homepage": "https://github.com/mikroskeem/WorldEditCUI",
-    "sources": "https://github.com/mikroskeem/WorldEditCUI"
+    "homepage": "https://github.com/EngineHub/WorldEditCUI",
+    "sources": "https://github.com/EngineHub/WorldEditCUI"
   },
   "license": "EPL-1.0",
   "environment": "client",
   "entrypoints": {
     "main": [
-      "eu.mikroskeem.worldeditcui.FabricModWorldEditCUI"
+      "org.enginehub.worldeditcui.fabric.FabricModWorldEditCUI"
     ],
     "modmenu": [
-      "eu.mikroskeem.worldeditcui.gui.ConfigPanelFactory"
+      "org.enginehub.worldeditcui.fabric.ConfigPanelFactory"
     ]
   },
   "mixins": [
-    "wecui.mixins.json"
+    "worldeditcui.mixins.json"
   ],
   "depends": {
     "fabric-key-binding-api-v1": "^1.0.0",
     "fabric-networking-api-v1": "*",
     "fabric-rendering-v1": ">=1.5.0",
-    "fabric-lifecycle-events-v1": "^1.0.0"
+    "fabric-lifecycle-events-v1": "^2.0.0",
+    "minecraft": ">=1.18.1"
   },
   "suggests": {
     "worldedit": ">=7.2.0"

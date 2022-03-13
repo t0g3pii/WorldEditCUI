@@ -3,10 +3,10 @@ WorldEditCUI
 
 [![Actions Status](https://github.com/EngineHub/WorldEditCUI/actions/workflows/build.yml/badge.svg)](https://github.com/EngineHub/WorldEditCUI/actions/workflows/build.yml)
 
-A graphical user interface for WorldEdit. WorldEditCUI is designed 
+A graphical user interface for [WorldEdit]. WorldEditCUI is designed
 to assist in using WorldEdit, as well as preventing accidental errors.
 
-Please note that this is not WorldEdit, which allows you to make changes
+Please note that this is not [WorldEdit], which allows you to make changes
 to your world, but WorldEditCUI, a frontend for WorldEdit. You must have
 WorldEdit installed on your server.
  
@@ -17,6 +17,7 @@ Installation
 2. Install [Fabric API mod](https://minecraft.curseforge.com/projects/fabric) into Minecraft mods folder
 3. Install [this mod](https://github.com/EngineHub/WorldEditCUI/releases) into Minecraft mods folder
 
+WorldEdit selections will be shown without any configuration necessary, but the colours used are configurable as long as [Mod Menu](https://www.curseforge.com/minecraft/mc-mods/modmenu) is installed.
 
 Compiling
 ---------
@@ -43,8 +44,10 @@ Credits
  * [Apache Commons](http://commons.apache.org/) for the join() methods!
  * [Mojang](http://mojang.com) - for making such an awesome game!
 
-
 Legal stuff
 -----------
 
-This code is licensed under the Eclipse Public License. 
+This code is licensed under the [Eclipse Public License v1].
+
+[WorldEdit]: https://enginehub.org/worldedit/
+[Eclipse Public License v1]: https://www.eclipse.org/org/documents/epl-v10.php
