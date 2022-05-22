@@ -1,6 +1,7 @@
 package org.enginehub.worldeditcui.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.logging.LogUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -9,12 +10,9 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.enginehub.worldeditcui.config.CUIConfiguration;
 import org.enginehub.worldeditcui.config.Colour;
+import org.slf4j.Logger;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -24,10 +22,9 @@ import java.util.function.Supplier;
  * @author Jesús Sanz - Modified to implement Config GUI / First Version
  */
 public class CUIConfigPanel extends Screen implements Supplier<Screen> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final Component TRUE = new TextComponent("true").withStyle(s -> s.applyFormat(ChatFormatting.DARK_GREEN));
-    private static final Component FALSE = new TextComponent("false").withStyle(s -> s.applyFormat(ChatFormatting.DARK_RED));
+    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Component TRUE = Component.literal("true").withStyle(s -> s.applyFormat(ChatFormatting.DARK_GREEN));
+    private static final Component FALSE = Component.literal("false").withStyle(s -> s.applyFormat(ChatFormatting.DARK_RED));
 
     private final Screen parent;
     private final Set<String> options;
@@ -41,11 +38,11 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
     private static final int BUTTONHEIGHT = 20;
 
     public CUIConfigPanel(Screen parent, CUIConfiguration configuration) {
-        super(new TextComponent("WorldEditCUI"));
+        super(Component.literal("WorldEditCUI"));
         this.parent = parent;
         this.configuration = configuration;
         this.options = this.configuration.getConfigArray().keySet();
-        this.screenTitle = new TranslatableComponent("worldeditcui.options.title");
+        this.screenTitle = Component.translatable("worldeditcui.options.title");
     }
 
     @Override
@@ -59,7 +56,7 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
     protected void init() {
         configList = new SettingsWidget(this.minecraft, this.width - 8, this.height, 48 + 19, this.height - 36, 25, this.configuration, this);
         configList.setLeftPos(0);
-        done = this.addRenderableWidget(new AbstractWidget(this.width / 2 - 205, this.height - 27, 70, 20, new TranslatableComponent("worldeditcui.options.done")) {
+        done = this.addRenderableWidget(new AbstractWidget(this.width / 2 - 205, this.height - 27, 70, 20, Component.translatable("worldeditcui.options.done")) {
             @Override
             public void updateNarration(NarrationElementOutput builder) {
                 this.defaultButtonNarrationText(builder);
@@ -85,7 +82,7 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
             int buttonX = this.width - 140 - 20;
             Object value = configuration.getConfigArray().get(text);
             AbstractWidget element;
-            TranslatableComponent textTemp = configuration.getDescription(text);
+            Component textTemp = configuration.getDescription(text);
             if (value == null) {
                 LOGGER.warn("value null, adding nothing");
                 continue;
@@ -113,7 +110,7 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
                     }
                 });
             } else if(value instanceof Colour) {
-                element = this.addRenderableWidget(new TextFieldWidgetTemp(this.font, buttonX, y, 70, BUTTONHEIGHT, new TextComponent(((Colour)value).getHex()), ((Colour)value).getHex()) {
+                element = this.addRenderableWidget(new TextFieldWidgetTemp(this.font, buttonX, y, 70, BUTTONHEIGHT, Component.literal(((Colour)value).getHex()), ((Colour)value).getHex()) {
                     @Override
                     protected void onFocusedChanged(boolean bl) {
                         if (bl) {
@@ -142,7 +139,7 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
                 LOGGER.warn("WorldEditCUI has option " + text + " with data type " + value.getClass().getName());
                 continue;
             }
-            this.configList.addEntry(new SettingsEntry(this.configList, (textTemp != null) ? textTemp : new TextComponent(text), element, this.addRenderableWidget(new AbstractWidget(buttonX + 75, y, BUTTONHEIGHT, BUTTONHEIGHT, TextComponent.EMPTY) {
+            this.configList.addEntry(new SettingsEntry(this.configList, (textTemp != null) ? textTemp : Component.literal(text), element, this.addRenderableWidget(new AbstractWidget(buttonX + 75, y, BUTTONHEIGHT, BUTTONHEIGHT, Component.empty()) {
                 @Override
                 public void updateNarration(NarrationElementOutput builder) {
                     this.defaultButtonNarrationText(builder);

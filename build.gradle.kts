@@ -1,16 +1,16 @@
 plugins {
     java
-    id("fabric-loom") version "0.10-SNAPSHOT"
-    id("io.github.juuxel.loom-quiltflower-mini") version "1.2.1"
-    id("com.github.ben-manes.versions") version "0.41.0"
-    id("de.jjohannes.missing-metadata-guava") version "0.5"
+    id("fabric-loom") version "0.12.+"
+    id("io.github.juuxel.loom-quiltflower") version "1.7.2"
+    id("com.github.ben-manes.versions") version "0.42.0"
+    id("de.jjohannes.missing-metadata-guava") version "31.1.1"
 }
 
-val minecraftVersion = "1.18.2"
-val fabricLoaderVersion = "0.13.3"
-val fabricApiVersion = "0.47.10+1.18.2"
-val modmenuVersion = "3.0.0"
-val multiconnectVersion = "1.5.6"
+val minecraftVersion = "1.19-pre1"
+val fabricLoaderVersion = "0.14.6"
+val fabricApiVersion = "0.53.2+1.19"
+val modmenuVersion = "4.0.0-beta.4"
+val multiconnectVersion = "1.5.10"
 
 group = "org.enginehub.worldeditcui"
 version = "$minecraftVersion+02-SNAPSHOT"
@@ -58,7 +58,7 @@ dependencies {
         officialMojangMappings {
             nameSyntheticMembers = false
         }
-        parchment("org.parchmentmc.data:parchment-1.18.1:2021.12.19@zip")
+        parchment("org.parchmentmc.data:parchment-1.18.2:2022.05.02@zip")
     })
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
@@ -115,13 +115,13 @@ dependencies {
     }
 
     // for development
-    modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10-SNAPSHOT") {
+    /*modRuntimeOnly("com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10-SNAPSHOT") {
         exclude("com.google.guava", "guava")
         exclude("com.google.code.gson", "gson")
         exclude("com.google.code.gson", "gson")
         exclude("it.unimi.dsi", "fastutil")
         exclude("org.apache.logging.log4j", "log4j-api")
-    }
+    }*/
 }
 
 tasks {
@@ -138,7 +138,7 @@ tasks {
         outputs.file(scriptDest)
         outputs.file(argsDest)
         doLast {
-            val clientRun = minecraft.runConfigs.getByName("client")
+            val clientRun = loom.runConfigs.getByName("client")
             //-Dfabric.dli.config=${minecraft.devLauncherConfig.absolutePath} TODO
             argsDest.get().asFile.writeText("""    
                 -Dfabric.dli.env=client
