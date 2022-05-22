@@ -2,9 +2,9 @@ package org.enginehub.worldeditcui.render;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.GameRenderer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -16,7 +16,7 @@ import java.lang.invoke.MethodType;
  * @see <a href="https://github.com/sp614x/optifine/blob/master/OptiFineDoc/doc/shaders.txt">the shaders documentation</a>
  */
 public final class OptifinePipelineProvider implements PipelineProvider {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
     // For inspection purposes, get the active program
