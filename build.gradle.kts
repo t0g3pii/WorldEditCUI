@@ -1,19 +1,19 @@
 plugins {
     java
     id("fabric-loom") version "0.12.+"
-    id("io.github.juuxel.loom-quiltflower") version "1.7.2"
+    id("io.github.juuxel.loom-quiltflower") version "1.7.3"
     id("com.github.ben-manes.versions") version "0.42.0"
     id("de.jjohannes.missing-metadata-guava") version "31.1.1"
 }
 
-val minecraftVersion = "1.19-pre1"
-val fabricLoaderVersion = "0.14.6"
-val fabricApiVersion = "0.53.2+1.19"
-val modmenuVersion = "4.0.0-beta.4"
+val minecraftVersion = "1.19"
+val fabricLoaderVersion = "0.14.8"
+val fabricApiVersion = "0.57.0+1.19"
+val modmenuVersion = "4.0.0"
 val multiconnectVersion = "1.5.10"
 
 group = "org.enginehub.worldeditcui"
-version = "$minecraftVersion+02-SNAPSHOT"
+version = "$minecraftVersion+01-SNAPSHOT"
 
 repositories {
     // mirrors:
@@ -58,7 +58,7 @@ dependencies {
         officialMojangMappings {
             nameSyntheticMembers = false
         }
-        parchment("org.parchmentmc.data:parchment-1.18.2:2022.05.02@zip")
+        parchment("org.parchmentmc.data:parchment-1.18.2:2022.07.03@zip")
     })
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
