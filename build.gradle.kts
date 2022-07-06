@@ -50,6 +50,8 @@ tasks.withType(JavaCompile::class) {
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing"))
 }
 
+val fabricApiConfiguration: Configuration = configurations.create("fabricApi")
+
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.layered {
@@ -59,10 +61,57 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-1.18.1:2021.12.19@zip")
     })
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
     modImplementation("net.earthcomputer.multiconnect:multiconnect-api:$multiconnectVersion") {
         isTransitive = false
+    }
+
+    // [1] declare fabric-api dependency...
+    "fabricApi"("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+
+    // [2] Load the API dependencies from the fabric mod json...
+    @Suppress("UNCHECKED_CAST")
+    val fabricModJson = file("src/main/resources/fabric.mod.json").bufferedReader().use {
+        groovy.json.JsonSlurper().parse(it) as Map<String, Map<String, *>>
+    }
+    val wantedDependencies = (fabricModJson["depends"] ?: error("no depends in fabric.mod.json")).keys
+        .filter { it == "fabric-api-base" || it.contains(Regex("v\\d$")) }
+        .map { "net.fabricmc.fabric-api:$it" }
+        .toSet()
+    logger.lifecycle("Looking for these dependencies:")
+    for (wantedDependency in wantedDependencies) {
+        logger.lifecycle(wantedDependency)
+    }
+    // [3] and now we resolve it to pick out what we want :D
+    val fabricApiDependencies = fabricApiConfiguration.incoming.resolutionResult.allDependencies
+        .onEach {
+            if (it is UnresolvedDependencyResult) {
+                throw kotlin.IllegalStateException("Failed to resolve Fabric API", it.failure)
+            }
+        }
+        .filterIsInstance<ResolvedDependencyResult>()
+        // pick out transitive dependencies
+        .flatMap {
+            it.selected.dependencies
+        }
+        // grab the requested versions
+        .map { it.requested }
+        .filterIsInstance<ModuleComponentSelector>()
+        // map to standard notation
+        .associateByTo(
+            mutableMapOf(),
+            keySelector = { "${it.group}:${it.module}" },
+            valueTransform = { "${it.group}:${it.module}:${it.version}" }
+        )
+    fabricApiDependencies.keys.retainAll(wantedDependencies)
+    // sanity check
+    for (wantedDep in wantedDependencies) {
+        check(wantedDep in fabricApiDependencies) { "Fabric API library $wantedDep is missing!" }
+    }
+
+    fabricApiDependencies.values.forEach {
+        "include"(it)
+        "modImplementation"(it)
     }
 
     // for development
