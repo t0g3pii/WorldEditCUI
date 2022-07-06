@@ -12,6 +12,7 @@ import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.enginehub.worldeditcui.InitialisationFactory;
 import org.enginehub.worldeditcui.WorldEditCUI;
 import org.enginehub.worldeditcui.exceptions.InitialisationException;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
@@ -24,7 +25,7 @@ import java.nio.file.Path;
 public final class CUIDebug implements InitialisationFactory
 {
 	private static final boolean LOG_ALL_ERRORS = Boolean.getBoolean("wecui.debug.logall") || FabricLoader.getInstance().isDevelopmentEnvironment();
-	private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger("WorldEditCUI");
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger("WorldEditCUI");
 	
 	private final WorldEditCUI controller;
 	private boolean debugLogged;
@@ -38,7 +39,7 @@ public final class CUIDebug implements InitialisationFactory
 	public void initialise() throws InitialisationException
 	{
 		// Create a logger that logs to console (if in debug mode), and logs to a debug file
-		final Logger loggerImpl = (Logger) LOGGER;
+		final Logger loggerImpl = (Logger) LogManager.getLogger("WorldEditCUI");
 
 		final Path debugFile = FabricLoader.getInstance().getGameDir().resolve("worldeditcui.debug.log");
 
@@ -75,7 +76,7 @@ public final class CUIDebug implements InitialisationFactory
 	{
 		if (this.controller.getConfiguration().isDebugMode()) // TODO: do this with a filter and a MARKER, maybe eventually?
 		{
-			CUIDebug.LOGGER.info("Debug - " + message);
+			CUIDebug.LOGGER.info("Debug - {}", message);
 		}
 	}
 

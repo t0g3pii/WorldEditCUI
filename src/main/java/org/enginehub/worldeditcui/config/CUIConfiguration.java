@@ -3,7 +3,7 @@ package org.enginehub.worldeditcui.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import org.enginehub.worldeditcui.InitialisationFactory;
 import org.enginehub.worldeditcui.render.ConfiguredColour;
 import org.jetbrains.annotations.Nullable;
@@ -219,27 +219,27 @@ public final class CUIConfiguration implements InitialisationFactory
 		return null;
 	}
 
-	public @Nullable TranslatableComponent getDescription(String text) {
+	public @Nullable Component getDescription(String text) {
 		switch(text) {
-			case "debugMode": return new TranslatableComponent("worldeditcui.options.debugMode");
-			case "ignoreUpdates": return new TranslatableComponent("worldeditcui.options.ignoreUpdates");
-			case "promiscuous": return new TranslatableComponent("worldeditcui.options.compat.spammy");
-			case "clearAllOnKey": return new TranslatableComponent("worldeditcui.options.extra.clearall");
+			case "debugMode": return Component.translatable("worldeditcui.options.debugMode");
+			case "ignoreUpdates": return Component.translatable("worldeditcui.options.ignoreUpdates");
+			case "promiscuous": return Component.translatable("worldeditcui.options.compat.spammy");
+			case "clearAllOnKey": return Component.translatable("worldeditcui.options.extra.clearall");
 
-			case "cuboidGridColor": return new TranslatableComponent("worldeditcui.color.cuboidgrid");
-			case "cuboidEdgeColor": return new TranslatableComponent("worldeditcui.color.cuboidedge");
-			case "cuboidFirstPointColor": return new TranslatableComponent("worldeditcui.color.cuboidpoint1");
-			case "cuboidSecondPointColor": return new TranslatableComponent("worldeditcui.color.cuboidpoint2");
-			case "polyGridColor": return new TranslatableComponent("worldeditcui.color.polygrid");
-			case "polyEdgeColor": return new TranslatableComponent("worldeditcui.color.polyedge");
-			case "polyPointColor": return new TranslatableComponent("worldeditcui.color.polypoint");
-			case "ellipsoidGridColor": return new TranslatableComponent("worldeditcui.color.ellipsoidgrid");
-			case "ellipsoidPointColor": return new TranslatableComponent("worldeditcui.color.ellipsoidpoint");
-			case "cylinderGridColor": return new TranslatableComponent("worldeditcui.color.cylindergrid");
-			case "cylinderEdgeColor": return new TranslatableComponent("worldeditcui.color.cylinderedge");
-			case "cylinderPointColor": return new TranslatableComponent("worldeditcui.color.cylinderpoint");
-			case "chunkBoundaryColour": return new TranslatableComponent("worldeditcui.color.chunkboundary");
-			case "chunkGridColour": return new TranslatableComponent("worldeditcui.color.chunkgrid");
+			case "cuboidGridColor": return Component.translatable("worldeditcui.color.cuboidgrid");
+			case "cuboidEdgeColor": return Component.translatable("worldeditcui.color.cuboidedge");
+			case "cuboidFirstPointColor": return Component.translatable("worldeditcui.color.cuboidpoint1");
+			case "cuboidSecondPointColor": return Component.translatable("worldeditcui.color.cuboidpoint2");
+			case "polyGridColor": return Component.translatable("worldeditcui.color.polygrid");
+			case "polyEdgeColor": return Component.translatable("worldeditcui.color.polyedge");
+			case "polyPointColor": return Component.translatable("worldeditcui.color.polypoint");
+			case "ellipsoidGridColor": return Component.translatable("worldeditcui.color.ellipsoidgrid");
+			case "ellipsoidPointColor": return Component.translatable("worldeditcui.color.ellipsoidpoint");
+			case "cylinderGridColor": return Component.translatable("worldeditcui.color.cylindergrid");
+			case "cylinderEdgeColor": return Component.translatable("worldeditcui.color.cylinderedge");
+			case "cylinderPointColor": return Component.translatable("worldeditcui.color.cylinderpoint");
+			case "chunkBoundaryColour": return Component.translatable("worldeditcui.color.chunkboundary");
+			case "chunkGridColour": return Component.translatable("worldeditcui.color.chunkgrid");
 		}
 
 		return null;
