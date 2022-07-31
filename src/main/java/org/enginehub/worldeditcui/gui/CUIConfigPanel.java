@@ -26,8 +26,8 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
     private static final int BUTTON_WIDTH = 200;
     private static final int BUTTON_HEIGHT = 20;
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final Component TRUE = Component.literal("true").withStyle(s -> s.applyFormat(ChatFormatting.DARK_GREEN));
-    private static final Component FALSE = Component.literal("false").withStyle(s -> s.applyFormat(ChatFormatting.DARK_RED));
+    private static final Component TRUE = CommonComponents.OPTION_ON.copy().withStyle(s -> s.applyFormat(ChatFormatting.DARK_GREEN));
+    private static final Component FALSE = CommonComponents.OPTION_OFF.copy().withStyle(s -> s.applyFormat(ChatFormatting.DARK_RED));
 
     private final Screen parent;
     private final Set<String> options;
@@ -111,33 +111,33 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
                     }
                 });
             } else if(value instanceof Colour) {
-                element = this.addRenderableWidget(new TextFieldWidgetTemp(this.font, buttonX, y, 70, BUTTON_HEIGHT, Component.literal(((Colour)value).getHex()), ((Colour)value).getHex()) {
+                element = this.addRenderableWidget(new TextFieldWidgetTemp(this.font, buttonX, y, 70, BUTTON_HEIGHT, Component.literal(((Colour)value).hexString()), ((Colour)value).hexString()) {
                     @Override
                     protected void onFocusedChanged(boolean bl) {
                         if (bl) {
-                            this.setValue(((Colour)configuration.getConfigArray().get(text)).getHex());
+                            this.setValue(((Colour)configuration.getConfigArray().get(text)).hexString());
                         } else {
-                            configuration.changeValue(text, new Colour(this.getValue()));
+                            configuration.changeValue(text, Colour.parseRgbaOrNull(this.getValue()));
                         }
                         super.onFocusedChanged(bl);
                     }
 
                     @Override
                     public boolean charTyped(char chr, int keyCode) {
-                        boolean result = super.charTyped(chr, keyCode);
-                        configuration.changeValue(text, new Colour(this.getValue()));
+                        boolean result = super.charTyped(chr, keyCode); // todo: only allow valid hex chars
+                        configuration.changeValue(text, Colour.parseRgbaOrNull(this.getValue()));
                         return result;
                     }
 
                     @Override
                     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
                         boolean result = super.keyPressed(keyCode, scanCode, modifiers);
-                        configuration.changeValue(text, new Colour(this.getValue()));
+                        configuration.changeValue(text, Colour.parseRgbaOrNull(this.getValue()));
                         return result;
                     }
                 });
             } else {
-                LOGGER.warn("WorldEditCUI has option " + text + " with data type " + value.getClass().getName());
+                LOGGER.warn("WorldEditCUI has option {} with unknown data type {}", text, value.getClass().getName());
                 continue;
             }
             this.configList.addEntry(new SettingsEntry(this.configList, (textTemp != null) ? textTemp : Component.literal(text), element, this.addRenderableWidget(new AbstractWidget(buttonX + 75, y, BUTTON_HEIGHT, BUTTON_HEIGHT, Component.empty()) {

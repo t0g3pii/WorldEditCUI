@@ -18,20 +18,20 @@ import org.enginehub.worldeditcui.render.RenderStyle.RenderType;
  */
 public enum ConfiguredColour
 {
-	CUBOIDBOX      ("cuboidedge",     new Colour("#CC3333CC")),
-	CUBOIDGRID     ("cuboidgrid",     new Colour("#CC4C4CCC")),
-	CUBOIDPOINT1   ("cuboidpoint1",   new Colour("#33CC33CC")),
-	CUBOIDPOINT2   ("cuboidpoint2",   new Colour("#3333CCCC")),
-	POLYGRID       ("polygrid",       new Colour("#CC3333CC")),
-	POLYBOX        ("polyedge",       new Colour("#CC4C4CCC")),
-	POLYPOINT      ("polypoint",      new Colour("#33CCCCCC")),
-	ELLIPSOIDGRID  ("ellipsoidgrid",  new Colour("#CC4C4CCC")),
-	ELLIPSOIDCENTRE("ellipsoidpoint", new Colour("#CCCC33CC")),
-	CYLINDERGRID   ("cylindergrid",   new Colour("#CC3333CC")),
-	CYLINDERBOX    ("cylinderedge",   new Colour("#CC4C4CCC")),
-	CYLINDERCENTRE ("cylinderpoint",  new Colour("#CC33CCCC")),
-	CHUNKBOUNDARY  ("chunkboundary",  new Colour("#33CC33CC")),
-	CHUNKGRID      ("chunkgrid",      new Colour("#4CCCAA99"));
+	CUBOIDBOX      ("cuboidedge",     Colour.parseRgba("#CC3333CC")),
+	CUBOIDGRID     ("cuboidgrid",     Colour.parseRgba("#CC4C4CCC")),
+	CUBOIDPOINT1   ("cuboidpoint1",   Colour.parseRgba("#33CC33CC")),
+	CUBOIDPOINT2   ("cuboidpoint2",   Colour.parseRgba("#3333CCCC")),
+	POLYGRID       ("polygrid",       Colour.parseRgba("#CC3333CC")),
+	POLYBOX        ("polyedge",       Colour.parseRgba("#CC4C4CCC")),
+	POLYPOINT      ("polypoint",      Colour.parseRgba("#33CCCCCC")),
+	ELLIPSOIDGRID  ("ellipsoidgrid",  Colour.parseRgba("#CC4C4CCC")),
+	ELLIPSOIDCENTRE("ellipsoidpoint", Colour.parseRgba("#CCCC33CC")),
+	CYLINDERGRID   ("cylindergrid",   Colour.parseRgba("#CC3333CC")),
+	CYLINDERBOX    ("cylinderedge",   Colour.parseRgba("#CC4C4CCC")),
+	CYLINDERCENTRE ("cylinderpoint",  Colour.parseRgba("#CC33CCCC")),
+	CHUNKBOUNDARY  ("chunkboundary",  Colour.parseRgba("#33CC33CC")),
+	CHUNKGRID      ("chunkgrid",      Colour.parseRgba("#4CCCAA99"));
 	
 	class Style implements RenderStyle
 	{
@@ -67,8 +67,9 @@ public enum ConfiguredColour
 		}
 	}
 	
-	private String displayName;
-	private Colour defaultColour, colour;
+	private final String displayName;
+	private final Colour defaultColour;
+	private Colour colour;
 	private LineStyle normal, hidden;
 	private LineStyle[] lines;
 	
@@ -76,7 +77,7 @@ public enum ConfiguredColour
 	{
 		this.displayName = displayName;
 		this.colour = colour;
-		this.defaultColour = new Colour().copyFrom(colour);
+		this.defaultColour = colour;
 		this.updateLines();
 	}
 	
@@ -118,7 +119,7 @@ public enum ConfiguredColour
 	
 	public void setDefault()
 	{
-		this.colour.copyFrom(this.defaultColour);
+	    this.colour = this.defaultColour;
 		this.updateLines();
 	}
 	
@@ -129,14 +130,13 @@ public enum ConfiguredColour
 	
 	public void setColourIntRGBA(int argb)
 	{
-		int rgba = ((argb << 8) & 0xFFFFFF00) | (((argb & 0xFF000000) >> 24) & 0xFF);
-		this.colour.setHex(Integer.toHexString(rgba));
+		this.colour = new Colour(argb);
 		this.updateLines();
 	}
 	
 	public int getColourIntARGB()
 	{
-		return this.colour.getIntARGB();
+		return this.colour.argb();
 	}
 
 	private void updateLines()

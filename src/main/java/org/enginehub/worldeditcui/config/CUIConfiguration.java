@@ -2,12 +2,17 @@ package org.enginehub.worldeditcui.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
 import org.enginehub.worldeditcui.InitialisationFactory;
 import org.enginehub.worldeditcui.render.ConfiguredColour;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -28,7 +33,41 @@ public final class CUIConfiguration implements InitialisationFactory
 {
 	private static final String CONFIG_FILE_NAME = "worldeditcui.config.json";
 
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	private static final Gson GSON = new GsonBuilder()
+	    .setPrettyPrinting()
+	    .registerTypeAdapter(Colour.class, new TypeAdapter<Colour>() {
+            @Override
+            public Colour read(JsonReader arg0) throws IOException {
+                if (arg0.peek() == JsonToken.BEGIN_OBJECT) {
+                    arg0.beginObject();
+                    String colour = null;
+                    
+                    while (arg0.peek() == JsonToken.NAME) {
+                        if (!arg0.nextName().equals("hex")) {
+                            arg0.skipValue();
+                            continue;
+                        }
+                        colour = arg0.nextString();
+                    }
+                    arg0.endObject();
+                    return colour == null ? null : Colour.parseRgba(colour);
+                } else if (arg0.peek() == JsonToken.NUMBER) {
+                    return new Colour(arg0.nextInt());
+                } else {
+                    return Colour.parseRgba(arg0.nextString());
+                }
+            }
+
+            @Override
+            public void write(
+                JsonWriter arg0,
+                Colour arg1
+            ) throws IOException {
+                arg0.value(arg1.hexString());
+            }
+	        
+	    }.nullSafe())
+	    .create();
 
 	private boolean debugMode = false;
 	private boolean ignoreUpdates = false;
@@ -67,7 +106,7 @@ public final class CUIConfiguration implements InitialisationFactory
 				if (field.getType() == Colour.class)
 				{
 					ConfiguredColour configuredColour = ConfiguredColour.values()[index++];
-					Colour colour = Colour.firstOrDefault((Colour)field.get(this), configuredColour.getColour().getHex());
+					Colour colour = Colour.firstOrDefault((Colour)field.get(this), configuredColour.getColour().hexString());
 					field.set(this, colour);
 					configuredColour.setColour(colour);
 				}
@@ -163,7 +202,11 @@ public final class CUIConfiguration implements InitialisationFactory
 	}
 
 	public void changeValue(String text, Object value) {
-		configArray.replace(text, value);
+	    if (value == null) {
+	        configArray.replace(text, getDefaultValue(text));
+	    } else {
+            configArray.replace(text, value);
+	    }
 	}
 
 	public Map<String, Object> getConfigArray() {
