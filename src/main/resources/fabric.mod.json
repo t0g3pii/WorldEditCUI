@@ -15,6 +15,7 @@
     "homepage": "https://github.com/EngineHub/WorldEditCUI",
     "sources": "https://github.com/EngineHub/WorldEditCUI"
   },
+  "icon": "assets/worldeditcui/icon.png",
   "license": "EPL-1.0",
   "environment": "client",
   "entrypoints": {
