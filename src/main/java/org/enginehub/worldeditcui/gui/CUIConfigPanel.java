@@ -9,6 +9,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.enginehub.worldeditcui.config.CUIConfiguration;
 import org.enginehub.worldeditcui.config.Colour;
@@ -22,6 +23,8 @@ import java.util.function.Supplier;
  * @author Jesús Sanz - Modified to implement Config GUI / First Version
  */
 public class CUIConfigPanel extends Screen implements Supplier<Screen> {
+    private static final int BUTTON_WIDTH = 200;
+    private static final int BUTTON_HEIGHT = 20;
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Component TRUE = Component.literal("true").withStyle(s -> s.applyFormat(ChatFormatting.DARK_GREEN));
     private static final Component FALSE = Component.literal("false").withStyle(s -> s.applyFormat(ChatFormatting.DARK_RED));
@@ -34,8 +37,6 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
     private AbstractWidget done;
 
     private final Component screenTitle;
-
-    private static final int BUTTONHEIGHT = 20;
 
     public CUIConfigPanel(Screen parent, CUIConfiguration configuration) {
         super(Component.literal("WorldEditCUI"));
@@ -56,7 +57,7 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
     protected void init() {
         configList = new SettingsWidget(this.minecraft, this.width - 8, this.height, 48 + 19, this.height - 36, 25, this.configuration, this);
         configList.setLeftPos(0);
-        done = this.addRenderableWidget(new AbstractWidget(this.width / 2 - 205, this.height - 27, 70, 20, Component.translatable("worldeditcui.options.done")) {
+        done = this.addRenderableWidget(new AbstractWidget((this.width - BUTTON_WIDTH) / 2, this.height - (BUTTON_HEIGHT + 7), BUTTON_WIDTH, BUTTON_HEIGHT, CommonComponents.GUI_DONE) {
             @Override
             public void updateNarration(NarrationElementOutput builder) {
                 this.defaultButtonNarrationText(builder);
@@ -66,7 +67,7 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
             public void onClick(double mouseX, double mouseY) {
                 for (GuiEventListener button : children()) {
                     if (button instanceof EditBox widget) {
-                        if(widget.isFocused()) {
+                        if (widget.isFocused()) {
                             widget.changeFocus(false);
                         }
                     }
@@ -84,10 +85,10 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
             AbstractWidget element;
             Component textTemp = configuration.getDescription(text);
             if (value == null) {
-                LOGGER.warn("value null, adding nothing");
+                LOGGER.warn("value of '{}' null, adding nothing", text);
                 continue;
             } else if(value instanceof Boolean) {
-                element = this.addRenderableWidget(new AbstractWidget(buttonX, y, 70, BUTTONHEIGHT, ((Boolean) value ? TRUE: FALSE)) {
+                element = this.addRenderableWidget(new AbstractWidget(buttonX, y, 70, BUTTON_HEIGHT, ((Boolean) value ? TRUE: FALSE)) {
                     @Override
                     public void updateNarration(NarrationElementOutput builder) {
                         this.defaultButtonNarrationText(builder);
@@ -110,7 +111,7 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
                     }
                 });
             } else if(value instanceof Colour) {
-                element = this.addRenderableWidget(new TextFieldWidgetTemp(this.font, buttonX, y, 70, BUTTONHEIGHT, Component.literal(((Colour)value).getHex()), ((Colour)value).getHex()) {
+                element = this.addRenderableWidget(new TextFieldWidgetTemp(this.font, buttonX, y, 70, BUTTON_HEIGHT, Component.literal(((Colour)value).getHex()), ((Colour)value).getHex()) {
                     @Override
                     protected void onFocusedChanged(boolean bl) {
                         if (bl) {
@@ -139,7 +140,7 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
                 LOGGER.warn("WorldEditCUI has option " + text + " with data type " + value.getClass().getName());
                 continue;
             }
-            this.configList.addEntry(new SettingsEntry(this.configList, (textTemp != null) ? textTemp : Component.literal(text), element, this.addRenderableWidget(new AbstractWidget(buttonX + 75, y, BUTTONHEIGHT, BUTTONHEIGHT, Component.empty()) {
+            this.configList.addEntry(new SettingsEntry(this.configList, (textTemp != null) ? textTemp : Component.literal(text), element, this.addRenderableWidget(new AbstractWidget(buttonX + 75, y, BUTTON_HEIGHT, BUTTON_HEIGHT, Component.empty()) {
                 @Override
                 public void updateNarration(NarrationElementOutput builder) {
                     this.defaultButtonNarrationText(builder);
@@ -166,7 +167,7 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
         renderBackground(matrices);
         super.render(matrices, mouseX, mouseY, delta);
         this.configList.render(matrices, mouseX, mouseY, delta);
-        drawCenteredString(matrices, this.font, screenTitle, this.configList.getWidth() / 2, BUTTONHEIGHT, 0xFFFFFF);
+        drawCenteredString(matrices, this.font, screenTitle, this.configList.getWidth() / 2, BUTTON_HEIGHT, 0xFFFFFF);
         this.done.render(matrices, mouseX, mouseY, delta);
     }
 
