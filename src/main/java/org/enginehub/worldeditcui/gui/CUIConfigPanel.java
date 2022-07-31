@@ -55,8 +55,12 @@ public class CUIConfigPanel extends Screen implements Supplier<Screen> {
 
     @Override
     protected void init() {
-        configList = new SettingsWidget(this.minecraft, this.width - 8, this.height, 48 + 19, this.height - 36, 25, this.configuration, this);
+        super.init();
+        configList = new SettingsWidget(this.minecraft, this.width - 8, this.height, 48, this.height - 36, 25, this.configuration, this);
         configList.setLeftPos(0);
+        if (this.minecraft.level != null) {
+            configList.setRenderBackground(false);
+        }
         done = this.addRenderableWidget(new AbstractWidget((this.width - BUTTON_WIDTH) / 2, this.height - (BUTTON_HEIGHT + 7), BUTTON_WIDTH, BUTTON_HEIGHT, CommonComponents.GUI_DONE) {
             @Override
             public void updateNarration(NarrationElementOutput builder) {
