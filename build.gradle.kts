@@ -6,14 +6,14 @@ plugins {
     id("de.jjohannes.missing-metadata-guava") version "31.1.1"
 }
 
-val minecraftVersion = "1.19"
+val minecraftVersion = "1.19.1"
 val fabricLoaderVersion = "0.14.8"
-val fabricApiVersion = "0.57.0+1.19"
-val modmenuVersion = "4.0.0"
+val fabricApiVersion = "0.58.5+1.19.1"
+val modmenuVersion = "4.0.5"
 val multiconnectVersion = "1.5.10"
 
 group = "org.enginehub.worldeditcui"
-version = "$minecraftVersion+02-SNAPSHOT"
+version = "$minecraftVersion+01-SNAPSHOT"
 
 repositories {
     // mirrors:
@@ -115,13 +115,13 @@ dependencies {
     }
 
     // for development
-    /*modRuntimeOnly("com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10-SNAPSHOT") {
+    modRuntimeOnly("com.sk89q.worldedit:worldedit-fabric-mc1.19.1:7.2.11-SNAPSHOT") {
         exclude("com.google.guava", "guava")
         exclude("com.google.code.gson", "gson")
         exclude("com.google.code.gson", "gson")
         exclude("it.unimi.dsi", "fastutil")
         exclude("org.apache.logging.log4j", "log4j-api")
-    }*/
+    }
 }
 
 tasks {
