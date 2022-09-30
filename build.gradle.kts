@@ -1,14 +1,14 @@
 plugins {
     java
-    id("fabric-loom") version "0.12.+"
+    id("fabric-loom") version "1.0-SNAPSHOT"
     id("io.github.juuxel.loom-quiltflower") version "1.7.3"
     id("com.github.ben-manes.versions") version "0.42.0"
     id("de.jjohannes.missing-metadata-guava") version "31.1.1"
 }
 
-val minecraftVersion = "1.19.1"
-val fabricLoaderVersion = "0.14.8"
-val fabricApiVersion = "0.58.5+1.19.1"
+val minecraftVersion = "1.19.2"
+val fabricLoaderVersion = "0.14.9"
+val fabricApiVersion = "0.62.0+1.19.2"
 val modmenuVersion = "4.0.5"
 val multiconnectVersion = "1.5.10"
 
@@ -58,7 +58,7 @@ dependencies {
         officialMojangMappings {
             nameSyntheticMembers = false
         }
-        parchment("org.parchmentmc.data:parchment-1.18.2:2022.07.03@zip")
+        parchment("org.parchmentmc.data:parchment-1.19.2:2022.09.18@zip")
     })
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
@@ -115,7 +115,7 @@ dependencies {
     }
 
     // for development
-    modRuntimeOnly("com.sk89q.worldedit:worldedit-fabric-mc1.19.1:7.2.11-SNAPSHOT") {
+    modRuntimeOnly("com.sk89q.worldedit:worldedit-fabric-mc1.19.2:7.2.12") {
         exclude("com.google.guava", "guava")
         exclude("com.google.code.gson", "gson")
         exclude("com.google.code.gson", "gson")
