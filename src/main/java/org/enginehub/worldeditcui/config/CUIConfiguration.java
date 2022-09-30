@@ -74,8 +74,8 @@ public final class CUIConfiguration implements InitialisationFactory
 	private boolean promiscuous = false;
 	private boolean clearAllOnKey = false;
 
-	private Colour cuboidGridColor = ConfiguredColour.CUBOIDGRID.getDefault();
-	private Colour cuboidEdgeColor = ConfiguredColour.CUBOIDBOX.getDefault();
+    private Colour cuboidGridColor = ConfiguredColour.CUBOIDGRID.getDefault();
+    private Colour cuboidEdgeColor = ConfiguredColour.CUBOIDBOX.getDefault();
     private Colour cuboidFirstPointColor = ConfiguredColour.CUBOIDPOINT1.getDefault();
     private Colour cuboidSecondPointColor = ConfiguredColour.CUBOIDPOINT2.getDefault();
     private Colour polyGridColor = ConfiguredColour.POLYGRID.getDefault();
