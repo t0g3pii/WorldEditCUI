@@ -18,8 +18,8 @@ import org.enginehub.worldeditcui.render.RenderStyle.RenderType;
  */
 public enum ConfiguredColour
 {
-	CUBOIDBOX      ("cuboidedge",     Colour.parseRgba("#CC3333CC")),
 	CUBOIDGRID     ("cuboidgrid",     Colour.parseRgba("#CC4C4CCC")),
+	CUBOIDBOX      ("cuboidedge",     Colour.parseRgba("#CC3333CC")),
 	CUBOIDPOINT1   ("cuboidpoint1",   Colour.parseRgba("#33CC33CC")),
 	CUBOIDPOINT2   ("cuboidpoint2",   Colour.parseRgba("#3333CCCC")),
 	POLYGRID       ("polygrid",       Colour.parseRgba("#CC3333CC")),
