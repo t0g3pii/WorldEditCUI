@@ -74,8 +74,8 @@ public final class CUIConfiguration implements InitialisationFactory
 	private boolean promiscuous = false;
 	private boolean clearAllOnKey = false;
 
-    private Colour cuboidGridColor = ConfiguredColour.CUBOIDBOX.getDefault();
-    private Colour cuboidEdgeColor = ConfiguredColour.CUBOIDGRID.getDefault();
+    private Colour cuboidGridColor = ConfiguredColour.CUBOIDGRID.getDefault();
+    private Colour cuboidEdgeColor = ConfiguredColour.CUBOIDBOX.getDefault();
     private Colour cuboidFirstPointColor = ConfiguredColour.CUBOIDPOINT1.getDefault();
     private Colour cuboidSecondPointColor = ConfiguredColour.CUBOIDPOINT2.getDefault();
     private Colour polyGridColor = ConfiguredColour.POLYGRID.getDefault();
@@ -243,8 +243,8 @@ public final class CUIConfiguration implements InitialisationFactory
 			case "promiscuous":
 			case "clearAllOnKey": return false;
 
-			case "cuboidGridColor": return ConfiguredColour.CUBOIDBOX.getDefault();
-			case "cuboidEdgeColor": return ConfiguredColour.CUBOIDGRID.getDefault();
+			case "cuboidGridColor": return ConfiguredColour.CUBOIDGRID.getDefault();
+			case "cuboidEdgeColor": return ConfiguredColour.CUBOIDBOX.getDefault();
 			case "cuboidFirstPointColor": return ConfiguredColour.CUBOIDPOINT1.getDefault();
 			case "cuboidSecondPointColor": return ConfiguredColour.CUBOIDPOINT2.getDefault();
 			case "polyGridColor": return ConfiguredColour.POLYGRID.getDefault();
