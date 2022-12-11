@@ -13,7 +13,7 @@ val modmenuVersion = "5.0.1"
 val multiconnectVersion = "1.5.10"
 
 group = "org.enginehub.worldeditcui"
-version = "$minecraftVersion+01-SNAPSHOT"
+version = "$minecraftVersion+01"
 
 repositories {
     // mirrors:
