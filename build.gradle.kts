@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.loom)
     alias(libs.plugins.loomQuiltflower)
     alias(libs.plugins.versions)
-    alias(libs.plugins.missingMetadataGuava)
+    alias(libs.plugins.javaEcosystemCapabilities)
 }
 
 group = "org.enginehub.worldeditcui"
