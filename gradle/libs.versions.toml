@@ -1,0 +1,25 @@
+[metadata]
+version = "1.0"
+
+[versions]
+minecraft = "1.19.3"
+fabricLoader = "0.14.11"
+fabricApi = "0.68.1+1.19.3"
+modmenu = "5.0.1"
+multiconnect = "1.5.10"
+quiltflower = "1.9.0"
+
+[libraries]
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+parchment = { module = "org.parchmentmc.data:parchment-1.19.2", version = "2022.11.27" }
+fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabricLoader" }
+fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabricApi" }
+modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
+multiconnect-api = { module = "net.earthcomputer.multiconnect:multiconnect-api", version.ref = "multiconnect" }
+worldedit = { module = "com.sk89q.worldedit:worldedit-fabric-mc1.19.3", version = "7.2.13" }
+
+[plugins]
+loom = { id = "fabric-loom", version = "1.0.+" }
+loomQuiltflower = { id = "io.github.juuxel.loom-quiltflower", version = "1.8.0" }
+versions = { id = "com.github.ben-manes.versions", version = "0.44.0" }
+missingMetadataGuava = { id = "de.jjohannes.missing-metadata-guava", version = "31.1.1" }

@@ -1,19 +1,13 @@
 plugins {
     java
-    id("fabric-loom") version "1.0.+"
-    id("io.github.juuxel.loom-quiltflower") version "1.8.0"
-    id("com.github.ben-manes.versions") version "0.44.0"
-    id("de.jjohannes.missing-metadata-guava") version "31.1.1"
+    alias(libs.plugins.loom)
+    alias(libs.plugins.loomQuiltflower)
+    alias(libs.plugins.versions)
+    alias(libs.plugins.missingMetadataGuava)
 }
 
-val minecraftVersion = "1.19.3"
-val fabricLoaderVersion = "0.14.11"
-val fabricApiVersion = "0.68.1+1.19.3"
-val modmenuVersion = "5.0.1"
-val multiconnectVersion = "1.5.10"
-
 group = "org.enginehub.worldeditcui"
-version = "$minecraftVersion+02-SNAPSHOT"
+version = "${libs.versions.minecraft.get()}+02-SNAPSHOT"
 
 repositories {
     // mirrors:
@@ -32,7 +26,7 @@ repositories {
 }
 
 quiltflower {
-    quiltflowerVersion.set("1.9.0")
+    quiltflowerVersion.set(libs.versions.quiltflower.get())
     addToRuntimeClasspath.set(true)
     preferences["win"] = 0
 }
@@ -55,21 +49,21 @@ tasks.withType(JavaCompile::class) {
 val fabricApiConfiguration: Configuration = configurations.create("fabricApi")
 
 dependencies {
-    minecraft("com.mojang:minecraft:$minecraftVersion")
+    minecraft(libs.minecraft)
     mappings(loom.layered {
         officialMojangMappings {
             nameSyntheticMembers = false
         }
-        parchment("org.parchmentmc.data:parchment-1.19.2:2022.11.27@zip")
+        parchment(variantOf(libs.parchment) { artifactType("zip") })
     })
-    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
-    modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
-    modImplementation("net.earthcomputer.multiconnect:multiconnect-api:$multiconnectVersion") {
+    modImplementation(libs.fabric.loader)
+    modImplementation(libs.modmenu)
+    modImplementation(libs.multiconnect.api) {
         isTransitive = false
     }
 
     // [1] declare fabric-api dependency...
-    "fabricApi"("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+    "fabricApi"(libs.fabric.api)
 
     // [2] Load the API dependencies from the fabric mod json...
     @Suppress("UNCHECKED_CAST")
@@ -117,13 +111,13 @@ dependencies {
     }
 
     // for development
-    /*modRuntimeOnly("com.sk89q.worldedit:worldedit-fabric-mc1.19.2:7.2.12") {
+    localRuntime(libs.worldedit) {
         exclude("com.google.guava", "guava")
         exclude("com.google.code.gson", "gson")
         exclude("com.google.code.gson", "gson")
         exclude("it.unimi.dsi", "fastutil")
         exclude("org.apache.logging.log4j", "log4j-api")
-    }*/
+    }
 }
 
 tasks {
