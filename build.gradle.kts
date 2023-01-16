@@ -79,6 +79,7 @@ fun createAlternateRun(name: String): Configuration {
     val set = sourceSets.create(name)
     set.compileClasspath += sourceSets.main.get().compileClasspath
     set.runtimeClasspath += sourceSets.main.get().runtimeClasspath
+    dependencies.add(set.implementationConfigurationName, sourceSets.main.map { it.output})
 
     val config = loom.addRemapConfiguration("mod${name.capitalized()}") {
         sourceSet.set(set)
