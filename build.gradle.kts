@@ -1,4 +1,6 @@
 import net.fabricmc.loom.LoomGradleExtension
+import net.fabricmc.loom.api.RemapConfigurationSettings
+import org.gradle.configurationcache.extensions.capitalized
 
 plugins {
     java
@@ -72,6 +74,30 @@ afterEvaluate {
     }
 }
 
+fun createAlternateRun(name: String): Configuration {
+    // create a run with the main project plus additional dependencies
+    val set = sourceSets.create(name)
+    set.compileClasspath += sourceSets.main.get().compileClasspath
+    set.runtimeClasspath += sourceSets.main.get().runtimeClasspath
+
+    val config = loom.addRemapConfiguration("mod${name.capitalized()}") {
+        sourceSet.set(set)
+        onCompileClasspath.set(false)
+        onRuntimeClasspath.set(true)
+        publishingMode.set(RemapConfigurationSettings.PublishingMode.NONE)
+        targetConfigurationName.set(set.implementationConfigurationName)
+    }
+
+    loom.runConfigs.create(name + "Client") {
+        client()
+        source(set)
+    }
+
+    return configurations.getByName(config.name)
+}
+
+val canvas = createAlternateRun("canvas")
+val iris = createAlternateRun("iris")
 val fabricApi by configurations.creating
 dependencies {
     minecraft(libs.minecraft)
