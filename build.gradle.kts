@@ -1,3 +1,5 @@
+import net.fabricmc.loom.LoomGradleExtension
+
 plugins {
     java
     alias(libs.plugins.loom)
@@ -40,14 +42,37 @@ java {
     }
 }
 
-tasks.withType(JavaCompile::class) {
+tasks.withType(JavaCompile::class).configureEach {
     options.release.set(targetVersion)
     options.encoding = "UTF-8"
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing"))
 }
 
-val fabricApiConfiguration: Configuration = configurations.create("fabricApi")
+loom {
+    runs {
+        named("client") {
+            // Mixin debug options
+            vmArgs(
+                    // "-Dmixin.debug.verbose=true",
+                    // "-Dmixin.debug.export=true",
+                    // "-Dmixin.debug.export.decompile.async=false", // to get decompiled sources when mixins straight up fail to apply
+                    "-Dmixin.dumpTargetOnFailure=true",
+                    "-Dmixin.checks.interfaces=true",
+                    "-Dwecui.debug.mixinaudit=true",
+                    "-Doptifabric.extract=true"
+            )
+        }
+    }
+}
 
+// Ugly hack for easy genSourcening
+afterEvaluate {
+    tasks.matching { it.name == "genSources" }.configureEach {
+        setDependsOn(setOf("genSourcesWithQuiltflower"))
+    }
+}
+
+val fabricApi by configurations.creating
 dependencies {
     minecraft(libs.minecraft)
     mappings(loom.layered {
@@ -63,7 +88,7 @@ dependencies {
     }
 
     // [1] declare fabric-api dependency...
-    "fabricApi"(libs.fabric.api)
+    fabricApi(libs.fabric.api)
 
     // [2] Load the API dependencies from the fabric mod json...
     @Suppress("UNCHECKED_CAST")
@@ -79,7 +104,7 @@ dependencies {
         logger.lifecycle(wantedDependency)
     }
     // [3] and now we resolve it to pick out what we want :D
-    val fabricApiDependencies = fabricApiConfiguration.incoming.resolutionResult.allDependencies
+    val fabricApiDependencies = fabricApi.incoming.resolutionResult.allDependencies
         .onEach {
             if (it is UnresolvedDependencyResult) {
                 throw kotlin.IllegalStateException("Failed to resolve Fabric API", it.failure)
@@ -111,13 +136,17 @@ dependencies {
     }
 
     // for development
-    localRuntime(libs.worldedit) {
+    modLocalRuntime(libs.worldedit) {
         exclude("com.google.guava", "guava")
         exclude("com.google.code.gson", "gson")
         exclude("com.google.code.gson", "gson")
         exclude("it.unimi.dsi", "fastutil")
         exclude("org.apache.logging.log4j", "log4j-api")
     }
+}
+
+configurations.modLocalRuntime {
+    shouldResolveConsistentlyWith(configurations.modImplementation.get())
 }
 
 tasks {
@@ -135,8 +164,10 @@ tasks {
         outputs.file(argsDest)
         doLast {
             val clientRun = loom.runConfigs.getByName("client")
-            //-Dfabric.dli.config=${minecraft.devLauncherConfig.absolutePath} TODO
+
+            // technically uses internal API, but it's non-essential
             argsDest.get().asFile.writeText("""    
+                -Dfabric.dli.config=${(loom as LoomGradleExtension).files.devLauncherConfig.absolutePath}
                 -Dfabric.dli.env=client
                 -Dfabric.dli.main=${clientRun.defaultMainClass}
                 ${clientRun.vmArgs.joinToString(System.lineSeparator())}
@@ -151,27 +182,17 @@ tasks {
     }
 
     withType(net.fabricmc.loom.task.AbstractRunTask::class).configureEach {
-        // Mixin debug options
-        jvmArgs(
-                // "-Dmixin.debug.verbose=true",
-                // "-Dmixin.debug.export=true",
-                // "-Dmixin.debug.export.decompile.async=false", // to get decompiled sources when mixins straight up fail to apply
-                "-Dmixin.dumpTargetOnFailure=true",
-                "-Dmixin.checks.interfaces=true",
-                "-Dwecui.debug.mixinaudit=true",
-                "-Doptifabric.extract=true"
-        )
-
         // Configure mixin agent
-        jvmArgumentProviders += CommandLineArgumentProvider {
-            // Resolve the Mixin configuration
-            // Java agent: the jar file for mixin
-            val mixinJar = configurations.runtimeClasspath.get().resolvedConfiguration
-                    .getFiles { it.name == "sponge-mixin" && it.group == "net.fabricmc" }
-                    .firstOrNull()
+        // Resolve the Mixin configuration
+        val mixinSource = configurations.runtimeClasspath.get().incoming
+                .artifactView { componentFilter { it is ModuleComponentIdentifier && it.module == "sponge-mixin" && it.group == "net.fabricmc" } }
+                .files
+        inputs.files(mixinSource).withPropertyName("mixinAgent")
 
-            if (mixinJar != null) {
-                listOf("-javaagent:$mixinJar")
+        jvmArgumentProviders += CommandLineArgumentProvider {
+            // Java agent: the jar file for mixin
+            if (!mixinSource.isEmpty) {
+                listOf("-javaagent:${mixinSource.singleFile}")
             } else {
                 emptyList()
             }
