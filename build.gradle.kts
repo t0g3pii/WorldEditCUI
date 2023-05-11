@@ -28,8 +28,8 @@ repositories {
 }
 
 quiltflower {
-    quiltflowerVersion.set(libs.versions.quiltflower.get())
-    addToRuntimeClasspath.set(true)
+    quiltflowerVersion = libs.versions.quiltflower.get()
+    addToRuntimeClasspath = true
     preferences["win"] = 0
 }
 
@@ -38,12 +38,12 @@ java {
     sourceCompatibility = JavaVersion.toVersion(targetVersion)
     targetCompatibility = sourceCompatibility
     if (JavaVersion.current() < JavaVersion.toVersion(targetVersion)) {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(targetVersion))
+        toolchain.languageVersion = JavaLanguageVersion.of(targetVersion)
     }
 }
 
 tasks.withType(JavaCompile::class).configureEach {
-    options.release.set(targetVersion)
+    options.release = targetVersion
     options.encoding = "UTF-8"
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing"))
 }
@@ -155,7 +155,7 @@ tasks {
         val scriptDest = project.layout.buildDirectory.file(if (System.getProperty("os.name").contains("windows", ignoreCase = true)) { "run-dev.bat" } else { "run-dev" })
         val argsDest = project.layout.buildDirectory.file("run-dev-args.txt")
         val taskClasspath = project.files(jar.map { it.outputs }, configurations.runtimeClasspath)
-        val toolchain = project.javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(targetVersion)) }
+        val toolchain = project.javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(targetVersion) }
         inputs.files(taskClasspath)
                 .ignoreEmptyDirectories()
                 .withPropertyName("runClasspath")
