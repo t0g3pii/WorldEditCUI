@@ -2,6 +2,7 @@
 version = "1.0"
 
 [versions]
+indra = "3.1.1"
 minecraft = "1.20"
 fabricLoader = "0.14.21"
 fabricApi = "0.83.0+1.20"
@@ -18,8 +19,14 @@ modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 multiconnect-api = { module = "net.earthcomputer.multiconnect:multiconnect-api", version.ref = "multiconnect" }
 worldedit = { module = "com.sk89q.worldedit:worldedit-fabric-mc1.20", version = "7.2.15" }
 
+# buildtime
+
+indra-git = { module = "net.kyori:indra-git", version.ref = "indra" }
+githubApi = { module = "org.kohsuke:github-api", version = "1.314"}
+
 [plugins]
+curseForgeGradle = { id = "net.darkhax.curseforgegradle", version = "1.0.14" }
+javaEcosystemCapabilities = { id = "org.gradlex.java-ecosystem-capabilities", version = "1.2" }
 loom = { id = "fabric-loom", version = "1.2.7" }
 loomQuiltflower = { id = "io.github.juuxel.loom-quiltflower", version = "1.10.0" }
 versions = { id = "com.github.ben-manes.versions", version = "0.44.0" }
-javaEcosystemCapabilities = { id = "org.gradlex.java-ecosystem-capabilities", version = "1.2" }

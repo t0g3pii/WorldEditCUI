@@ -1,3 +1,5 @@
+import net.darkhax.curseforgegradle.Constants
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.fabricmc.loom.LoomGradleExtension
 
 plugins {
@@ -6,6 +8,8 @@ plugins {
     alias(libs.plugins.loomQuiltflower)
     alias(libs.plugins.versions)
     alias(libs.plugins.javaEcosystemCapabilities)
+    alias(libs.plugins.curseForgeGradle)
+    id("org.enginehub.worldeditcui.ghrelease")
 }
 
 group = "org.enginehub.worldeditcui"
@@ -206,4 +210,56 @@ tasks {
             expand("version" to project.version)
         }
     }
+
+    val publishToCurseForge by registering(TaskPublishCurseForge::class) {
+        val cfApiToken: String by project
+        val cfProjectId: String by project
+        val changelogFile = project.findProperty("changelog")
+        val version = project.provider { project.version }
+
+        onlyIf { indraGit.headTag() != null }
+
+        doFirst {
+            if (version.get().toString().contains("SNAPSHOT")) {
+                throw InvalidUserDataException("SNAPSHOT versions of WorldEditCUI cannot be published to CurseForge")
+            }
+            if (changelogFile == null || !file(changelogFile).isFile) {
+                throw InvalidUserDataException("A file with changelog text must be provided using the 'changelog' Gradle property")
+            }
+        }
+
+        apiToken = cfApiToken
+
+        with(upload(cfProjectId, remapJar)) {
+            releaseType = Constants.RELEASE_TYPE_RELEASE
+            changelog = changelogFile?.let(::file)
+            // Rendering plugins
+            addOptional("canvas-renderer", "sodium", "irisshaders")
+            // Config screens, version compatibility
+            addOptional("modmenu", "multiconnect", "worldedit")
+            addJavaVersion("Java 17")
+            addGameVersion(libs.versions.minecraft.get())
+        }
+    }
+
+    register("publishRelease") {
+        group = PublishingPlugin.PUBLISH_TASK_GROUP
+        dependsOn(publishToCurseForge, publishToGitHub)
+    }
+
+    publishToGitHub {
+        onlyIf { indraGit.headTag() != null }
+    }
+}
+
+githubRelease {
+    val changelogFile = project.findProperty("changelog")
+    apiToken = providers.gradleProperty("githubToken")
+            .orElse(providers.environmentVariable("GITHUB_TOKEN"))
+
+    // tag is inferred from the head tag
+    repository = "EngineHub/WorldEditCUI"
+    releaseName = "WorldEditCUI v$version"
+    releaseBody = project.provider { changelogFile?.let(::file)?.readText(Charsets.UTF_8) }
+    artifacts.from(tasks.remapJar)
 }
