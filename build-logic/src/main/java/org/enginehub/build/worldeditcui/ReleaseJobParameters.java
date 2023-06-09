@@ -20,6 +20,7 @@ public interface ReleaseJobParameters {
     @Input
     Property<String> getTagName();
 
+    @Input
     @Optional
     Property<String> getSourceBranch(); // if set, will create a tag with the provided name
 

@@ -231,13 +231,14 @@ tasks {
         apiToken = cfApiToken
 
         with(upload(cfProjectId, remapJar)) {
+            displayName = project.version
             releaseType = Constants.RELEASE_TYPE_RELEASE
             changelog = changelogFile?.let(::file)
             // Rendering plugins
             addOptional("canvas-renderer", "sodium", "irisshaders")
             // Config screens, version compatibility
             addOptional("modmenu", "multiconnect", "worldedit")
-            addJavaVersion("Java 17")
+            addJavaVersion("Java $targetVersion")
             addGameVersion(libs.versions.minecraft.get())
         }
     }
