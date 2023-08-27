@@ -5,7 +5,7 @@ import net.fabricmc.loom.LoomGradleExtension
 plugins {
     java
     alias(libs.plugins.loom)
-    alias(libs.plugins.loomQuiltflower)
+    alias(libs.plugins.loomVineflower)
     alias(libs.plugins.versions)
     alias(libs.plugins.javaEcosystemCapabilities)
     alias(libs.plugins.curseForgeGradle)
@@ -31,8 +31,8 @@ repositories {
     }
 }
 
-quiltflower {
-    quiltflowerVersion = libs.versions.quiltflower.get()
+vineflower {
+    toolVersion = libs.versions.vineflower.get()
     addToRuntimeClasspath = true
     preferences["win"] = 0
 }
@@ -72,7 +72,7 @@ loom {
 // Ugly hack for easy genSourcening
 afterEvaluate {
     tasks.matching { it.name == "genSources" }.configureEach {
-        setDependsOn(setOf("genSourcesWithQuiltflower"))
+        setDependsOn(setOf("genSourcesWithVineflower"))
     }
 }
 
