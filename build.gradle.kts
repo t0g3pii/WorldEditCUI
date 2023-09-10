@@ -4,12 +4,13 @@ import net.fabricmc.loom.LoomGradleExtension
 
 plugins {
     java
+    alias(libs.plugins.indra.git)
     alias(libs.plugins.loom)
     alias(libs.plugins.loomVineflower)
     alias(libs.plugins.versions)
     alias(libs.plugins.javaEcosystemCapabilities)
     alias(libs.plugins.curseForgeGradle)
-    id("org.enginehub.worldeditcui.ghrelease")
+    alias(libs.plugins.publishGithubRelease)
 }
 
 group = "org.enginehub.worldeditcui"
@@ -258,7 +259,9 @@ githubRelease {
     apiToken = providers.gradleProperty("githubToken")
             .orElse(providers.environmentVariable("GITHUB_TOKEN"))
 
-    // tag is inferred from the head tag
+    tagName = project.provider {
+        indraGit.headTag()?.run { org.eclipse.jgit.lib.Repository.shortenRefName(name) }
+    }
     repository = "EngineHub/WorldEditCUI"
     releaseName = "WorldEditCUI v$version"
     releaseBody = project.provider { changelogFile?.let(::file)?.readText(Charsets.UTF_8) }
