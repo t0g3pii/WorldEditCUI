@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "org.enginehub.worldeditcui"
-version = "${libs.versions.minecraft.get()}+01-SNAPSHOT"
+version = "${libs.versions.minecraft.get()}+01"
 
 repositories {
     // mirrors:
@@ -242,7 +242,7 @@ tasks {
             // Rendering plugins
             addOptional("canvas-renderer", "sodium", "irisshaders")
             // Config screens, version compatibility
-            addOptional("modmenu", "multiconnect", "worldedit")
+            addOptional("modmenu", "multiconnect", "viafabricplus", "worldedit")
             addJavaVersion("Java $targetVersion")
             addGameVersion(libs.versions.minecraft.get())
         }
