@@ -6,7 +6,6 @@ plugins {
     java
     alias(libs.plugins.indra.git)
     alias(libs.plugins.loom)
-    alias(libs.plugins.loomVineflower)
     alias(libs.plugins.versions)
     alias(libs.plugins.javaEcosystemCapabilities)
     alias(libs.plugins.curseForgeGradle)
@@ -31,12 +30,6 @@ repositories {
         name = "stellardriftSnapshots"
         mavenContent { snapshotsOnly() }
     }
-}
-
-vineflower {
-    toolVersion = libs.versions.vineflower.get()
-    addToRuntimeClasspath = true
-    preferences["win"] = 0
 }
 
 val targetVersion = 17
@@ -69,6 +62,9 @@ loom {
             )
         }
     }
+    decompilerOptions.named("vineflower") {
+        options.put("win", "0")
+    }
 }
 
 // Ugly hack for easy genSourcening
@@ -87,6 +83,7 @@ dependencies {
         }
         parchment(variantOf(libs.parchment) { artifactType("zip") })
     })
+    vineflowerDecompilerClasspath(libs.vineflower)
     modImplementation(libs.fabric.loader)
     modImplementation(libs.modmenu)
     modImplementation(libs.multiconnect.api) {
