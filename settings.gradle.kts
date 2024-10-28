@@ -23,7 +23,7 @@ sequenceOf(
     "fabric",
     "protocol-common",
     "protocol-fabric",
-    // "protocol-neoforge", // not until release
+    "protocol-neoforge",
 ).forEach {
     include("worldeditcui-$it")
 }
