@@ -10,7 +10,7 @@ to assist in using WorldEdit, as well as preventing accidental errors.
 
 Please note that this is not [WorldEdit], which allows you to make changes
 to your world, but WorldEditCUI, a frontend for WorldEdit. You must have
-WorldEdit installed on your server.
+WorldEdit installed on your server. 
 
 This version of the mod is for Fabric, but a [LiteLoader](https://www.curseforge.com/minecraft/mc-mods/worldeditcui) version is also available.
  
